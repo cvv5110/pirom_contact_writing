@@ -115,17 +115,12 @@ where the temperature-drop convention is always taken as
 \section{Lifted formulation: total drop = bulk drop + contact drop}
 
 To separate bulk and contact contributions, introduce interface temperatures
-\[
-\theta_i^{-},\qquad \theta_i^{+},
-\qquad i=1,2,3,
-\]
-where $\theta_i^{-}$ is the temperature immediately to the left of contact $i$, and $\theta_i^{+}$ is the temperature immediately to the right of contact $i$.
-
-Define the contact temperature jumps
 \begin{equation}
-\Delta\theta_i:=\theta_i^{+}-\theta_i^{-},
-\qquad i=1,2,3.
-\label{eq:def_dtheta}
+    \theta_i^{+},\qquad \theta_i^{-},\qquad i=1,2,3,
+\end{equation}
+where $\theta_i^{-}$ and $\theta_i^{+}$ are the temperatures immediately to the left and right of contact $i$, respectively. Define the contact temperature jumps as,
+\begin{equation}
+    \Delta\theta_i:=\theta_i^{+}-\theta_i^{-}, \qquad i=1,2,3s
 \end{equation}
 
 The total lumped-to-lumped temperature drop across interface $i$ is

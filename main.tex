@@ -1,0 +1,618 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,mathtools,bm}
+\usepackage{physics}
+\usepackage{array}
+\usepackage{enumitem}
+
+\title{Lifted Lumped-Capacitance Model with Contact Temperature Jumps and Bulk-Only Mori--Zwanzig Closure}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Conventional lumped-capacitance model}
+
+Consider four lumped masses with average temperatures,
+\begin{equation}
+    \bar{u}_1(t),\qquad \bar{u}_2(t),\qquad \bar{u}_3(t),\qquad \bar{u}_4(t).
+\end{equation}
+and temperature-dependent lumped-capacitance matrix,
+\begin{equation}
+    \bar{A}(\bar{u}) = \begin{bmatrix}
+        a_1(\bar{u}_1) & 0 & 0 & 0 \\
+        0 & a_2(\bar{u}_2) & 0 & 0 \\
+        0 & 0 & a_3(\bar{u}_3) & 0 \\
+        0 & 0 & 0 & a_4(\bar{u}_4)
+    \end{bmatrix}
+\end{equation}
+Let the external Neumann forcing be applied to the first lumped mass,
+\begin{equation}
+    \bar{f}(t) = \begin{bmatrix} f(t) \\ 0 \\ 0 \\ 0 \end{bmatrix}
+\end{equation}
+For interfaces $i=1,2,3$, define the known \emph{bulk resistances}
+\begin{equation}
+    S_i(u)=R_i^{-}(u)+R_i^{+}(u),    
+\end{equation}
+and the unknown contact resistance,
+\begin{equation}
+    R_{xi}>0,\qquad g_{xi}:=\frac{1}{R_{xi}}.
+\end{equation}
+
+The classical lumped-capacitance model with effective series resistances is,
+\begin{equation}
+    \bar{A}\left(\bar{u}\right)\dot{\bar{u}} = \bar{B}\left(\bar{u}\right)\bar{u} + \bar{f}(t)\label{eqn_lcm}
+\end{equation}
+where,
+\begin{equation}
+\bar{B}\left(\bar{u}\right) = \sum_{i=1}^{3}\frac{1}{S_i(\bar{u})+R_{xi}}K_i
+\end{equation}
+with standard nearest-neighbor diffusion stencils,
+\begin{subequations}
+    \begin{align}
+        K_1 &= \begin{bmatrix}
+            -1 & 1 & 0 & 0 \\
+            1 & -1 & 0 & 0 \\
+            0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0
+        \end{bmatrix},\\
+        K_2 &= \begin{bmatrix}
+            0 & 0 & 0 & 0 \\
+            0 & -1 & 1 & 0 \\
+            0 & 1 & -1 & 0 \\
+            0 & 0 & 0 & 0
+        \end{bmatrix},\\
+        K_3 &= \begin{bmatrix}
+            0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 \\
+            0 & 0 & -1 & 1 \\
+            0 & 0 & 1 & -1
+        \end{bmatrix}
+    \end{align}
+\end{subequations}
+
+\[
+K_1=
+\begin{bmatrix}
+-1&1&0&0\\
+1&-1&0&0\\
+0&0&0&0\\
+0&0&0&0
+\end{bmatrix},
+\qquad
+K_2=
+\begin{bmatrix}
+0&0&0&0\\
+0&-1&1&0\\
+0&1&-1&0\\
+0&0&0&0
+\end{bmatrix},
+\qquad
+K_3=
+\begin{bmatrix}
+0&0&0&0\\
+0&0&0&0\\
+0&0&-1&1\\
+0&0&1&-1
+\end{bmatrix}.
+\]
+
+The effective heat flux through interface $i$ is therefore
+\begin{equation}
+q_i
+=
+\frac{u_{i+1}-u_i}{S_i(u)+R_{xi}},
+\qquad i=1,2,3,
+\label{eq:reduced_flux}
+\end{equation}
+where the temperature-drop convention is always taken as
+\[
+\text{temperature drop from left to right} = \text{(right temperature)}-\text{(left temperature)}.
+\]
+
+\section{Lifted formulation: total drop = bulk drop + contact drop}
+
+To separate bulk and contact contributions, introduce interface temperatures
+\[
+\theta_i^{-},\qquad \theta_i^{+},
+\qquad i=1,2,3,
+\]
+where $\theta_i^{-}$ is the temperature immediately to the left of contact $i$, and $\theta_i^{+}$ is the temperature immediately to the right of contact $i$.
+
+Define the contact temperature jumps
+\begin{equation}
+\Delta\theta_i:=\theta_i^{+}-\theta_i^{-},
+\qquad i=1,2,3.
+\label{eq:def_dtheta}
+\end{equation}
+
+The total lumped-to-lumped temperature drop across interface $i$ is
+\[
+u_{i+1}-u_i.
+\]
+This total drop is decomposed as
+\begin{equation}
+u_{i+1}-u_i
+=
+\underbrace{\bigl(\theta_i^{-}-u_i\bigr)+\bigl(u_{i+1}-\theta_i^{+}\bigr)}_{\text{bulk drop}}
++
+\underbrace{\bigl(\theta_i^{+}-\theta_i^{-}\bigr)}_{\text{contact drop}}.
+\label{eq:drop_partition}
+\end{equation}
+Hence, by \eqref{eq:def_dtheta},
+\begin{equation}
+\text{bulk drop across interface }i
+=
+(u_{i+1}-u_i)-\Delta\theta_i.
+\label{eq:bulk_drop}
+\end{equation}
+
+Thus the lifted state is
+\[
+x=
+\begin{bmatrix}
+u\\ \Delta\theta
+\end{bmatrix}
+=
+\begin{bmatrix}
+u_1\\u_2\\u_3\\u_4\\\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
+\end{bmatrix}
+\in \mathbb{R}^{7},
+\qquad
+\Delta\theta=
+\begin{bmatrix}
+\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
+\end{bmatrix}.
+\]
+
+\section{Heat-flux continuity and the lifted DAE}
+
+Using the adopted convention, define the bulk and contact heat fluxes as
+\begin{equation}
+q_i^{(b)}
+=
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)},
+\qquad
+q_i^{(c)}
+=
+\frac{\Delta\theta_i}{R_{xi}}
+=
+g_{xi}\Delta\theta_i.
+\label{eq:q_bulk_contact}
+\end{equation}
+
+Heat-flux continuity across each interface requires
+\begin{equation}
+q_i^{(b)}=q_i^{(c)},
+\qquad i=1,2,3,
+\label{eq:flux_continuity}
+\end{equation}
+which yields the algebraic constraints
+\begin{equation}
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}
+-
+g_{xi}\Delta\theta_i
+=
+0,
+\qquad i=1,2,3.
+\label{eq:algebraic_constraints}
+\end{equation}
+
+\subsection*{Lumped-temperature dynamics}
+
+The four lumped energy balances are
+\begin{align}
+a_1(u_1)\dot u_1
+&=
+q_1^{(b)}+f(t),
+\label{eq:u1}\\
+a_2(u_2)\dot u_2
+&=
+-q_1^{(b)}+q_2^{(b)},
+\label{eq:u2}\\
+a_3(u_3)\dot u_3
+&=
+-q_2^{(b)}+q_3^{(b)},
+\label{eq:u3}\\
+a_4(u_4)\dot u_4
+&=
+-q_3^{(b)}.
+\label{eq:u4}
+\end{align}
+
+Substituting \eqref{eq:q_bulk_contact} gives
+\begin{align}
+a_1(u_1)\dot u_1
+&=
+\frac{u_2-u_1-\Delta\theta_1}{S_1(u)}+f(t),
+\label{eq:u1_expanded}\\
+a_2(u_2)\dot u_2
+&=
+-\frac{u_2-u_1-\Delta\theta_1}{S_1(u)}
++\frac{u_3-u_2-\Delta\theta_2}{S_2(u)},
+\label{eq:u2_expanded}\\
+a_3(u_3)\dot u_3
+&=
+-\frac{u_3-u_2-\Delta\theta_2}{S_2(u)}
++\frac{u_4-u_3-\Delta\theta_3}{S_3(u)},
+\label{eq:u3_expanded}\\
+a_4(u_4)\dot u_4
+&=
+-\frac{u_4-u_3-\Delta\theta_3}{S_3(u)}.
+\label{eq:u4_expanded}
+\end{align}
+
+\subsection*{Matrix form of the lifted DAE}
+
+Define the difference matrix
+\[
+D=
+\begin{bmatrix}
+-1&1&0&0\\
+0&-1&1&0\\
+0&0&-1&1
+\end{bmatrix},
+\qquad
+Du=
+\begin{bmatrix}
+u_2-u_1\\
+u_3-u_2\\
+u_4-u_3
+\end{bmatrix}.
+\]
+
+Define the bulk temperature matrices
+\[
+K_1^{(u)}=
+\begin{bmatrix}
+-1&1&0&0\\
+1&-1&0&0\\
+0&0&0&0\\
+0&0&0&0
+\end{bmatrix},
+\qquad
+K_2^{(u)}=
+\begin{bmatrix}
+0&0&0&0\\
+0&-1&1&0\\
+0&1&-1&0\\
+0&0&0&0
+\end{bmatrix},
+\qquad
+K_3^{(u)}=
+\begin{bmatrix}
+0&0&0&0\\
+0&0&0&0\\
+0&0&-1&1\\
+0&0&1&-1
+\end{bmatrix},
+\]
+and the bulk jump-coupling matrices
+\[
+L_1=
+\begin{bmatrix}
+-1&0&0\\
+1&0&0\\
+0&0&0\\
+0&0&0
+\end{bmatrix},
+\qquad
+L_2=
+\begin{bmatrix}
+0&0&0\\
+0&-1&0\\
+0&1&0\\
+0&0&0
+\end{bmatrix},
+\qquad
+L_3=
+\begin{bmatrix}
+0&0&0\\
+0&0&0\\
+0&0&-1\\
+0&0&1
+\end{bmatrix}.
+\]
+
+Then
+\begin{equation}
+A_u(u)\,\dot u
+=
+\sum_{i=1}^{3}\frac{1}{S_i(u)}
+\Bigl(K_i^{(u)}u+L_i\Delta\theta\Bigr)
++b_f\,f(t).
+\label{eq:u_matrix_form}
+\end{equation}
+
+The algebraic constraints \eqref{eq:algebraic_constraints} can be written as
+\begin{equation}
+\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)Du
+-
+\left[
+\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)+G_x
+\right]\Delta\theta
+=0,
+\label{eq:algebraic_matrix_form}
+\end{equation}
+where
+\[
+G_x:=\operatorname{diag}(g_{x1},g_{x2},g_{x3}).
+\]
+
+Equations \eqref{eq:u_matrix_form} and \eqref{eq:algebraic_matrix_form} form a DAE.
+
+\section{DAE index reduction}
+
+The DAE is index-reduced by differentiating the algebraic constraints \eqref{eq:algebraic_constraints} with respect to time.
+
+For each interface $i$,
+\[
+\frac{d}{dt}
+\left(
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}
+-g_{xi}\Delta\theta_i
+\right)=0.
+\]
+Since $g_{xi}$ is constant,
+\[
+\frac{d}{dt}
+\left(
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}
+\right)
+-g_{xi}\dot{\Delta\theta}_i=0.
+\]
+Applying the quotient rule gives
+\[
+\frac{
+(\dot u_{i+1}-\dot u_i-\dot{\Delta\theta}_i)S_i(u)
+-
+\bigl((u_{i+1}-u_i)-\Delta\theta_i\bigr)\dot S_i(u)
+}{
+S_i(u)^2
+}
+-g_{xi}\dot{\Delta\theta}_i=0.
+\]
+After rearrangement,
+\[
+\bigl(1+g_{xi}S_i(u)\bigr)\dot{\Delta\theta}_i
+=
+(\dot u_{i+1}-\dot u_i)
+-
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}\dot S_i(u).
+\]
+Using the original algebraic constraint
+\[
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}=g_{xi}\Delta\theta_i,
+\]
+the index-reduced dynamics become
+\begin{equation}
+\boxed{
+\dot{\Delta\theta}_i
+=
+\frac{
+\dot u_{i+1}-\dot u_i
+-
+g_{xi}\Delta\theta_i\,\dot S_i(u)
+}{
+1+g_{xi}S_i(u)
+},
+\qquad i=1,2,3.
+}
+\label{eq:dtheta_dynamics_component}
+\end{equation}
+
+Define
+\[
+M_\theta(u,R_x)
+=
+\operatorname{diag}\bigl(1+g_{x1}S_1(u),\,1+g_{x2}S_2(u),\,1+g_{x3}S_3(u)\bigr),
+\]
+and
+\[
+\dot S(u)=
+\begin{bmatrix}
+\dot S_1(u)\\
+\dot S_2(u)\\
+\dot S_3(u)
+\end{bmatrix},
+\qquad
+\Delta\theta\odot \dot S(u)=
+\begin{bmatrix}
+\Delta\theta_1\dot S_1(u)\\
+\Delta\theta_2\dot S_2(u)\\
+\Delta\theta_3\dot S_3(u)
+\end{bmatrix}.
+\]
+Then \eqref{eq:dtheta_dynamics_component} can be written as
+\begin{equation}
+M_\theta(u,R_x)\,\dot{\Delta\theta}
+=
+D\,\dot u
+-
+G_x\bigl(\Delta\theta\odot \dot S(u)\bigr).
+\label{eq:dtheta_dynamics_matrix}
+\end{equation}
+
+Thus the index-reduced lifted system is given by the coupled ODEs
+\begin{align}
+A_u(u)\,\dot u
+&=
+\sum_{i=1}^{3}\frac{1}{S_i(u)}
+\Bigl(K_i^{(u)}u+L_i\Delta\theta\Bigr)
++b_f\,f(t),
+\label{eq:governing_u}\\
+M_\theta(u,R_x)\,\dot{\Delta\theta}
+&=
+D\,\dot u
+-
+G_x\bigl(\Delta\theta\odot \dot S(u)\bigr).
+\label{eq:governing_dtheta}
+\end{align}
+
+\section{Bulk-only Mori--Zwanzig memory closure}
+
+The purpose of the closure is to modify only the \emph{bulk conductances} in the lumped-temperature dynamics \eqref{eq:governing_u}, while leaving the contact-jump dynamics \eqref{eq:governing_dtheta} unchanged.
+
+Accordingly, introduce scalar memory corrections $\eta_i(t)$, one per interface, and write
+\begin{equation}
+A_u(u)\,\dot u
+=
+\sum_{i=1}^{3}
+\left(\frac{1}{S_i(u)}+\eta_i(t)\right)
+\Bigl(K_i^{(u)}u+L_i\Delta\theta\Bigr)
++b_f\,f(t),
+\label{eq:u_memory_corrected}
+\end{equation}
+while retaining
+\begin{equation}
+M_\theta(u,R_x)\,\dot{\Delta\theta}
+=
+D\,\dot u
+-
+G_x\bigl(\Delta\theta\odot \dot S(u)\bigr).
+\label{eq:dtheta_unchanged}
+\end{equation}
+
+Hence the closure acts only along the bulk operator directions
+\[
+K_i^{(u)}u+L_i\Delta\theta,
+\qquad i=1,2,3,
+\]
+and does not modify the contact conductances $g_{xi}$.
+
+\subsection*{Mori--Zwanzig kernel}
+
+Define the memory amplitudes as
+\begin{equation}
+\eta_i(t)
+=
+\int_{t_0}^{t}\kappa_i(t,s,u,f;\Theta)\,ds,
+\qquad i=1,2,3,
+\label{eq:eta_kernel}
+\end{equation}
+where the kernels $\kappa_i$ depend on both the lumped state history $u(s)$ and the forcing history $f(s)$.
+
+Then the bulk-only Mori--Zwanzig kernel in the $u$-equation is
+\begin{equation}
+k_b(t,s,u,\Delta\theta,f;\Theta)
+=
+\sum_{i=1}^{3}
+\kappa_i(t,s,u,f;\Theta)
+\Bigl(K_i^{(u)}u(t)+L_i\Delta\theta(t)\Bigr),
+\label{eq:mz_kernel_bulk}
+\end{equation}
+so that
+\begin{equation}
+\int_{t_0}^{t}k_b(t,s,u,\Delta\theta,f;\Theta)\,ds
+=
+\sum_{i=1}^{3}\eta_i(t)\Bigl(K_i^{(u)}u(t)+L_i\Delta\theta(t)\Bigr).
+\label{eq:mz_integral_bulk}
+\end{equation}
+
+Substituting \eqref{eq:mz_integral_bulk} into \eqref{eq:governing_u} recovers \eqref{eq:u_memory_corrected}.
+
+\section{Finite-dimensional hidden-state realization}
+
+To realize the memory kernel with hidden variables, introduce
+\[
+\beta(t)\in\mathbb{R}^{m},
+\qquad
+\eta(t)=
+\begin{bmatrix}
+\eta_1(t)\\ \eta_2(t)\\ \eta_3(t)
+\end{bmatrix}
+=
+C\,\beta(t),
+\]
+where $C\in\mathbb{R}^{3\times m}$.
+
+Choose feature maps
+\[
+\phi(u)\in\mathbb{R}^{p},
+\qquad
+\psi(f)\in\mathbb{R}^{q},
+\]
+and define the hidden state by the exponentially weighted convolution
+\begin{equation}
+\beta(t)
+=
+\int_{t_0}^{t}
+e^{A_\beta^{-1}\Lambda (t-s)}
+A_\beta^{-1}
+\bigl(Q\,\phi(u(s))+R\,\psi(f(s))\bigr)\,ds,
+\label{eq:beta_definition}
+\end{equation}
+where
+\[
+A_\beta\in\mathbb{R}^{m\times m}\ \text{is invertible},
+\qquad
+\Lambda\in\mathbb{R}^{m\times m},
+\qquad
+Q\in\mathbb{R}^{m\times p},
+\qquad
+R\in\mathbb{R}^{m\times q}.
+\]
+
+Differentiating \eqref{eq:beta_definition} with respect to time yields
+\[
+\dot\beta
+=
+A_\beta^{-1}\bigl(Q\,\phi(u)+R\,\psi(f)\bigr)
++
+A_\beta^{-1}\Lambda\,\beta.
+\]
+Multiplying by $A_\beta$ gives the hidden-state ODE
+\begin{equation}
+\boxed{
+A_\beta\,\dot\beta
+=
+Q\,\phi(u)+\Lambda\,\beta+R\,\psi(f).
+}
+\label{eq:hidden_dynamics}
+\end{equation}
+
+Thus the memory amplitudes are parameterized as
+\begin{equation}
+\boxed{
+\eta(t)=C\,\beta(t),
+}
+\label{eq:eta_from_beta}
+\end{equation}
+and the full bulk-corrected lifted model becomes
+\begin{align}
+A_u(u)\,\dot u
+&=
+\sum_{i=1}^{3}
+\left(\frac{1}{S_i(u)}+\eta_i(t)\right)
+\Bigl(K_i^{(u)}u+L_i\Delta\theta\Bigr)
++b_f\,f(t),
+\label{eq:final_u}\\
+M_\theta(u,R_x)\,\dot{\Delta\theta}
+&=
+D\,\dot u
+-
+G_x\bigl(\Delta\theta\odot \dot S(u)\bigr),
+\label{eq:final_dtheta}\\
+A_\beta\,\dot\beta
+&=
+Q\,\phi(u)+\Lambda\,\beta+R\,\psi(f),
+\label{eq:final_beta}\\
+\eta
+&=
+C\,\beta.
+\label{eq:final_eta}
+\end{align}
+
+\section{Summary}
+
+The construction proceeds in four steps:
+\begin{enumerate}[label=\arabic*.]
+\item Start from the conventional lumped model with effective series resistances.
+\item Lift the model by introducing interface jump states $\Delta\theta_i$ so that the total drop is written as bulk drop plus contact drop.
+\item Enforce heat-flux continuity to obtain algebraic constraints, leading to a DAE, and then differentiate those constraints to obtain the index-reduced dynamics for $\Delta\theta_i$.
+\item Add a Mori--Zwanzig memory kernel only in the bulk part of the lumped-temperature dynamics, and realize that memory by hidden states $\beta(t)$ driven by both the lumped state and the forcing.
+\end{enumerate}
+
+\end{document}

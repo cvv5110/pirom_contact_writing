@@ -1,8 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1774463109.94001 "/home/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1774463110.53321 0
+["pdflatex"] 1774466774.30115 "/home/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1774466774.91842 0
   "/etc/texmf/web2c/texmf.cnf" 1738619132.31217 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/cavarga/.texlive2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1770329108 8213322 b4d6488e57a134721bc6b62eff6b749b ""
-  "/home/cavarga/pirom_contact_writing/main.tex" 1774463109.75051 12385 fbb91c8fbaf375102477bcd195df1612 ""
+  "/home/cavarga/pirom_contact_writing/main.tex" 1774466774.27343 12348 dad0bc928781b461bd6138e6571ff33b ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -84,8 +84,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1770329320.39747 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "interface.png" 1774457841.1875 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1774463110.45551 917 79e35e5acf426e98a35250564bf92edc "pdflatex"
-  "main.tex" 1774463109.75051 12385 fbb91c8fbaf375102477bcd195df1612 ""
+  "main.aux" 1774466774.83943 917 e35042a79c03061aa83454c02b01e594 "pdflatex"
+  "main.tex" 1774466774.27343 12348 dad0bc928781b461bd6138e6571ff33b ""
   (generated)
   "main.aux"
   "main.log"

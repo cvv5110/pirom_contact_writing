@@ -1,9 +1,9 @@
-PWD /home/cavarga/pirom_contact_writing
+PWD /home/andres/pirom_contact_writing
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
-INPUT /home/cavarga/.texlive2023/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /home/cavarga/pirom_contact_writing/main.tex
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/andres/pirom_contact_writing/main.tex
 OUTPUT main.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -131,6 +131,7 @@ INPUT ./interface.png
 INPUT ./interface.png
 INPUT ./interface.png
 INPUT main.aux
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb

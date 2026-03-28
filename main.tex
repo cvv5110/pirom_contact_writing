@@ -339,15 +339,20 @@ then,
 \end{equation}
 and,
 \begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\left(\sum_{j=1}^{m}b_{ij}\beta_j(t)\right)K_i u(t)
+    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\left(\sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t)\right)K_i u(t)
 \end{equation}
 such that,
 \begin{equation}
-    \alpha_i(\beta) = \sum_{j=1}^{m}b_{ij}\beta_j(t)
+    \alpha_i(\beta) = \sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t) = \frac{1}{S_i(u)}\mathbf{b}_i^\top\beta(t)
 \end{equation}
+and therefore,
+\begin{equation}
+    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\alpha_i(\beta)K_i u(t)
+\end{equation}
+
 Then, the memory correction to the bulk conductance leads to the following modified lumped-temperature dynamics,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{3}\left(\frac{1}{S_i(u)} + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)
 \end{equation}
 
 Now, let,
@@ -370,7 +375,7 @@ and in state-space form, the hidden dynamics are,
 The full lifted and closed system is given by,
 \begin{subequations}
     \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{3}\left(\frac{1}{S_i(u)} + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)\\
+        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)\\
         M(u;R_x)\Delta\dot{\theta} &= D\dot{u} - G_x\bigl(\Delta\theta\odot \dot S(u)\bigr)\\
         \dot{\beta} &= -\Lambda\beta + Q^\top\phi(u) + R^\top \psi(f)
     \end{align}

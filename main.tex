@@ -6,6 +6,8 @@
 \usepackage{array}
 \usepackage{enumitem}
 
+\newcommand{\vbeta}{\boldsymbol{\beta}}
+
 \title{Lumped-Capacitance Model with Contact Temperature Jumps and Bulk-Only Mori--Zwanzig Closure}
 \author{}
 \date{}
@@ -343,16 +345,16 @@ and,
 \end{equation}
 such that,
 \begin{equation}
-    \alpha_i(\beta) = \sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t) = \frac{1}{S_i(u)}\mathbf{b}_i^\top\beta(t)
+    \alpha_i(\vbeta) = \sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t) = \frac{1}{S_i(u)}\mathbf{b}_i^\top\vbeta(t)
 \end{equation}
 and therefore,
 \begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\alpha_i(\beta)K_i u(t)
+    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\alpha_i(\vbeta)K_i u(t)
 \end{equation}
 
 Then, the memory correction to the bulk conductance leads to the following modified lumped-temperature dynamics,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\vbeta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)
 \end{equation}
 
 Now, let,
@@ -361,24 +363,29 @@ Now, let,
 \end{equation}
 such that the memory variables are given by,
 \begin{equation}
-    \beta_j(t) = \int_{t_0}^{t}e^{-\lambda_j(t-s)}\left(q_j^\top\phi(u(s)) + r_j^\top \psi(f(s))\right)ds
+    \vbeta(t) = \int_{t_0}^{t}e^{-\Lambda(t-s)}\left(Q^\top\phi(u(s)) + R^\top \psi(f(s))\right)ds
 \end{equation}
 
 The hidden dynamics are now given by,
 \begin{equation}
-    \dot{\beta}_j = -\lambda_j\beta_j + q_j^\top\phi(u) + r_j^\top \psi(f)
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
 \end{equation}
 and in state-space form, the hidden dynamics are,
 \begin{equation}
-    \dot{\beta} = -\Lambda\beta + Q^\top\phi(u) + R^\top \psi(f)
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
 \end{equation}
 The full lifted and closed system is given by,
 \begin{subequations}
     \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\beta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)\\
+        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\vbeta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)\\
         M(u;R_x)\Delta\dot{\theta} &= D\dot{u} - G_x\bigl(\Delta\theta\odot \dot S(u)\bigr)\\
-        \dot{\beta} &= -\Lambda\beta + Q^\top\phi(u) + R^\top \psi(f)
+        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
     \end{align}
 \end{subequations}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./experiment.png}
+\end{figure}
 
 \end{document}

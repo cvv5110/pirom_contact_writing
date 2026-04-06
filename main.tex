@@ -10,9 +10,9 @@
 \newcommand{\vL}{\mathbf{L}}
 \newcommand{\vomega}{\boldsymbol{\omega}}
 \newcommand{\vK}{\mathbf{K}}
-\newcommand{\cvK}{\boldsymbol{\mathcal{K}}}
+\newcommand{\vcK}{\boldsymbol{\mathcal{K}}}
 \newcommand{\vM}{\mathbf{M}}
-\newcommand{\cvM}{\boldsymbol{\mathcal{M}}}
+\newcommand{\vcM}{\boldsymbol{\mathcal{M}}}
 \newcommand{\vB}{\mathbf{B}}
 \newcommand{\vC}{\mathbf{C}}
 \newcommand{\vD}{\mathbf{D}}
@@ -256,7 +256,7 @@ and the bulk jump-coupling stencils,
 \end{equation}
 Then,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u+\vL_i\Deltavtheta\Bigr) + f(t)
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u+\vL_i\Deltavtheta\Bigr) + \vf(t)
 \end{equation}
 and the algebraic constraints for heat flux continuity are written as,
 \begin{equation}
@@ -319,7 +319,7 @@ Then, the index-reduced dynamics for the contact jumps can be written in matrix 
 Thus, the index-reduced lifted system is given by the coupled ODEs,
 \begin{subequations}
     \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u + \vL_i\Deltavtheta\Bigr) + f(t)\\
+        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u + \vL_i\Deltavtheta\Bigr) + \vf(t)\\
         M(u;R_x)\Delta\dot{\theta} &= \vD\dot{u} - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
     \end{align}
 \end{subequations}
@@ -328,34 +328,37 @@ Thus, the index-reduced lifted system is given by the coupled ODEs,
 
 The purpose of the closure is to modify only the \emph{bulk conductances} in the lumped-capacitance model, while leaving the contact-jump dynamics unchanged. Accordingly, write the Projected Generalized Langevin Equation (PGLE) for the lumped-temperature dynamics,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\vK_i u + \vL_i\Deltavtheta\right) + f(t) + \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta\right) + \vf(t) + \int_{t_0}^{t}\kappa(t,s,u,\vf;\Theta)ds
 \end{equation}
 Now, ensure the designed memory modifies only the bulk conductances, i.e.,
 \begin{equation}
-    \kappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t)\right\}
+    \kappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t), \vL_1 \Deltavtheta_1(t), \vL_2 \Deltavtheta_2(t), \vL_3 \Deltavtheta_3(t)\right\}
 \end{equation}
 which leads to,
 \begin{equation}
-    \kappa(t,s,u,f;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,f;\Theta)\left(\mathcal{K}_j u(t) + \mathcal{M}_j \Deltavtheta(t)\right)
+    \kappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\left(\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right)
 \end{equation}
 where,
-\begin{equation}
-    \mathcal{K}_j = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}b_{ij}\odot \vK_i
-\end{equation}
+\begin{subequations}
+    \begin{align}
+        \vcK_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}k_{ij}\odot \vK_i\\
+        \vcM_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}m_{ij}\odot \vL_i
+    \end{align}
+\end{subequations}
 
 Now, define the memory variables as,
 \begin{equation}
-    \beta_j(t) = \int_{t_0}^{t}\kappa_j(t,s,u,f;\Theta)ds
+    \beta_j(t) = \int_{t_0}^{t}\kappa_j(t,s,u,\vf;\Theta)ds
 \end{equation}
 then,
 \begin{equation}
-    \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\cvK u(t) + \cvM \Deltavtheta(t)\right]
+    \int_{t_0}^{t}\kappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right]
 \end{equation}
 and,
 \begin{subequations}
     \begin{align}
-        \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}b_{ij}\beta_j(t)\right)\odot \vK_i u(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i u(t)\\
-        \sum_{j=1}^{m}\beta_j(t)\mathcal{M}_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}m_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
+        \sum_{j=1}^{m}\beta_j(t)\vcK_j \vu(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}k_{ij}\beta_j(t)\right)\odot \vK_i \vu(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i \vu(t)\\
+        \sum_{j=1}^{m}\beta_j(t)\vcM_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}m_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
     \end{align}
 \end{subequations}
 such that,
@@ -367,7 +370,7 @@ such that,
 \end{subequations}
 and therefore,
 \begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\left[\cvK u(t) + \cvM \Deltavtheta(t)\right] = \sum_{i=1}^{N-1}\alpha_i(\vbeta)\odot \vK_i u(t) + \sum_{i=1}^{N-1}\omega_i(\vbeta)\odot \vL_i \Deltavtheta(t)
+    \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right] = \sum_{i=1}^{N-1}\alpha_i(\vbeta)\odot \vK_i \vu(t) + \sum_{i=1}^{N-1}\omega_i(\vbeta)\odot \vL_i \Deltavtheta(t)
 \end{equation}
 Then, the memory correction to the bulk and contact stencils leads to the following modified lumped-temperature dynamics,
 \begin{equation}

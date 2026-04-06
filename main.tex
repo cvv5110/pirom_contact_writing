@@ -1,12 +1,25 @@
 \documentclass[11pt]{article}
 
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath,amssymb,amsfonts,mathtools,bm}
-\usepackage{physics}
+\usepackage{amsmath,amssymb,amsfonts,mathtools}
 \usepackage{array}
 \usepackage{enumitem}
 
 \newcommand{\vbeta}{\boldsymbol{\beta}}
+\newcommand{\valpha}{\boldsymbol{\alpha}}
+\newcommand{\vL}{\mathbf{L}}
+\newcommand{\vomega}{\boldsymbol{\omega}}
+\newcommand{\vK}{\mathbf{K}}
+\newcommand{\cvK}{\boldsymbol{\mathcal{K}}}
+\newcommand{\vM}{\mathbf{M}}
+\newcommand{\cvM}{\boldsymbol{\mathcal{M}}}
+\newcommand{\vB}{\mathbf{B}}
+\newcommand{\vC}{\mathbf{C}}
+\newcommand{\vD}{\mathbf{D}}
+\newcommand{\vE}{\mathbf{E}}
+\newcommand{\vu}{\mathbf{u}}
+\newcommand{\vf}{\mathbf{f}}
+\newcommand{\Deltavtheta}{\Delta\boldsymbol{\theta}}
 
 \title{Lumped-Capacitance Model with Contact Temperature Jumps and Bulk-Only Mori--Zwanzig Closure}
 \author{}
@@ -17,26 +30,26 @@
 
 \section{Conventional lumped-capacitance model}
 
-Consider four lumped masses with average temperatures,
+Consider the lumped-mass average temperature state,
 \begin{equation}
-    \bar{u}_1(t),\qquad \bar{u}_2(t),\qquad \bar{u}_3(t),\qquad \bar{u}_4(t).
+    \vu = \left[u_1, u_2, u_3, u_4\right]^T\in\mathbb{R}^{N}
 \end{equation}
 and temperature-dependent lumped-capacitance matrix,
 \begin{equation}
-    \bar{A}(\bar{u}) = \begin{bmatrix}
-        a_1(\bar{u}_1) & 0 & 0 & 0 \\
-        0 & a_2(\bar{u}_2) & 0 & 0 \\
-        0 & 0 & a_3(\bar{u}_3) & 0 \\
-        0 & 0 & 0 & a_4(\bar{u}_4)
+    A(\vu) = \begin{bmatrix}
+        a_1(u_1) & 0 & 0 & 0 \\
+        0 & a_2(u_2) & 0 & 0 \\
+        0 & 0 & a_3(u_3) & 0 \\
+        0 & 0 & 0 & a_4(u_4)
     \end{bmatrix}
 \end{equation}
 Let the external Neumann forcing be applied to the first lumped mass,
 \begin{equation}
-    \bar{f}(t) = \begin{bmatrix} f(t) \\ 0 \\ 0 \\ 0 \end{bmatrix}
+    \vf(t) = \begin{bmatrix} f(t) \\ 0 \\ 0 \\ 0 \end{bmatrix}
 \end{equation}
 For interfaces $i=1,2,3$, define the known \emph{bulk resistances}
 \begin{equation}
-    S_i(u)=R_i^{-}(u)+R_i^{+}(u),    
+    S_i(\vu)=R_i^{-}(\vu)+R_i^{+}(\vu)
 \end{equation}
 and the unknown contact resistance,
 \begin{equation}
@@ -45,25 +58,25 @@ and the unknown contact resistance,
 
 The classical lumped-capacitance model with effective series resistances is,
 \begin{equation}
-    \bar{A}\left(\bar{u}\right)\dot{\bar{u}} = \bar{B}\left(\bar{u}\right)\bar{u} + \bar{f}(t)\label{eqn_lcm}
+    A\left(\vu\right)\dot{\vu} = B\left(\vu\right)\vu + \vf(t)\label{eqn_lcm}
 \end{equation}
 where,
 \begin{equation}
-    \bar{B}\left(\bar{u}\right) = \sum_{i=1}^{3}\frac{1}{S_i(\bar{u})+R_{xi}}K_i
+    B\left(\vu\right) = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)+R_{xi}}\vK_i
 \end{equation}
 with standard nearest-neighbor diffusion stencils,
 \begin{equation}
-    K_1 = \begin{bmatrix}
+    \vK_1 = \begin{bmatrix}
         1 & -1 & 0 & 0 \\
         -1 & 1 & 0 & 0 \\
         0 & 0 & 0 & 0 \\
         0 & 0 & 0 & 0
-    \end{bmatrix},\: K_2 = \begin{bmatrix}
+    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
         0 & 0 & 0 & 0 \\
         0 & 1 & -1 & 0 \\
         0 & -1 & 1 & 0 \\
         0 & 0 & 0 & 0
-    \end{bmatrix},\: K_3 = \begin{bmatrix}
+    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
         0 & 0 & 0 & 0 \\
         0 & 0 & 0 & 0 \\
         0 & 0 & 1 & -1 \\
@@ -73,7 +86,7 @@ with standard nearest-neighbor diffusion stencils,
 
 The effective heat flux through interface $i$ is therefore,
 \begin{equation}
-    q_i = \frac{u_{i+1}-u_i}{S_i(u)+R_{xi}}
+    q_i = \frac{u_{i+1}-u_i}{S_i(\vu)+R_{xi}}
 \end{equation}
 where the temperature-drop convention is always taken as,
 \begin{equation}
@@ -109,7 +122,6 @@ Hence,
     \underbrace{\left(\theta_i^- - u_i\right) + \left(u_{i+1}-\theta_i^+\right)}_{\text{bulk drop}} = \underbrace{(u_{i+1}-u_i)}_{\text{total drop}} - \underbrace{\Delta\theta_i}_{\text{contact drop}}
 \end{equation}
 
-
 \begin{equation}
 \text{bulk drop across interface }i
 =
@@ -121,7 +133,7 @@ Thus the lifted state is
 \[
 x=
 \begin{bmatrix}
-u\\ \Delta\theta
+u\\ \Deltavtheta
 \end{bmatrix}
 =
 \begin{bmatrix}
@@ -129,7 +141,7 @@ u_1\\u_2\\u_3\\u_4\\\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
 \end{bmatrix}
 \in \mathbb{R}^{7},
 \qquad
-\Delta\theta=
+\Deltavtheta=
 \begin{bmatrix}
 \Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
 \end{bmatrix}.
@@ -193,12 +205,12 @@ Substituting using the bulk heat fluxes yields,
 
 Define the difference matrix,
 \begin{equation}
-    D = \begin{bmatrix}
+    \vD = \begin{bmatrix}
     -1 & 1 & 0 & 0 \\
     0 & -1 & 1 & 0 \\
     0 & 0 & -1 & 1
     \end{bmatrix}, \:
-    Du = \begin{bmatrix}
+    \vD u = \begin{bmatrix}
     u_2-u_1 \\
     u_3-u_2 \\
     u_4-u_3
@@ -206,17 +218,17 @@ Define the difference matrix,
 \end{equation}
 Define the bulk temperature stencils,
 \begin{equation}
-    K_1 = \begin{bmatrix}
+    \vK_1 = \begin{bmatrix}
         1 & -1 & 0 & 0 \\
         -1 & 1 & 0 & 0 \\
         0 & 0 & 0 & 0 \\
         0 & 0 & 0 & 0
-    \end{bmatrix},\: K_2 = \begin{bmatrix}
+    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
         0 & 0 & 0 & 0 \\
         0 & 1 & -1 & 0 \\
         0 & -1 & 1 & 0 \\
         0 & 0 & 0 & 0
-    \end{bmatrix},\: K_3 = \begin{bmatrix}
+    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
         0 & 0 & 0 & 0 \\
         0 & 0 & 0 & 0 \\
         0 & 0 & 1 & -1 \\
@@ -225,17 +237,17 @@ Define the bulk temperature stencils,
 \end{equation}
 and the bulk jump-coupling stencils,
 \begin{equation}
-    L_1 = \begin{bmatrix}
+    \vL_1 = \begin{bmatrix}
         1 & 0 & 0 \\
         -1 & 0 & 0 \\
         0 & 0 & 0 \\
         0 & 0 & 0
-    \end{bmatrix},\: L_2 = \begin{bmatrix}
+    \end{bmatrix},\: \vL_2 = \begin{bmatrix}
         0 & 0 & 0 \\
         0 & 1 & 0 \\
         0 & -1 & 0 \\
         0 & 0 & 0
-    \end{bmatrix},\: L_3 = \begin{bmatrix}
+    \end{bmatrix},\: \vL_3 = \begin{bmatrix}
         0 & 0 & 0 \\ 
         0 & 0 & 0 \\
         0 & 0 & 1 \\
@@ -244,11 +256,11 @@ and the bulk jump-coupling stencils,
 \end{equation}
 Then,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{3}\frac{1}{S_i(u)}\Bigl(K_i u+L_i\Delta\theta\Bigr) + f(t)
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u+\vL_i\Deltavtheta\Bigr) + f(t)
 \end{equation}
 and the algebraic constraints for heat flux continuity are written as,
 \begin{equation}
-    \operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)Du - \left[\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right) + G_x\right]\Delta\theta = 0\label{eqn_algebraic_heat_flux_constraints}
+    \operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)\vD u - \left[\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right) + G_x\right]\Deltavtheta = 0\label{eqn_algebraic_heat_flux_constraints}
 \end{equation}
 where
 \begin{equation}
@@ -258,7 +270,7 @@ where
     0 & 0 & g_{x3}
     \end{bmatrix}
 \end{equation}
-Equation \eqref{eqn_algebraic_heat_flux_constraints}, along with the lumped-temperature dynamics, defines a DAE system for the lifted state $x=[u,\Delta\theta]$.
+Equation \eqref{eqn_algebraic_heat_flux_constraints}, along with the lumped-temperature dynamics, defines a DAE system for the lifted state $x=[u,\Deltavtheta]$.
 
 \section{DAE index reduction}
 
@@ -294,7 +306,7 @@ and,
         \dot{S}_1(u) \\
         \dot{S}_2(u) \\
         \dot{S}_3(u)
-    \end{bmatrix},\qquad \Delta\theta\odot \dot{S}(u) = \begin{bmatrix}
+    \end{bmatrix},\qquad \Deltavtheta\odot \dot{S}(u) = \begin{bmatrix}
     \Delta\theta_1\dot{S}_1(u) \\
     \Delta\theta_2\dot{S}_2(u) \\
     \Delta\theta_3\dot{S}_3(u)
@@ -302,13 +314,13 @@ and,
 \end{equation}
 Then, the index-reduced dynamics for the contact jumps can be written in matrix form as,
 \begin{equation}
-    M(u;R_x)\Delta\dot{\theta} = D\,\dot u - G_x\bigl(\Delta\theta\odot \dot S(u)\bigr)
+    M(u;R_x)\Delta\dot{\theta} = D\,\dot u - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
 \end{equation}
 Thus, the index-reduced lifted system is given by the coupled ODEs,
 \begin{subequations}
     \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{3}\frac{1}{S_i(u)}\Bigl(K_i u + L_i\Delta\theta\Bigr) + f(t)\\
-        M(u;R_x)\Delta\dot{\theta} &= D\dot{u} - G_x\bigl(\Delta\theta\odot \dot S(u)\bigr)
+        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u + \vL_i\Deltavtheta\Bigr) + f(t)\\
+        M(u;R_x)\Delta\dot{\theta} &= \vD\dot{u} - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
     \end{align}
 \end{subequations}
 
@@ -316,19 +328,19 @@ Thus, the index-reduced lifted system is given by the coupled ODEs,
 
 The purpose of the closure is to modify only the \emph{bulk conductances} in the lumped-capacitance model, while leaving the contact-jump dynamics unchanged. Accordingly, write the Projected Generalized Langevin Equation (PGLE) for the lumped-temperature dynamics,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{3}\frac{1}{S_i(u)}\left(K_i u + L_i\Delta\theta\right) + f(t) + \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\vK_i u + \vL_i\Deltavtheta\right) + f(t) + \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds
 \end{equation}
 Now, ensure the designed memory modifies only the bulk conductances, i.e.,
 \begin{equation}
-    \kappa\in\text{span}\left\{K_1 u(t), K_2 u(t), K_3 u(t)\right\}
+    \kappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t)\right\}
 \end{equation}
 which leads to,
 \begin{equation}
-    \kappa(t,s,u,f;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,f;\Theta)\mathcal{K}_j u(t)
+    \kappa(t,s,u,f;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,f;\Theta)\left(\mathcal{K}_j u(t) + \mathcal{M}_j \Deltavtheta(t)\right)
 \end{equation}
 where,
 \begin{equation}
-    \mathcal{K}_j = \sum_{i=1}^{3}\frac{b_{ij}}{S_i(u)}K_i
+    \mathcal{K}_j = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}b_{ij}\odot \vK_i
 \end{equation}
 
 Now, define the memory variables as,
@@ -337,49 +349,54 @@ Now, define the memory variables as,
 \end{equation}
 then,
 \begin{equation}
-    \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t)
+    \int_{t_0}^{t}\kappa(t,s,u,f;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\cvK u(t) + \cvM \Deltavtheta(t)\right]
 \end{equation}
 and,
-\begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\left(\sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t)\right)K_i u(t)
-\end{equation}
+\begin{subequations}
+    \begin{align}
+        \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}b_{ij}\beta_j(t)\right)\odot \vK_i u(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i u(t)\\
+        \sum_{j=1}^{m}\beta_j(t)\mathcal{M}_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}m_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
+    \end{align}
+\end{subequations}
 such that,
-\begin{equation}
-    \alpha_i(\vbeta) = \sum_{j=1}^{m}\frac{b_{ij}}{S_i(u)}\beta_j(t) = \frac{1}{S_i(u)}\mathbf{b}_i^\top\vbeta(t)
-\end{equation}
+\begin{subequations}
+    \begin{align}
+        \valpha_i\left(\vbeta\right) &= \frac{1}{S_i(u)}\mathbf{B}_i\vbeta\\
+        \vomega_i\left(\vbeta\right) &= \frac{1}{S_i(u)}\mathbf{M}_i\vbeta
+    \end{align}
+\end{subequations}
 and therefore,
 \begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\mathcal{K}_j u(t) = \sum_{i=1}^{3}\alpha_i(\vbeta)K_i u(t)
+    \sum_{j=1}^{m}\beta_j(t)\left[\cvK u(t) + \cvM \Deltavtheta(t)\right] = \sum_{i=1}^{N-1}\alpha_i(\vbeta)\odot \vK_i u(t) + \sum_{i=1}^{N-1}\omega_i(\vbeta)\odot \vL_i \Deltavtheta(t)
 \end{equation}
-
-Then, the memory correction to the bulk conductance leads to the following modified lumped-temperature dynamics,
+Then, the memory correction to the bulk and contact stencils leads to the following modified lumped-temperature dynamics,
 \begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\vbeta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i + \alpha_i(\vbeta)\odot\vK_i\right) \vu + \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vL_i + \omega_i(\vbeta)\odot\vL_i\right) \Deltavtheta + \vf(t)
 \end{equation}
 
 Now, let,
 \begin{equation}
-    \kappa_i\left(t,s,u,f;\Theta\right) = e^{-\lambda_j(t-s)}\left(q_j^\top\phi(u(s)) + r_j^\top \psi(f(s))\right)
+    \kappa_i\left(t,s,\vu,\vf;\Theta\right) = e^{-\lambda_j(t-s)}\left(q_j^\top\phi(\vu(s)) + r_j^\top \psi(\vf(s))\right)
 \end{equation}
 such that the memory variables are given by,
 \begin{equation}
-    \vbeta(t) = \int_{t_0}^{t}e^{-\Lambda(t-s)}\left(Q^\top\phi(u(s)) + R^\top \psi(f(s))\right)ds
+    \vbeta(t) = \int_{t_0}^{t}e^{-\Lambda(t-s)}\left(Q^\top\phi(\vu(s)) + R^\top \psi(\vf(s))\right)ds
 \end{equation}
 
 The hidden dynamics are now given by,
 \begin{equation}
-    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
 \end{equation}
 and in state-space form, the hidden dynamics are,
 \begin{equation}
-    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
 \end{equation}
 The full lifted and closed system is given by,
 \begin{subequations}
     \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(1 + \alpha_i(\vbeta)\right)K_i u + \sum_{i=1}^{3}\frac{L_i}{S_i(u)}\Delta\theta + f(t)\\
-        M(u;R_x)\Delta\dot{\theta} &= D\dot{u} - G_x\bigl(\Delta\theta\odot \dot S(u)\bigr)\\
-        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(u) + R^\top \psi(f)
+        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i + \alpha_i(\vbeta)\odot \vK_i\right) \vu + \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vL_i + \omega_i(\vbeta)\odot \vL_i\right) \Deltavtheta + \vf(t)\\
+        M(\vu;R_x)\Delta\dot{\theta} &= \vD\dot{\vu} - G_x\bigl(\Deltavtheta\odot \dot S(\vu)\bigr)\\
+        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
     \end{align}
 \end{subequations}
 

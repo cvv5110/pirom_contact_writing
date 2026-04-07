@@ -20,6 +20,9 @@
 \newcommand{\vu}{\mathbf{u}}
 \newcommand{\vf}{\mathbf{f}}
 \newcommand{\Deltavtheta}{\Delta\boldsymbol{\theta}}
+\newcommand{\vkappa}{\boldsymbol{\kappa}}
+\newcommand{\vk}{\mathbf{k}}
+\newcommand{\vm}{\mathbf{m}}
 
 \title{Lumped-Capacitance Model with Contact Temperature Jumps and Bulk-Only Mori--Zwanzig Closure}
 \author{}
@@ -328,21 +331,21 @@ Thus, the index-reduced lifted system is given by the coupled ODEs,
 
 The purpose of the closure is to modify only the \emph{bulk conductances} in the lumped-capacitance model, while leaving the contact-jump dynamics unchanged. Accordingly, write the Projected Generalized Langevin Equation (PGLE) for the lumped-temperature dynamics,
 \begin{equation}
-    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta\right) + \vf(t) + \int_{t_0}^{t}\kappa(t,s,u,\vf;\Theta)ds
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta\right) + \vf(t) + \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds
 \end{equation}
 Now, ensure the designed memory modifies only the bulk conductances, i.e.,
 \begin{equation}
-    \kappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t), \vL_1 \Deltavtheta_1(t), \vL_2 \Deltavtheta_2(t), \vL_3 \Deltavtheta_3(t)\right\}
+    \vkappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t), \vL_1 \Deltavtheta_1(t), \vL_2 \Deltavtheta_2(t), \vL_3 \Deltavtheta_3(t)\right\}
 \end{equation}
 which leads to,
 \begin{equation}
-    \kappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\left(\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right)
+    \vkappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\left(\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right)
 \end{equation}
 where,
 \begin{subequations}
     \begin{align}
-        \vcK_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}k_{ij}\odot \vK_i\\
-        \vcM_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}m_{ij}\odot \vL_i
+        \vcK_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vk_{ij} \odot \vK_i\\
+        \vcM_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vm_{ij}\odot \vL_i
     \end{align}
 \end{subequations}
 
@@ -352,13 +355,13 @@ Now, define the memory variables as,
 \end{equation}
 then,
 \begin{equation}
-    \int_{t_0}^{t}\kappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right]
+    \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right]
 \end{equation}
-and,
+It follows that,
 \begin{subequations}
     \begin{align}
-        \sum_{j=1}^{m}\beta_j(t)\vcK_j \vu(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}k_{ij}\beta_j(t)\right)\odot \vK_i \vu(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i \vu(t)\\
-        \sum_{j=1}^{m}\beta_j(t)\vcM_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\left(\sum_{j=1}^{m}\frac{1}{S_i(u)}m_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
+        \sum_{j=1}^{m}\beta_j(t)\vcK_j \vu(t) &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vk_{ij}\beta_j(t)\right)\odot \vK_i \vu(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i \vu(t)\\
+        \sum_{j=1}^{m}\beta_j(t)\vcM_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vm_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
     \end{align}
 \end{subequations}
 such that,

@@ -1,8 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1775839884.93318 "/home/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1775839885.63672 0
-  "/etc/texmf/web2c/texmf.cnf" 1738619132.31217 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/cavarga/.texlive2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1770329108 8213322 b4d6488e57a134721bc6b62eff6b749b ""
-  "/home/cavarga/pirom_contact_writing/main.tex" 1775839884.97282 13208 8ebd6ef662deb1437d89661c5251f681 ""
+["pdflatex"] 1775849428.63092 "/home/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1775849429.48457 0
+  "/etc/texmf/web2c/texmf.cnf" 1758497887.83616 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/andres/pirom_contact_writing/main.tex" 1775849428.40592 13208 8ebd6ef662deb1437d89661c5251f681 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -81,11 +80,12 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty" 1698869629 10214 547fd4d29642cb7c80bf54b49d447f01 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1770329320.39747 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
-  "experiment.png" 1774889607.98012 83247 24817fbf61bef9382adeffd60211e0d0 ""
-  "interface.png" 1774457841.1875 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1775839885.55982 917 4d26edc92c3269fdfd138f49e014cec1 "pdflatex"
-  "main.tex" 1775839884.97282 13208 8ebd6ef662deb1437d89661c5251f681 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1775849186.76589 165012 f177baa1c39a3ebd62c3096a43521a0d ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1775849195 6830984 28a76147c1afccd2f67fb9b045db78f1 ""
+  "experiment.png" 1775848216.21916 83247 24817fbf61bef9382adeffd60211e0d0 ""
+  "interface.png" 1775848216.22116 45960 50e4f00827084432c8f95349e26066c4 ""
+  "main.aux" 1775849429.42578 917 4d26edc92c3269fdfd138f49e014cec1 "pdflatex"
+  "main.tex" 1775849428.40592 13208 8ebd6ef662deb1437d89661c5251f681 ""
   (generated)
   "main.aux"
   "main.log"

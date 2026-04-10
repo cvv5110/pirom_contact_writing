@@ -23,6 +23,9 @@
 \newcommand{\vkappa}{\boldsymbol{\kappa}}
 \newcommand{\vk}{\mathbf{k}}
 \newcommand{\vm}{\mathbf{m}}
+\newcommand{\vcP}{\boldsymbol{\mathcal{P}}}
+\newcommand{\vp}{\mathbf{p}}
+\newcommand{\vP}{\mathbf{P}}
 
 \title{Lumped-Capacitance Model with Contact Temperature Jumps and Bulk-Only Mori--Zwanzig Closure}
 \author{}
@@ -339,15 +342,12 @@ Now, ensure the designed memory modifies only the bulk conductances, i.e.,
 \end{equation}
 which leads to,
 \begin{equation}
-    \vkappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\left(\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right)
+    \vkappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\vcP_j
 \end{equation}
 where,
-\begin{subequations}
-    \begin{align}
-        \vcK_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vk_{ij} \odot \vK_i\\
-        \vcM_j &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vm_{ij}\odot \vL_i
-    \end{align}
-\end{subequations}
+\begin{equation}
+    \vcP_j = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vp_{ij}
+\end{equation}
 
 Now, define the memory variables as,
 \begin{equation}
@@ -355,29 +355,15 @@ Now, define the memory variables as,
 \end{equation}
 then,
 \begin{equation}
-    \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right]
+    \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\vcP_j
 \end{equation}
 It follows that,
-\begin{subequations}
-    \begin{align}
-        \sum_{j=1}^{m}\beta_j(t)\vcK_j \vu(t) &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vk_{ij}\beta_j(t)\right)\odot \vK_i \vu(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{B}_i\vbeta\right)\odot \vK_i \vu(t)\\
-        \sum_{j=1}^{m}\beta_j(t)\vcM_j \Deltavtheta(t) &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vm_{ij}\beta_j(t)\right)\odot \vL_i \Deltavtheta(t) = \sum_{i=1}^{N-1}\left(\frac{1}{S_i(u)}\mathbf{M}_i\vbeta\right)\odot \vL_i \Deltavtheta(t)
-    \end{align}
-\end{subequations}
-such that,
-\begin{subequations}
-    \begin{align}
-        \valpha_i\left(\vbeta\right) &= \frac{1}{S_i(u)}\mathbf{B}_i\vbeta\\
-        \vomega_i\left(\vbeta\right) &= \frac{1}{S_i(u)}\mathbf{M}_i\vbeta
-    \end{align}
-\end{subequations}
-and therefore,
 \begin{equation}
-    \sum_{j=1}^{m}\beta_j(t)\left[\vcK_j \vu(t) + \vcM_j \Deltavtheta(t)\right] = \sum_{i=1}^{N-1}\alpha_i(\vbeta)\odot \vK_i \vu(t) + \sum_{i=1}^{N-1}\omega_i(\vbeta)\odot \vL_i \Deltavtheta(t)
+    \sum_{j=1}^{m}\beta_j(t)\vcP_j = \sum_{j=1}^{m}\beta_j(t)\sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vp_{ij} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vp_{ij}\beta_j(t)\right) = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vP_i\vbeta
 \end{equation}
-Then, the memory correction to the bulk and contact stencils leads to the following modified lumped-temperature dynamics,
+Then, the memory correction to the LCM dynamics leads to the following modified lumped-temperature dynamics,
 \begin{equation}
-    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i + \alpha_i(\vbeta)\odot\vK_i\right) \vu + \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vL_i + \omega_i(\vbeta)\odot\vL_i\right) \Deltavtheta + \vf(t)
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta + \vP_i\vbeta\right) + \vf(t)
 \end{equation}
 
 Now, let,
@@ -400,8 +386,8 @@ and in state-space form, the hidden dynamics are,
 The full lifted and closed system is given by,
 \begin{subequations}
     \begin{align}
-        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i + \alpha_i(\vbeta)\odot \vK_i\right) \vu + \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vL_i + \omega_i(\vbeta)\odot \vL_i\right) \Deltavtheta + \vf(t)\\
-        M(\vu;R_x)\Delta\dot{\theta} &= \vD\dot{\vu} - G_x\bigl(\Deltavtheta\odot \dot S(\vu)\bigr)\\
+        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i \vu + \vL_i\Deltavtheta + \vP_i\vbeta\right) + \vf(t)\\
+        M(\vu;R_x)\dot{\Deltavtheta} &= \vD\dot{\vu} - G_x\bigl(\Deltavtheta\odot \dot S(\vu)\bigr)\\
         \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
     \end{align}
 \end{subequations}

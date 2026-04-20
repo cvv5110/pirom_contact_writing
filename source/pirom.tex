@@ -3,3 +3,72 @@
 The formulation of PIROM for TPS starts by mathematically connecting the FOM, i.e., the DG-FEM, to the RPM, i.e., the LCM. This procedure pinpoints teh missing dynamics in LCM when compared to DG-FEM. Subsequently, the Mori-Zwanzig formalism is employed to determine the model
 
 
+\section{Bulk-only Mori--Zwanzig Memory Closure}
+
+The purpose of the closure is to account for the unresolved dynamics in the LCM, while leaving the contact-jump dynamics unchanged. Accordingly, the 
+
+
+Accordingly, write the Projected Generalized Langevin Equation (PGLE) for the lumped-temperature dynamics,
+\begin{equation}
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta\right) + \vf(t) + \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds
+\end{equation}
+Now, ensure the designed memory modifies only the bulk conductances, i.e.,
+\begin{equation}
+    \vkappa\in\text{span}\left\{\vK_1 u(t), \vK_2 u(t), \vK_3 u(t), \vL_1 \Deltavtheta_1(t), \vL_2 \Deltavtheta_2(t), \vL_3 \Deltavtheta_3(t)\right\}
+\end{equation}
+which leads to,
+\begin{equation}
+    \vkappa(t,s,u,\vf;\Theta) \approx \sum_{j=1}^{m}\kappa_j(t,s,u,\vf;\Theta)\vcP_j
+\end{equation}
+where,
+\begin{equation}
+    \vcP_j = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vp_{ij}
+\end{equation}
+
+Now, define the memory variables as,
+\begin{equation}
+    \beta_j(t) = \int_{t_0}^{t}\kappa_j(t,s,u,\vf;\Theta)ds
+\end{equation}
+then,
+\begin{equation}
+    \int_{t_0}^{t}\vkappa(t,s,u,\vf;\Theta)ds = \sum_{j=1}^{m}\beta_j(t)\vcP_j
+\end{equation}
+It follows that,
+\begin{equation}
+    \sum_{j=1}^{m}\beta_j(t)\vcP_j = \sum_{j=1}^{m}\beta_j(t)\sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vp_{ij} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\left(\sum_{j=1}^{m}\vp_{ij}\beta_j(t)\right) = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\vP_i\vbeta
+\end{equation}
+Then, the memory correction to the LCM dynamics leads to the following modified lumped-temperature dynamics,
+\begin{equation}
+    A(\vu)\dot{\vu} = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i u + \vL_i\Deltavtheta + \vP_i\vbeta\right) + \vf(t)
+\end{equation}
+
+Now, let,
+\begin{equation}
+    \kappa_i\left(t,s,\vu,\vf;\Theta\right) = e^{-\lambda_j(t-s)}\left(q_j^\top\phi(\vu(s)) + r_j^\top \psi(\vf(s))\right)
+\end{equation}
+such that the memory variables are given by,
+\begin{equation}
+    \vbeta(t) = \int_{t_0}^{t}e^{-\Lambda(t-s)}\left(Q^\top\phi(\vu(s)) + R^\top \psi(\vf(s))\right)ds
+\end{equation}
+
+The hidden dynamics are now given by,
+\begin{equation}
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
+\end{equation}
+and in state-space form, the hidden dynamics are,
+\begin{equation}
+    \dot{\vbeta} = -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
+\end{equation}
+The full lifted and closed system is given by,
+\begin{subequations}
+    \begin{align}
+        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i \vu + \vL_i\Deltavtheta + \vP_i\vbeta\right) + \vf(t)\\
+        M(\vu;R_x)\dot{\Deltavtheta} &= \vD\dot{\vu} - G_x\bigl(\Deltavtheta\odot \dot S(\vu)\bigr)\\
+        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
+    \end{align}
+\end{subequations}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./experiment.png}
+\end{figure}

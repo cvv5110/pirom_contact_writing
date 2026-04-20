@@ -1,7 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1776554154.97534 "/home/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1776554155.56728 0
-  "/etc/texmf/web2c/texmf.cnf" 1756260258.42441 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/andres/pirom_contact_writing/main.tex" 1776554154.79947 13229 1c08ee4bc430a76d2a7848b8fbf787c6 ""
+["pdflatex"] 1776707640.88355 "/home/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1776707641.60062 0
+  "/etc/texmf/web2c/texmf.cnf" 1738619132.31217 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/cavarga/.texlive2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1770329108 8213322 b4d6488e57a134721bc6b62eff6b749b ""
+  "/home/cavarga/pirom_contact_writing/main.tex" 1776707640.68691 1205 9b8bf053e48aa9714881ac8b5a2d908d ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -80,12 +81,15 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty" 1698869629 10214 547fd4d29642cb7c80bf54b49d447f01 ""
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1756260341.69314 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1756260356 8212541 f3d0284017a991cc88bed637dbcd8ad1 ""
-  "experiment.png" 1775235328.4964 83247 24817fbf61bef9382adeffd60211e0d0 ""
-  "interface.png" 1774657576.28546 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1776554155.52347 917 4d26edc92c3269fdfd138f49e014cec1 "pdflatex"
-  "main.tex" 1776554154.79947 13229 1c08ee4bc430a76d2a7848b8fbf787c6 ""
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1770329320.39747 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
+  "experiment.png" 1774889607.98012 83247 24817fbf61bef9382adeffd60211e0d0 ""
+  "interface.png" 1774457841.1875 45960 50e4f00827084432c8f95349e26066c4 ""
+  "main.aux" 1776707641.52091 1143 0f589dd02b650bce2c0872c7c8815fbc "pdflatex"
+  "main.tex" 1776707640.68691 1205 9b8bf053e48aa9714881ac8b5a2d908d ""
+  "source/conclusions.tex" 1776706391.23168 789 62f20d3a66091f928419954d1fbb08ef ""
+  "source/introduction.tex" 1776706201.11021 564 48607ad11552c63fb1bac79e3adcface ""
+  "source/modeling.tex" 1776706239.0903 9222 8663e85e7f77aac794ffaf767d17e228 ""
+  "source/pirom.tex" 1776706237.8413 3261 0884099352985087bf46618d9e9fb927 ""
   (generated)
   "main.aux"
   "main.log"

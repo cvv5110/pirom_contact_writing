@@ -1,0 +1,295 @@
+\section{Conventional lumped-capacitance model}
+
+Consider the lumped-mass average temperature state,
+\begin{equation}
+    \vu = \left[u_1, u_2, u_3, u_4\right]^T\in\mathbb{R}^{N}
+\end{equation}
+and temperature-dependent lumped-capacitance matrix,
+\begin{equation}
+    A(\vu) = \begin{bmatrix}
+        a_1(u_1) & 0 & 0 & 0 \\
+        0 & a_2(u_2) & 0 & 0 \\
+        0 & 0 & a_3(u_3) & 0 \\
+        0 & 0 & 0 & a_4(u_4)
+    \end{bmatrix}
+\end{equation}
+Let the external Neumann forcing be applied to the first lumped mass,
+\begin{equation}
+    \vf(t) = \begin{bmatrix} f(t) \\ 0 \\ 0 \\ 0 \end{bmatrix}
+\end{equation}
+For interfaces $i=1,2,3$, define the known \emph{bulk resistances}
+\begin{equation}
+    S_i(\vu)=R_i^{-}(\vu)+R_i^{+}(\vu)
+\end{equation}
+and the unknown contact resistance,
+\begin{equation}
+    R_{xi}>0,\qquad g_{xi}:=\frac{1}{R_{xi}}.
+\end{equation}
+
+The classical lumped-capacitance model with effective series resistances is,
+\begin{equation}
+    A\left(\vu\right)\dot{\vu} = B\left(\vu\right)\vu + \vf(t)\label{eqn_lcm}
+\end{equation}
+where,
+\begin{equation}
+    B\left(\vu\right) = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)+R_{xi}}\vK_i
+\end{equation}
+with standard nearest-neighbor diffusion stencils,
+\begin{equation}
+    \vK_1 = \begin{bmatrix}
+        1 & -1 & 0 & 0 \\
+        -1 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0
+    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
+        0 & 0 & 0 & 0 \\
+        0 & 1 & -1 & 0 \\
+        0 & -1 & 1 & 0 \\
+        0 & 0 & 0 & 0
+    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & -1 \\
+        0 & 0 & -1 & 1
+    \end{bmatrix}
+\end{equation}
+
+The effective heat flux through interface $i$ is therefore,
+\begin{equation}
+    q_i = \frac{u_{i+1}-u_i}{S_i(\vu)+R_{xi}}
+\end{equation}
+where the temperature-drop convention is always taken as,
+\begin{equation}
+    \Delta u_i = u_{i+1}-u_i
+\end{equation}
+
+\section{Total drop = bulk drop + contact drop}
+
+To separate bulk and contact contributions, introduce interface temperatures
+\begin{equation}
+    \theta_i^{+},\qquad \theta_i^{-},\qquad i=1,2,3,
+\end{equation}
+where $\theta_i^{-}$ and $\theta_i^{+}$ are the temperatures immediately to the left and right of contact $i$, respectively. Define the contact temperature jumps as,
+\begin{equation}
+    \Delta\theta_i:=\theta_i^{+}-\theta_i^{-}, \qquad i=1,2,3
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./interface.png}
+\end{figure}
+
+The total lumped-to-lumped temperature drop across interface $i$,
+\begin{equation}
+    u_{i+1}-u_i
+\end{equation}
+This total lumped-to-lumped temperature drop is the sum of the bulk drop across the interface and the contact jump across the interface,
+\begin{equation}
+    \underbrace{u_{i+1}-u_i}_{\text{total drop}} = \underbrace{\bigl(\theta_i^{-}-u_i\bigr)+\bigl(u_{i+1}-\theta_i^{+}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^{+}-\theta_i^{-}\bigr)}_{\text{contact drop}}.
+\end{equation}
+Hence,
+\begin{equation}
+    \underbrace{\left(\theta_i^- - u_i\right) + \left(u_{i+1}-\theta_i^+\right)}_{\text{bulk drop}} = \underbrace{(u_{i+1}-u_i)}_{\text{total drop}} - \underbrace{\Delta\theta_i}_{\text{contact drop}}
+\end{equation}
+
+\begin{equation}
+\text{bulk drop across interface }i
+=
+(u_{i+1}-u_i)-\Delta\theta_i.
+\label{eq:bulk_drop}
+\end{equation}
+
+Thus the lifted state is
+\[
+x=
+\begin{bmatrix}
+u\\ \Deltavtheta
+\end{bmatrix}
+=
+\begin{bmatrix}
+u_1\\u_2\\u_3\\u_4\\\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
+\end{bmatrix}
+\in \mathbb{R}^{7},
+\qquad
+\Deltavtheta=
+\begin{bmatrix}
+\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
+\end{bmatrix}.
+\]
+
+\section{Heat-flux Continuity and DAE Formulation}
+
+Using the adopted convention, define the bulk and contact heat fluxes as
+\begin{equation}
+q_i^{(b)}
+=
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)},
+\qquad
+q_i^{(c)}
+=
+\frac{\Delta\theta_i}{R_{xi}}
+=
+g_{xi}\Delta\theta_i.
+\label{eq:q_bulk_contact}
+\end{equation}
+
+Heat-flux continuity across each interface requires
+\begin{equation}
+q_i^{(b)}=q_i^{(c)},
+\qquad i=1,2,3,
+\label{eq:flux_continuity}
+\end{equation}
+which yields the algebraic constraints
+\begin{equation}
+\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}
+-
+g_{xi}\Delta\theta_i
+=
+0,
+\qquad i=1,2,3.
+\label{eq:algebraic_constraints}
+\end{equation}
+
+\subsection*{Lumped-temperature dynamics}
+
+The four lumped energy balances yield,
+\begin{subequations}
+    \begin{align}
+        a_1(u_1)\dot u_1 &= f(t) - q_{12}^{(b)}\\
+        a_2(u_2)\dot u_2 &= q_{12}^{(b)} - q_{23}^{(b)}\\
+        a_3(u_3)\dot u_3 &= q_{23}^{(b)} - q_{34}^{(b)}\\
+        a_4(u_4)\dot u_4 &= q_{34}^{(b)}
+    \end{align}
+\end{subequations}
+Substituting using the bulk heat fluxes yields,
+\begin{subequations}
+    \begin{align}
+        a_1(u_1)\dot u_1 &= f(t) - \frac{(u_2-u_1)-\Delta\theta_1}{S_1(u)}\\
+        a_2(u_2)\dot u_2 &= \frac{(u_2-u_1)-\Delta\theta_1}{S_1(u)} - \frac{(u_3-u_2)-\Delta\theta_2}{S_2(u)}\\
+        a_3(u_3)\dot u_3 &= \frac{(u_3-u_2)-\Delta\theta_2}{S_2(u)} - \frac{(u_4-u_3)-\Delta\theta_3}{S_3(u)}\\
+        a_4(u_4)\dot u_4 &= \frac{(u_4-u_3)-\Delta\theta_3}{S_3(u)}
+    \end{align}
+\end{subequations}
+
+\subsection*{Matrix form of DAE}
+
+Define the difference matrix,
+\begin{equation}
+    \vD = \begin{bmatrix}
+    -1 & 1 & 0 & 0 \\
+    0 & -1 & 1 & 0 \\
+    0 & 0 & -1 & 1
+    \end{bmatrix}, \:
+    \vD u = \begin{bmatrix}
+    u_2-u_1 \\
+    u_3-u_2 \\
+    u_4-u_3
+    \end{bmatrix}
+\end{equation}
+Define the bulk temperature stencils,
+\begin{equation}
+    \vK_1 = \begin{bmatrix}
+        1 & -1 & 0 & 0 \\
+        -1 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0
+    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
+        0 & 0 & 0 & 0 \\
+        0 & 1 & -1 & 0 \\
+        0 & -1 & 1 & 0 \\
+        0 & 0 & 0 & 0
+    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & -1 \\
+        0 & 0 & -1 & 1
+    \end{bmatrix}
+\end{equation}
+and the bulk jump-coupling stencils,
+\begin{equation}
+    \vL_1 = \begin{bmatrix}
+        1 & 0 & 0 \\
+        -1 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0
+    \end{bmatrix},\: \vL_2 = \begin{bmatrix}
+        0 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & -1 & 0 \\
+        0 & 0 & 0
+    \end{bmatrix},\: \vL_3 = \begin{bmatrix}
+        0 & 0 & 0 \\ 
+        0 & 0 & 0 \\
+        0 & 0 & 1 \\
+        0 & 0 & -1
+    \end{bmatrix}
+\end{equation}
+Then,
+\begin{equation}
+    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u+\vL_i\Deltavtheta\Bigr) + \vf(t)
+\end{equation}
+and the algebraic constraints for heat flux continuity are written as,
+\begin{equation}
+    \operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)\vD u - \left[\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right) + G_x\right]\Deltavtheta = 0\label{eqn_algebraic_heat_flux_constraints}
+\end{equation}
+where
+\begin{equation}
+    G_x = \begin{bmatrix}
+    g_{x1} & 0 & 0 \\
+    0 & g_{x2} & 0 \\
+    0 & 0 & g_{x3}
+    \end{bmatrix}
+\end{equation}
+Equation \eqref{eqn_algebraic_heat_flux_constraints}, along with the lumped-temperature dynamics, defines a DAE system for the lifted state $x=[u,\Deltavtheta]$.
+
+\section{DAE index reduction}
+
+The DAE is index-reduced by differentiating the heat-flux continuity constraints with respect to time, which, for each interface $i$, yields,
+\begin{equation}
+    \frac{d}{dt}\left[\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)} - g_{xi}\Delta\theta_i\right] = 0
+\end{equation}
+The contact conductances $g_{xi}$ are assumed constant, therefore,
+\begin{equation}
+    \bigl(1+g_{xi}S_i(u)\bigr)\Delta\dot{\theta}_i = \bigl(\dot{u}_{i+1} - \dot{u}_i\bigr) - \frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}\dot{S}_i(u)
+\end{equation}
+Using the original algebraic constraint
+\begin{equation}
+    \frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}=g_{xi}\Delta\theta_i,    
+\end{equation}
+the index-reduced dynamics become,
+\begin{equation}
+    \boxed{
+    \Delta\dot{\theta}_i = \frac{ \dot{u}_{i+1}-\dot{u}_i - g_{xi}\Delta\theta_i\,\dot{S}_i(u)}{1+g_{xi}S_i(u)}, \qquad i=1,2,3}
+\end{equation}
+
+Define
+\begin{equation}
+    M(u;R_x) = \begin{bmatrix}
+        1+g_{x1}S_1(u) & 0 & 0 \\
+        0 & 1+g_{x2}S_2(u) & 0 \\
+        0 & 0 & 1+g_{x3}S_3(u)
+    \end{bmatrix}
+\end{equation}
+and,
+\begin{equation}
+    \dot{S}(u) = \begin{bmatrix}
+        \dot{S}_1(u) \\
+        \dot{S}_2(u) \\
+        \dot{S}_3(u)
+    \end{bmatrix},\qquad \Deltavtheta\odot \dot{S}(u) = \begin{bmatrix}
+    \Delta\theta_1\dot{S}_1(u) \\
+    \Delta\theta_2\dot{S}_2(u) \\
+    \Delta\theta_3\dot{S}_3(u)
+    \end{bmatrix}
+\end{equation}
+Then, the index-reduced dynamics for the contact jumps can be written in matrix form as,
+\begin{equation}
+    M(u;R_x)\Delta\dot{\theta} = D\,\dot u - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
+\end{equation}
+Thus, the index-reduced lifted system is given by the coupled ODEs,
+\begin{subequations}
+    \begin{align}
+        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u + \vL_i\Deltavtheta\Bigr) + \vf(t)\\
+        M(u;R_x)\Delta\dot{\theta} &= \vD\dot{u} - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
+    \end{align}
+\end{subequations}

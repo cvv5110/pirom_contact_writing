@@ -1,12 +1,19 @@
 \section{Introduction}
 
-Hypersonic thermal protection systems (TPS) play a critical role in safeguarding hypersonic vehicles, which experience extreme aerodynamic heating during flight. Accurate modeling and prediction of TPS behavior become essential for designing effective thermal protection strategies. Nonetheless, the complex interactions between the vehicle's surface and the surrounding flow, as well as the material property variations, heterogeneities, and uncertainties in the contact conductances at the interfaces of the TPS layers, pose significant challenges for traditional physics-based modeling approaches 
+Hypersonic thermal protection systems (TPS) play a critical role in safeguarding hypersonic vehicles as they are exposed to extreme aerodynamic heating during flight. Therefore, accurate modeling and prediction of TPS behavior become essential for designing effective thermal protection strategies. Nonetheless, the highly non-linear fluid-thermal-structural interactions, temperature-dependent material property variations, and uncertainties in thermal contact resistances (TCR) at the interfaces of the TPS layers, pose significant challenges for traditional numerical simulations.
 
-of the TPS, pose significant challenges for traditional physics-based modeling approaches.
+For instance, hypersonic boundary layers over compliant and conducting structures excite thermo-structural modes that rapidly 
+
+Other forms of non-linearities appear in the form of temperature-dependent material properties. At the extreme temperatures of X of degrees Celsius, TPS materials may undergo considerable changes in their thermal energy conductance properties. For example, decomposition
+
+A critical artifact in transient modeling of hypersonic TPS responses is the TCR. Due to manufacturing limitations, when two solids are brought together to form an interface, the true solid-to-solid contact area between them is generally a small fraction of the apparent area over which they meet {MINGES1970}. The net effect of such interface is the formation of a temperature discontinuity at the interface that is in general challenging to predict. For instance, in Ref. X\dots
+
+Early attempts to model TCRs have focused on 
+
 
 The objectives of this work as summarized as follows:
 \begin{enumerate}
     \item Demonstrate the systematic application of PIROM to hypersonic TPS with unknown contact resistances, emphasizing on the simultaneous inference of contact conductances and hidden dynamics under varying boundary conditions and material properties.
-    \item Benchmark the performance of PIROM against state-of-the-art machine learning, SciML, and traditional physics-based modeling approaches (e.g., FEM) for both inferring contact conductances and predicting temperature dynamics of TPS.
+    \item Benchmark the performance of PIROM against state-of-the-art machine learning, SciML, and traditional physics-based modeling approaches (e.g., FEM) for both inferring contact conductances and transient TPS temperature dynamics.
     \item Assess the performance of the PIROM in an experimental setting,...
 \end{enumerate}

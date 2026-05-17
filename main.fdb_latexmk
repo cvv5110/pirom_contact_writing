@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1778873719.05481 "/home/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1778873719.81622 0
+["pdflatex"] 1778981571.25047 "/home/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1778981571.89234 0
   "/etc/texmf/web2c/texmf.cnf" 1756260258.42441 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/andres/pirom_contact_writing/main.tex" 1778710132.37339 1256 ae3b5a76ddcb3283acdc72a488656171 ""
+  "/home/andres/pirom_contact_writing/main.tex" 1778981550.74109 1270 b4a8109182adfe3b589937e1cab12b36 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -84,11 +84,11 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1756260356 8212541 f3d0284017a991cc88bed637dbcd8ad1 ""
   "experiment.png" 1775235328.4964 83247 24817fbf61bef9382adeffd60211e0d0 ""
   "interface.png" 1774657576.28546 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1778873719.74713 1581 c3e7e3624d8ef0b3b80648e018b7c045 "pdflatex"
-  "main.tex" 1778710132.37339 1256 ae3b5a76ddcb3283acdc72a488656171 ""
+  "main.aux" 1778981571.84498 1581 f05b41a718da33aef1d8f08a04ab12d6 "pdflatex"
+  "main.tex" 1778981550.74109 1270 b4a8109182adfe3b589937e1cab12b36 ""
   "source/conclusions.tex" 1776715880.62576 789 62f20d3a66091f928419954d1fbb08ef ""
-  "source/introduction.tex" 1778765683.67449 2192 471f0004bc7a23012c789d4907e661e6 ""
-  "source/modeling.tex" 1778873718.09312 10746 271536b24ff8ff1b4cf12c0bbbb1ab4f ""
+  "source/introduction.tex" 1778981571.07399 2633 cc9a5493efb9b7fc0aafc286615e95f8 ""
+  "source/modeling.tex" 1778879595.67558 10746 271536b24ff8ff1b4cf12c0bbbb1ab4f ""
   "source/pirom.tex" 1777584979.27791 3261 0884099352985087bf46618d9e9fb927 ""
   (generated)
   "main.aux"

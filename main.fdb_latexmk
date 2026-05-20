@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1779246985.08431 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779246985.51333 0
+["pdflatex"] 1779320024.52752 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779320025.83595 0
   "/Users/andres/pirom_contact_writing/main.tex" 1779210302.53081 1571 8e6a65c6e4cc2df8a676a39e32dd609c ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
@@ -82,14 +82,16 @@
   "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1774209607 3636776 dc5fa9b6b1453b9d196cd42edf876004 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
   "experiment.png" 1779158958.25379 83247 24817fbf61bef9382adeffd60211e0d0 ""
+  "figs/results/rpm4_tc1.png" 1779318918.54009 659901 986141210fb2b7c51731fb3e5b28fc7e ""
+  "figs/results/rpm4_tc6.png" 1779318915.04239 761280 2941c36a144ed85b8de489c8d72b47f0 ""
   "interface.png" 1779158958.2544 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1779246985.47533 2467 15dc29429c5298a742795e0433a525ce "pdflatex"
+  "main.aux" 1779320025.80262 2531 fc9d0b2823ee6a4cb86b8612e526909a "pdflatex"
   "main.tex" 1779210302.53081 1571 8e6a65c6e4cc2df8a676a39e32dd609c ""
   "source/conclusions.tex" 1779158958.39826 789 62f20d3a66091f928419954d1fbb08ef ""
-  "source/introduction.tex" 1779246984.89639 4544 1948b7e1ad76bd2eb4519d0e427bfdc9 ""
-  "source/modeling.tex" 1779158958.39842 10746 271536b24ff8ff1b4cf12c0bbbb1ab4f ""
+  "source/introduction.tex" 1779309680.88119 4533 d41c59f44bb41aaba55c669cafe48b4f ""
+  "source/modeling.tex" 1779311031.20954 11346 273deac280f566e81a54ab423b1e6edf ""
   "source/pirom.tex" 1779158958.39848 3512 26829087627a776153bb140c425c35b7 ""
-  "source/results.tex" 1779224923.95432 840 d33b8aedc029de30013c54efd62e671b ""
+  "source/results.tex" 1779320024.37528 2483 6d3a97f88236582b8a22adf7b2f28fa4 ""
   (generated)
   "main.aux"
   "main.log"

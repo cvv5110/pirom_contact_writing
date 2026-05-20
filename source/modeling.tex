@@ -2,15 +2,20 @@
 
 The following discussion introduces the governing equations in the heat conduction problem for hypersonic TPS with unknown contact resistances. Moreover, three different physics-based approaches of decreasing fidelity are presented for solving the governing equations: (i) a fine three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped-mass representation of the TPS termed the \emph{lumped capacitance model} (LCM). The governing equations and their three solutions strategies are presented next.
 
-\section{Governing Equations}
+\subsection{Governing Equations}
 
 Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ with $d=1,2,3$ as show in Fig. X. A heat flux $q_b$ (i.e., Neumann boundary condition) is prescribed on boundary $\Gamma_q$, while a temperature $T_b$ (i.e., Dirichlet boundary condition) is prescribed on boundary $\Gamma_T$, and $\partial\Omega=\Gamma_q\cup\Gamma_T$. The transient heat conduction dynamics is governed by the following energy equation
 
-\section{Full-Order Model}
+\subsection{Full-Order Model}
 
-\section{One-Dimensional Model}
+The FOM is described by a three-dimensional finite-element model of the four-layered TPS shown in Fig. [X], where the TCRs are treated as unknown parameters. 
 
-This approach follows the classical FEM approach with a linear basis function to capture the spatially varying temperature distributions inside each component of the TPS. As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
+\subsection{One-Dimensional Model}
+
+This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under aerodynamic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026]
+
+
+As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
 
 \section{Lumped Capacitance Model}
 

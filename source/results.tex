@@ -1,16 +1,33 @@
 \section{Application to Thermal Protection Systems}
 
-In this section, the proposed PIROM approach is applied to modeling a four-layered hypersonic TPS with unknown contact resistances, and is compared against a representative physics-based RPM, i.e., 1D-FEM, and a data-driven surrogate model, i.e., a neural ordinary differential equation (NODE) model.
+In this section, the proposed PIROM approach is applied to modeling a four-layered hypersonic TPS with unknown contact resistances, and is compared against a representative physics-based model, i.e., FEMs, and data-driven surrogate model, i.e., a neural ordinary differential equation (NODE) model. The performance of the models is assessed in terms of their ability to infer the TCRs, and to predict the transient temperature dynamics under varying boundary conditions and material properties. The configuration of the TPS, problem parametrization, optimal model design for inference, and numerical results are presented next.
 
 \subsection{Configuration of Thermal Protection System}
 
 \subsection{Problem Parametrization}
 
-\subsection{Optimal Model Design for Inference of Thermal Contact Resistances}
+\subsection{Optimal Model Design for Inference}
 
-This section presents the procedure for optimally selecting the physics-based model for inferring the TCR. Specifically, three physics-based models are considered: LCM, LCM with jump dyn 
+This section presents the procedure for optimally selecting the physics-based model for inferring the TCR. Two critical design choices are discussed: (i) formulation of the physics-based model, and (ii) experimental limitations. In the first design choice, the resolution of the physics-based model is selected to balance the trade-off between model bias and computational cost. In the second design choice, experimental limitations, such as the number of thermocouples and their placement, are selected to ensure the identifiability of the TCR inference problem.
 
-\subsubsection{Without Thermocouple Placement Limitations}
-    
-\subsubsection{With Thermocouple Placement Limitations}
+\subsubsection{Resolution of the Physics-Based Model}
 
+The dimensionality of the physics-based model is critical for the performance of the PIROM, as it directly affects the computational cost and identifiability of the TCR inference problem. A coarse model may introduce undesirable model biases that can compromise the accuracy of the inferred TCRs, while a highly-refined model may introduce unnecessary computational costs that hinder efficiency during inference. 
+
+\paragraph*{One-Dimensional Finite-Element Model}
+
+\paragraph*{Lumped Capacitance Model}
+
+\paragraph*{Lumped Capacitance Model with Jump Dynamics}
+
+\subsubsection{Thermocouple Placement}
+
+In addition to the resolution of the physics-based model, the placement of the thermocouples is also critical for the performance of the PIROM, as it directly affects the identifiability of the TCR inference problem. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{./figs/results/rpm4_tc1.png}
+    \includegraphics[width=0.45\textwidth]{./figs/results/rpm4_tc6.png}
+\end{figure}
+
+\section{Numerical Results}

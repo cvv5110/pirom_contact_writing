@@ -106,6 +106,7 @@ INPUT /usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map
 INPUT ./source/modeling.tex
 INPUT ./source/modeling.tex
 INPUT ./source/modeling.tex
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
@@ -125,7 +126,6 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmmib
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmbsy10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm
-INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT ./source/pirom.tex
 INPUT ./source/pirom.tex
 INPUT ./source/pirom.tex
@@ -137,6 +137,16 @@ INPUT ./experiment.png
 INPUT ./source/results.tex
 INPUT ./source/results.tex
 INPUT ./source/results.tex
+INPUT ./figs/results/rpm4_tc1.png
+INPUT ./figs/results/rpm4_tc1.png
+INPUT ./figs/results/rpm4_tc1.png
+INPUT ./figs/results/rpm4_tc1.png
+INPUT ./figs/results/rpm4_tc1.png
+INPUT ./figs/results/rpm4_tc6.png
+INPUT ./figs/results/rpm4_tc6.png
+INPUT ./figs/results/rpm4_tc6.png
+INPUT ./figs/results/rpm4_tc6.png
+INPUT ./figs/results/rpm4_tc6.png
 INPUT ./source/conclusions.tex
 INPUT ./source/conclusions.tex
 INPUT ./source/conclusions.tex

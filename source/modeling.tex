@@ -12,14 +12,20 @@ The FOM is described by a three-dimensional finite-element model of the four-lay
 
 \subsection{One-Dimensional Model}
 
-This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under aerodynamic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026]
-
+This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially-varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
 
 As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
 
 \section{Lumped Capacitance Model}
 
-The lumped capacitance model (LCM) is derived from an energy conservation standpoint.
+This work leverages the \emph{lumped capacitance model} (LCM) as the physics-based component in the PIROM. The LCM is a classical physics-based low-order model for predicting the temporal variation of average temperature in multiple connected components [Incropera2011]. The LCM is usually derived at the component level from an energy balance standpoint, where the followin assumptions are employed: (i) component $i$ has uniform temperature $\bar{u}_i(t)$; (ii) between neighboring components $i$ and $j$ the heat flux is given by,
+\begin{equation}
+    q_{ij} = \frac{\bar{u}_j-\bar{u}_i}{R_{ij}}
+\end{equation}
+
+Specifically, the LCM is treated as a coarse-grained representation of a DG-FEM model of the TPS, as demonstrated in previous work [VargasVenegas2026]. In this model, each layer of the TPS is treated as a lumped mass with an average temperature, and the heat transfer between adjacent layers is modeled as a function of the temperature difference between them. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drop across the interface is not solely due to the bulk thermal resistance of the adjacent layers, but also includes a contribution from the contact resistance. 
+
+
 
 
 

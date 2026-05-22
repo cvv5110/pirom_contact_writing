@@ -22,12 +22,12 @@ machine learning techniques to learn the underlying dynamics of the TPS system d
 
 While these methods offer computational efficiency, they often require large amounts of data for training, and may not generalize well to unseen conditions, such as varying boundary conditions and material properties. Moreover, they may not provide insights into the underlying physics of the system, which can be critical for design and optimization.
 
-\paragraph{What is the present work doing?} This work presents a systematic design implementation of the physics-infused reduced-order modeling (PIROM) framework for modeling hypersonic TPS with unknown TCRs. 
+\paragraph{What is the present work doing?} This work presents a systematic design, implementation, and benchmarking of the PIRM for modeling hypersonic TPS with unknown TCRs under experimental constraints such as noisy observables and thermocouple placement limitations. 
 
 
-\paragraph{Objectives of the work} The objectives of this work include:
+\paragraph{Objectives of the work} The objectives of this work are to,
 \begin{enumerate}
-    \item Demonstrate the systematic application of PIROM for modeling hypersonic TPS with unknown contact resistances, emphasizing on the simultaneous inference of contact conductances and hidden dyanmics under varying boundary conditions and material properties.
+    \item Demonstrate the systematic application of PIROM for modeling hypersonic TPS with unknown contact resistances, emphasizing on the simultaneous inference of material properties and hidden dynamics with limited data.
     \item Benchmark the performance of PIROM against traditional physics-based modeling approaches (e.g, one-dimensional FEM) and data-driven surrogate models (e.g., neural ordinary differential equations) for both inferring contact conductances and transient TPS temperature dynamics.
-    \item Provide insights into the optimal design of physics-based models for inference of contact conductances, including the resolution of the physics-based model, noise levels, and placement constraints o
+    \item Provide insights into the optimal design of physics-based models for inference of contact conductances, including the resolution of the physics-based model, noise levels, and constraints with the placement of thermocouples.
 \end{enumerate}

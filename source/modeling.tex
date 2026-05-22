@@ -18,13 +18,39 @@ As with the FOM, the TCR introduces additional considerations in the formulation
 
 \section{Lumped Capacitance Model}
 
-This work leverages the \emph{lumped capacitance model} (LCM) as the physics-based component in the PIROM. The LCM is a classical physics-based low-order model for predicting the temporal variation of average temperature in multiple connected components [Incropera2011]. The LCM is usually derived at the component level from an energy balance standpoint, where the followin assumptions are employed: (i) component $i$ has uniform temperature $\bar{u}_i(t)$; (ii) between neighboring components $i$ and $j$ the heat flux is given by,
+\paragraph*{Classical Lumped Capacitance Model} This work leverages the \emph{lumped capacitance model} (LCM) as the physics-based component in the PIROM. The LCM is a classical physics-based low-order model for predicting the temporal variation of average temperature in multiple connected components, and is typically derived at the component level from an energy balance standpoint [Incropera2011]. In this work, the LCM is treated as a coarse-grained represetation of a DG-FEM model of the TPS, as demonstrated in our previous work [VargasVenegas2026]. In this model, each layer of the TPS is treated as a lumped mass with an average temperature, and the heat transfer between adjacent layers is modeled as a function of the temperature difference between them. 
+
+At the component $i$, the dynamics of LCM is,
 \begin{equation}
-    q_{ij} = \frac{\bar{u}_j-\bar{u}_i}{R_{ij}}
+    \int_{\Omega_i}\rho c_p \dot{\bar{u}}_i d\Omega = \left(\sum_{j\in\cN_i}\int_{e_{ij}}\frac{\bar{u}_j - \bar{u}_i}{R_{ij}}d\Gamma\right) + \int_{e_{iq}}q_b(x,t)d\Gamma + \int_{e_{iT}}\frac{T_b(x,t) - \bar{u}_i}{R_i}d\Gamma
 \end{equation}
+or,
+\begin{equation}
+    \bar{A}_i\dot{\bar{u}}_i = 
+\end{equation}
+\dots
 
-Specifically, the LCM is treated as a coarse-grained representation of a DG-FEM model of the TPS, as demonstrated in previous work [VargasVenegas2026]. In this model, each layer of the TPS is treated as a lumped mass with an average temperature, and the heat transfer between adjacent layers is modeled as a function of the temperature difference between them. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drop across the interface is not solely due to the bulk thermal resistance of the adjacent layers, but also includes a contribution from the contact resistance. 
+For compactness, the complete LCM is written in a matrix form,
+\begin{equation}
+    \bar{\vA}(\bvu)\dot{\bvu} = \bar{\vB}\left(\bvu\right)\bvu + \bar{\vf}(t)
+\end{equation}
+where $\bvu = \left[\bar{u}_1, \bar{u}_2, \bar{u}_3, \bar{u}_4\right]^\top\in\mathbb{R}^N$ includes average temperatures of all components, and $\bar{\vf}\in\mathbb{R}^N$ represents the collection of inputs due to $q_b$ and $T_b$. 
 
+\paragraph*{Modified Lumped Capacitance Model} The presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drop across an interface is not solely due to the bulk thermal resistance of the adjacent layers, but also includes a contribution from the contact resistance. Consider Fig. [X], where an interface between two layers of the TPS shown in Fig.[X] is magnified to aid in the following derivation of first-order mechanisms govering the temperature drop across the interface.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{./interface.png}
+\end{figure}
+
+The variables $\theta_i^-$ and $\theta_i^+$ represent the temperatures immediately to the left and right of the interface, respectively, whereas $z_i^-$ and $z_i^+$ represent the thermocouple measurements at distances $\delta_i^-$ and $\delta_i^+$ to the left and right of the interface, respectively. Additionally, $R_i^-$, $R_i^+$, and $R_{x,i}$ correspond to the bulk thermal resistance of the left and right layers, and the contact resistance at the interface, respectively. The total temperature drop across the interface is therefore the sum of the bulk temperature drop and the contact temperature drop, i.e.,
+\begin{equation}
+    \bar{u}_{i} - \bar{u}_{i+1} = \underbrace{\bigl(\bar{u}_i - \theta_i^-\bigr) + \bigl( \theta_i^+  - \bar{u}_{i+1}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^- - \theta_i^+\bigr)}_{\text{contact drop}}
+\end{equation}
+hence,
+
+
+The variables $z_i^-(t)$ and $z_i^+(t)$
 
 
 
@@ -103,10 +129,7 @@ where $\theta_i^{-}$ and $\theta_i^{+}$ are the temperatures immediately to the 
     \Delta\theta_i:=\theta_i^{+}-\theta_i^{-}, \qquad i=1,2,3
 \end{equation}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\textwidth]{./interface.png}
-\end{figure}
+
 
 The total lumped-to-lumped temperature drop across interface $i$,
 \begin{equation}

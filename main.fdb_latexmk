@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1779405584.73996 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779405586.00811 0
-  "/Users/andres/pirom_contact_writing/main.tex" 1779210302.53081 1571 8e6a65c6e4cc2df8a676a39e32dd609c ""
+["pdflatex"] 1779421513.76136 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779421515.0703 0
+  "/Users/andres/pirom_contact_writing/main.tex" 1779417314.15685 1532 c5ebfdedd0a871eb466b66730b2689f3 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -85,10 +85,10 @@
   "figs/results/rpm4_tc1.png" 1779318918.54009 659901 986141210fb2b7c51731fb3e5b28fc7e ""
   "figs/results/rpm4_tc6.png" 1779318915.04239 761280 2941c36a144ed85b8de489c8d72b47f0 ""
   "interface.png" 1779158958.2544 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1779405585.97707 2997 77ea75b3d10024f10b139b44ce7b3278 "pdflatex"
-  "main.tex" 1779210302.53081 1571 8e6a65c6e4cc2df8a676a39e32dd609c ""
+  "main.aux" 1779421515.03013 3115 1bf9ffe29e1dce09f2deac271f258163 "pdflatex"
+  "main.tex" 1779417314.15685 1532 c5ebfdedd0a871eb466b66730b2689f3 ""
   "source/conclusions.tex" 1779158958.39826 789 62f20d3a66091f928419954d1fbb08ef ""
-  "source/introduction.tex" 1779403713.09307 6190 13a10b16f4b0ad067f49c7af29241607 ""
+  "source/introduction.tex" 1779421513.5884 6413 4a475ba44f096d08d9810fb3150396c4 ""
   "source/modeling.tex" 1779405583.31402 12517 59b667c022ca25c0b24820d82f18bcde ""
   "source/pirom.tex" 1779158958.39848 3512 26829087627a776153bb140c425c35b7 ""
   "source/results.tex" 1779320024.37528 2483 6d3a97f88236582b8a22adf7b2f28fa4 ""

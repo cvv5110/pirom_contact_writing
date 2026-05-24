@@ -1,8 +1,53 @@
 \section{Appendix}
 
+The TPS is divided into $N$ components with $M$ elements. For component $i$, define $\Omega_i$ as the spatial domain of the component, and $\partial\Omega_i$ as the boundary of the component. For each interface between two components, define $l(i)$ and $r(i)$ as the left and right components that form the interface, respectively. 
+
+For interface $i$, define $\Gamma_i=\partial\Omega_{l(i)}\cap\partial\Omega_{r(i)}$,
 \begin{subequations}
     \begin{align}
-        \theta_i^{-} (t) &= \frac{1}{\left\|\Gamma_i\right\|}\int_{\Gamma_i} T^{-}_h(x,t)d\Gamma,\\
-        \theta_i^{+}(t) &= \frac{1}{\left\|\Gamma_i\right\|}\int_{\Gamma_i} T^{+}_h(x,t)d\Gamma.
+        \theta_i^{-} (t) &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} T^{-}_h(x,t)d\Gamma,\\
+        \theta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} T^{+}_h(x,t)d\Gamma\\
+        \Delta\theta_i(t) &= \theta_i^{-}(t) - \theta_i^{+}(t)
     \end{align}
 \end{subequations}
+Define the trace operators,
+\begin{subequations}
+    \begin{align}
+        C_i^{-}\vu &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} \sum_{j=1}^{N_u} u_j(t)\phi_j(x)d\Gamma,\\
+        C_i^{+}\vu &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} \sum_{j=1}^{N_u}u_j(t)\phi_j(x)d\Gamma
+    \end{align}
+\end{subequations}
+Stacking all the $N_{\Gamma}$ interfaces, define the trace trace extraction operator as,
+\begin{equation}
+    \vPsi^+ = \begin{bmatrix}
+        C_1^{-} - C_1^{+}\\
+        \vdots\\
+        C_{N_{\Gamma}}^{-} - C_{N_{\Gamma}}^{+}
+    \end{bmatrix}\in\mathbb{R}^{N_{\Gamma}\times MP}
+\end{equation}
+where $M$ is the number of elements and $P$ is the number of basis functions per element. Therefore, it follows that,
+\begin{equation}
+    \vs(t) = \vPsi^+\vu(t)
+\end{equation}
+Thus,
+\begin{equation}
+    \vPi^+ = \begin{bmatrix}
+        \vPhi^+ \\ 
+        \vPsi^+
+    \end{bmatrix}
+\end{equation}
+
+Introduce the lifting matrix,
+\begin{equation}
+    \vPsi\in\mathbb{R}^{MP\times N_{\Gamma}}
+\end{equation}
+such that,
+\begin{equation}
+    \vPhi^+\vPsi = \vzero,\quad \vPsi^+\vPsi = \vI
+\end{equation}
+
+Note that $\Phi\bvu$ contributes $E_{\Gamma}\bvu$ to the interface jump, therefore the state decomposition can be written as,
+\begin{equation}
+    \vu = \vPhi\bvu + \vPsi\left(\Deltavtheta - E_{\Gamma}\bvu\right) + \delta\vu = \tilde{\vPhi}\bvu + \vPsi\Deltavtheta + \delta\vu
+\end{equation}
+where $\tilde{\vPhi} = \vPhi - \vPsi E_{\Gamma}$, and $\delta\vu$ is the deviation from the average temperature in the components. 

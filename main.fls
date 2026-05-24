@@ -150,6 +150,9 @@ INPUT ./figs/results/rpm4_tc6.png
 INPUT ./source/conclusions.tex
 INPUT ./source/conclusions.tex
 INPUT ./source/conclusions.tex
+INPUT ./source/appendix.tex
+INPUT ./source/appendix.tex
+INPUT ./source/appendix.tex
 INPUT main.aux
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb

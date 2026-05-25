@@ -27,7 +27,7 @@ As with the FOM, the TCR introduces additional considerations in the formulation
 
 \section{Lumped Capacitance Model}
 
-This work leverages a modified \emph{lumped capacitance model} (LCM) derived in our previous work [VargasVenegas2026] as the physics-based component in the PIROM. The presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drop across an interface is not solely due to the bulk thermal resistance of the adjacent layers, but also includes a contribution from the contact resistance. Consider Fig. [X], where an interface between two layers of the TPS shown in Fig.[X] is magnified to depict the heat transfer mechanisms at the interface. 
+This work leverages a modified \emph{lumped capacitance model} (LCM) derived in our previous work [VargasVenegas2026] as the physics-based component in the PIROM. The presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drop across an interface is not solely due to the bulk thermal resistance of the adjacent layers, but also includes a contribution from the contact resistance. Consider Fig. [X], where an interface between two layers of the TPS shown in Fig.[X] is magnified to depict the governing heat transfer mechanisms at the interface. 
 
 \begin{figure}
     \centering
@@ -40,10 +40,11 @@ The variables $\theta_i^-$ and $\theta_i^+$ represent the averaged interface tem
 \begin{equation}
     \bar{u}_{i} - \bar{u}_{i+1} = \underbrace{\bigl(\bar{u}_i - \theta_i^-\bigr) + \bigl( \theta_i^+  - \bar{u}_{i+1}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^- - \theta_i^+\bigr)}_{\text{contact drop}}
 \end{equation}
-hence,
-
-
-The variables $z_i^-(t)$ and $z_i^+(t)$
+hence, the bulk drop becomes,
+\begin{equation}
+    \left(\bar{u}_i - \theta_i^-\right) + \left( \theta_i^+  - \bar{u}_{i+1}\right) = \left(\bar{u}_i - \bar{u}_{i+1}\right) - \Delta\theta_i 
+\end{equation}
+where 
 
 
 

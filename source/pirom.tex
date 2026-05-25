@@ -8,9 +8,22 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \subsubsection{Coarse-Graining of States}
 
-\begin{equation}
-    \bar{u}_j = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top(x)\vu_i d\Omega_i
-\end{equation}
+\begin{subequations}
+    \begin{align}
+        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^j,\: j=1,\ldots,N\\
+        \Delta\theta_i &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i - \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i
+    \end{align}
+\end{subequations}
+where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively.
+
+\subsubsection{Coarse-Graining of Dynamics}
+
+Next, the coarse-graining operator for the LCM dynamics is selected as in previous work [VargasVenegas2026], which consists of a Galerkin projection of the DG-FEM dynamics onto the subspace spanned by the coarse-grained states described by the average temperatures. The critical result of the coarse-graining procedure is that the LCM dynamics can be written in the following form,
+
+\subsection{Formulation of Reduced-Order Model}
+
+The Mori-Zwanzig (MZ) formalism is an operator-projection technique use to derive ROMs for high-dimensional dynamical systems, especially in statistical mechanics and fluid dynamics [Parish2017,Stinis2017,Parish2025]. It provides an exact reformulation of the full-order dynamics in terms of a subset of resolved states. The proposed PIROM is subsequently developed based on such reformulation.
+
 
 
 \section{Bulk-only Mori--Zwanzig Memory Closure}

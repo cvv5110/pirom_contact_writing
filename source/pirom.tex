@@ -2,6 +2,16 @@
 
 The formulation of PIROM for TPS starts by mathematically connecting the FOM, i.e., the DG-FEM, to the RPM, i.e., the LCM. This results presented in this section leverage the previous work in Ref. {X}, where a coarse-graining procedure is developed to systematically derive the LCM from the DG-FEM. Such coarse-graining procedure pinpoints the missing dynamics in the LCM when compared to DG-FEM, enabling the systematic design of a memory closure to account for residual dynamics associated with discarded spatial resolution. 
 
+\subsection{Deriving the Reduced-Physics Model via Coarse-Graining}
+
+As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a special case of the DG-FEM, where the mesh partition is extremely coarse, and the trail and test functions are piece-wise constants. In this sense, the LCM is a coarse zeroth-order DG-FEM with the inverse of thermal resistance chosen as the element-wise penalty factors. 
+
+\subsubsection{Coarse-Graining of States}
+
+\begin{equation}
+    \bar{u}_j = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top(x)\vu_i d\Omega_i
+\end{equation}
+
 
 \section{Bulk-only Mori--Zwanzig Memory Closure}
 

@@ -1,5 +1,9 @@
 \section{Appendix}
 
+This appendix provides the technical details of the main text. 
+
+\subsection{Lumped Capacitance Model}
+
 The TPS is divided into $N$ components with $M$ elements. For component $i$, define $\Omega_i$ as the spatial domain of the component, and $\partial\Omega_i$ as the boundary of the component. For each interface between two components, define $l(i)$ and $r(i)$ as the left and right components that form the interface, respectively. 
 
 For interface $i$, define $\Gamma_i=\partial\Omega_{l(i)}\cap\partial\Omega_{r(i)}$,
@@ -17,7 +21,7 @@ Define the trace operators,
         C_i^{+}\vu &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} \sum_{j=1}^{N_u}u_j(t)\phi_j(x)d\Gamma
     \end{align}
 \end{subequations}
-Stacking all the $N_{\Gamma}$ interfaces, define the trace trace extraction operator as,
+Stacking all the $N_{\Gamma}$ interfaces, define the trace extraction operator as,
 \begin{equation}
     \vPsi^+ = \begin{bmatrix}
         C_1^{-} - C_1^{+}\\

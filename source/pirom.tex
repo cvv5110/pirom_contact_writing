@@ -10,11 +10,27 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \begin{subequations}
     \begin{align}
-        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^j,\: j=1,\ldots,N\\
+        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
         \Delta\theta_i &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i - \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i
     \end{align}
 \end{subequations}
-where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively.
+where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The index sets $\cV_j$, $\cF_i^-$, and $\cF_i^+$ are defined as follows,
+\begin{subequations}
+    \begin{align}
+        \cV_j &= \{i: E_i\subset\Omega_j\}\\
+        \cF_i^- &= \{m: \Gamma_i\cap\partial E_m\neq\emptyset, E_m\subset\Omega_{j^-}\}\\
+        \cF_i^+ &= \{n: \Gamma_i\cap\partial E_n\neq\emptyset, E_n\subset\Omega_{j^+}\}
+    \end{align}
+\end{subequations}
+
+Note that,
+\begin{equation}
+    \Delta\theta_i = C_i^-\vu - C_i^+\vu
+\end{equation}
+so that,
+\begin{equation}
+    \Deltavtheta = \vPsi^+\vu
+\end{equation}
 
 \subsubsection{Coarse-Graining of Dynamics}
 

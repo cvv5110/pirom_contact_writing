@@ -8,10 +8,12 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \subsubsection{Coarse-Graining of States}
 
+Define the coarse-grained states,
 \begin{subequations}
     \begin{align}
         \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
-        \Delta\btheta_i &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i - \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i
+        \btheta_i^{-}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i, \: i=1,\ldots,N_{\Gamma}\\
+        \btheta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i, \: i=1,\ldots,N_{\Gamma}
     \end{align}
 \end{subequations}
 where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The index sets $\cV_j$, $\cF_i^-$, and $\cF_i^+$ are defined as follows,
@@ -23,16 +25,14 @@ where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ o
     \end{align}
 \end{subequations}
 
-Note that 
-
-Define the interface average temperature as new coarse-grained variables,
+Note that,
 \begin{subequations}
     \begin{align}
-        \btheta_i^{i}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i\\
-        \btheta_i^{i+1}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i
+        \delta\theta_i^{-}(\vu,t) &= T_i^{-}(\vu,t) - \btheta_i^{-}(\vu,t)\\
+        \delta\theta_i^{+}(\vu,t) &= T_i^{+}(\vu,t) - \btheta_i^{+}(\vu,t)
     \end{align}
 \end{subequations}
-and thus,
+so that,
 \begin{subequations}
     \begin{align}
         \Delta\btheta_i(t) &= \btheta_i^{i}(t) - \btheta_i^{i+1}(t)\\

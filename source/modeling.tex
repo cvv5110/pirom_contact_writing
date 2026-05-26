@@ -25,9 +25,28 @@ This approach follows the classical FEM approach with a linear basis function to
 
 As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
 
-\section{Lumped Capacitance Model}
+\section{Lumped Capacitance Model with Imperfect Contacts}
 
-This work leverages the \emph{lumped capacitance model} (LCM) derived in our previous work [VargasVenegas2026] as the physics-based component in the PIROM. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations, as the temperature drops across an interface includes, in addition to the bulk drop across the interface, a contribution from the contact resistance. Consider Fig. [X], where an interface between two layers of the TPS shown in Fig.[X] is magnified to depict the governing heat transfer mechanisms at the interface. 
+This work leverages the \emph{lumped capacitance model} (LCM), a first-principle physics-based model of the TPS that captures the transient component-wise average temperature of the TPS [Incropera2011]. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations since the temperature drop across an interface includes, in addition to the bulk drop across the interface, a contribution from the contact resistance. The following discussion presents the formulation of the LCM for modeling the transient thermal response of the TPS with unknown TCRs, and the separation of dynamics into \emph{bulk} and \emph{contact} contributions.
+
+\paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
+\begin{equation}
+    \int_{\Omega_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN_i}\int_{\Gamma_{ij}}q_{ij}d\Gamma + \int_{\Gamma_{iq}}q_{b}d\Gamma + \int_{\Gamma_{iT}}q_{T}d\Gamma
+\end{equation}
+where $q_{ij}$ and $\Gamma_{ij}$, are the heat flux and contact interface between neighboring components $i$ and $j$, $q_b$ and $\Gamma_{iq}$ are the heat flux and boundary where Neumann conditions are applied, and $q_T$ and $\Gamma_{iT}$ are the heat flux and boundary where Dirichlet conditions are applied. The set $\cN_i$ corresponds to the neighboring components of component $i$, which are defined as those components that share an interface with component $i$. In the case of a perfect contact between components, the interfacing heat flux $q_{ij}$ is written as $q_{ij} = G_{ij}(\bar{\vu})(\bu_i - \bu_j)$ where $G_{ij}(\bar{\vu})$ is the effective conductance of the interface between components $i$ and $j$, which may be a function of the average temperature $\bar{\vu}$. However, in the presence of TCRs, the heat flux across the interface includes a contribution from the contact resistance in the form of a temperature drop across the interface, as explained next.
+
+\paragraph*{Contact Dynamics} Consider Fig. [X], where an interface between two layers of the TPS shown in Fig.[X] is magnified to depict the governing heat transfer mechanisms. The variables $\theta_i^-$ and $\theta_i^+$ represent the averaged interface temperature immediately to the left and to the right of the interface, respectively, whereas $z_i^-$ and $z_i^+$ represent the thermocouple measurements at distances $\delta_i^-$ and $\delta_i^+$ to the left and right of the interface, respectively. Additionally, $R_i^-$, $R_i^+$, and $R_{x,i}$ correspond to the bulk thermal resistance of the left and right layers, and the contact resistance at the interface, respectively. The total temperature drop across the interface is therefore the sum of the bulk temperature drop and the contact temperature drop, i.e.,
+\begin{equation}
+    \underbrace{\bar{u}_{i} - \bar{u}_{i+1}}_{\text{total lumped drop}} = \underbrace{\bigl(\bar{u}_i - \theta_i^-\bigr) + \bigl( \theta_i^+  - \bar{u}_{i+1}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^- - \theta_i^+\bigr)}_{\text{contact drop}}
+\end{equation}
+hence, the bulk drop becomes,
+\begin{equation}
+    \left(\bar{u}_i - \theta_i^-\right) + \left( \theta_i^+  - \bar{u}_{i+1}\right) = \left(\bar{u}_i - \bar{u}_{i+1}\right) - \Delta\theta_i 
+\end{equation}
+Therefore, at an interface $i\in\mathcal{I}$ with a contact resistance, the heat flux between neighboring components may be written as,
+\begin{equation}
+    q_{ij} = G_{ij}(\bar{\vu})\Bigl(\bigl(\bar{u}_i - \bar{u}_j\bigr) - \Delta\theta_{i}\Bigr)
+\end{equation}
 
 \begin{figure}
     \centering
@@ -36,15 +55,7 @@ This work leverages the \emph{lumped capacitance model} (LCM) derived in our pre
     \label{fig_interface}
 \end{figure}
 
-The variables $\theta_i^-$ and $\theta_i^+$ represent the averaged interface temperature immediately to the left and to the right of the interface, respectively, whereas $z_i^-$ and $z_i^+$ represent the thermocouple measurements at distances $\delta_i^-$ and $\delta_i^+$ to the left and right of the interface, respectively. Additionally, $R_i^-$, $R_i^+$, and $R_{x,i}$ correspond to the bulk thermal resistance of the left and right layers, and the contact resistance at the interface, respectively. The total temperature drop across the interface is therefore the sum of the bulk temperature drop and the contact temperature drop, i.e.,
-\begin{equation}
-    \bar{u}_{i} - \bar{u}_{i+1} = \underbrace{\bigl(\bar{u}_i - \theta_i^-\bigr) + \bigl( \theta_i^+  - \bar{u}_{i+1}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^- - \theta_i^+\bigr)}_{\text{contact drop}}
-\end{equation}
-hence, the bulk drop becomes,
-\begin{equation}
-    \left(\bar{u}_i - \theta_i^-\right) + \left( \theta_i^+  - \bar{u}_{i+1}\right) = \left(\bar{u}_i - \bar{u}_{i+1}\right) - \Delta\theta_i 
-\end{equation}
-where 
+
 
 
 
@@ -112,7 +123,7 @@ where the temperature-drop convention is always taken as,
     \Delta u_i = u_{i+1}-u_i
 \end{equation}
 
-\section{Total drop = bulk drop + contact drop}
+\subsection{Total drop = bulk drop + contact drop}
 
 To separate bulk and contact contributions, introduce interface temperatures
 \begin{equation}
@@ -163,7 +174,7 @@ u_1\\u_2\\u_3\\u_4\\\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
 \end{bmatrix}.
 \]
 
-\section{Heat-flux Continuity and DAE Formulation}
+\subsection{Heat-flux Continuity and DAE Formulation}
 
 Using the adopted convention, define the bulk and contact heat fluxes as
 \begin{equation}
@@ -288,7 +299,7 @@ where
 \end{equation}
 Equation \eqref{eqn_algebraic_heat_flux_constraints}, along with the lumped-temperature dynamics, defines a DAE system for the lifted state $x=[u,\Deltavtheta]$.
 
-\section{DAE index reduction}
+\subsection{DAE index reduction}
 
 The DAE is index-reduced by differentiating the heat-flux continuity constraints with respect to time, which, for each interface $i$, yields,
 \begin{equation}

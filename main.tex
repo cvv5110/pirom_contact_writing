@@ -33,6 +33,7 @@
 \newcommand{\vA}{\mathbf{A}}
 \newcommand{\vR}{\mathbf{R}}
 \newcommand{\vQ}{\mathbf{Q}}
+\newcommand{\bu}{\bar{u}}
 \newcommand{\vS}{\mathbf{S}}
 \newcommand{\vPi}{\boldsymbol{\Pi}}
 \newcommand{\vzero}{\mathbf{0}}
@@ -59,7 +60,7 @@
 \maketitle
 
 \begin{abstract}
-    This work presents a systematic design and implementation of the physics-infused reduced-order modeling (PIROM) framework for inference and modeling of hypersonic TPS with unknown contact resistances. 
+    This work presents a systematic design and implementation of the physics-infused reduced-order modeling (PIROM) framework for optimal inference and reduced-order modeling of hypersonic TPS with unknown thermal contact resistances (TCRs). The PIROM framework is designed to leverage the strengths of both physics-based and data-driven modeling paradigms, by infusing physics-based models with data-driven components to enhance their predictive capabilities and generalizability. Inference heat conduction problems (IHCPs) are solved using the PIROM framework to infer TCRs from internal temperature measurements, while providing accurate predictions of transient TPS temperature dynamics under varying boundary conditions and material properties. Particularly, experimental limitations are considered in the design of the PIROM framework, including noisy observables and thermocouple placement limitations. The performance of the PIROM framework is benchmarked against traditional physics-based modeling approaches (e.g, one-dimensional FEM) and data-driven surrogate models (e.g., neural ordinary differential equations) for both inferring contact conductances and transient TPS temperature dynamics. 
 \end{abstract}
 
 \input{./source/introduction.tex}

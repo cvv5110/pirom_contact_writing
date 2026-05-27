@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1779854506.04784 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779854507.35115 0
+["pdflatex"] 1779906196.38056 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1779906197.69607 0
   "/Users/andres/pirom_contact_writing/main.tex" 1779822885.29377 3415 e9f108809d3e131716b45701bbef0f15 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
@@ -86,13 +86,13 @@
   "figs/results/rpm4_tc1.png" 1779318918.54009 659901 986141210fb2b7c51731fb3e5b28fc7e ""
   "figs/results/rpm4_tc6.png" 1779318915.04239 761280 2941c36a144ed85b8de489c8d72b47f0 ""
   "interface.png" 1779158958.2544 45960 50e4f00827084432c8f95349e26066c4 ""
-  "main.aux" 1779854507.31896 4316 a35b5371a31aba04fd5b145350975d74 "pdflatex"
+  "main.aux" 1779906197.65351 4316 a35b5371a31aba04fd5b145350975d74 "pdflatex"
   "main.tex" 1779822885.29377 3415 e9f108809d3e131716b45701bbef0f15 ""
   "source/appendix.tex" 1779737534.45926 2411 b500999bcb914e185c3ec727b7e69f6c ""
   "source/conclusions.tex" 1779816627.23863 1459 5bfb20e7372563b7674e8f1e9c1c5b6b ""
   "source/introduction.tex" 1779593880.77138 6460 e37ded5336af3305fddd8b6fdbb9c9a7 ""
-  "source/modeling.tex" 1779816627.23885 16110 b1e1bc00d8b09f8222a354e0c4e093cd ""
-  "source/pirom.tex" 1779854506.81242 7450 85e3d1a9f33111639cb00119e4ff46fa ""
+  "source/modeling.tex" 1779895599.39695 16112 7fb59c817783efe5ab3bd9d23642ec15 ""
+  "source/pirom.tex" 1779906196.20665 7620 b196493969f067757815f73524c0a181 ""
   "source/results.tex" 1779816627.239 2486 74f5a19bb2093b3102b23c8c94cac771 ""
   (generated)
   "main.aux"

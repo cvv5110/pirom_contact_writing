@@ -16,7 +16,7 @@ Define the coarse-grained states,
         \btheta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i, \: i=1,\ldots,N_{\Gamma}
     \end{align}
 \end{subequations}
-where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The index sets $\cV_j$, $\cF_i^-$, and $\cF_i^+$ are defined as follows,
+where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The index sets $\cV_j$, $\cF_i^-$, and $\cF_i^+$ include the indices of elements that are contained in component $j$, and the indices of elements that are adjacent to the interface $\Gamma_i$ on the negative and positive sides, respectively. More formally, these index sets are defined as follows,
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\
@@ -35,7 +35,7 @@ Note that,
 so that,
 \begin{subequations}
     \begin{align}
-        \Delta\btheta_i(t) &= \btheta_i^{i}(t) - \btheta_i^{i+1}(t)\\
+        \Delta\theta_i(\vu,t) &= \left(\btheta_i^{-}(t) - \btheta_i^{+}(t)\right)  + \left(\delta\theta_i^{-}(\vu,t) - \delta\theta_i^{+}(\vu,t)\right)\\
         \btheta_i^{-}(t) &= C_i^{-}\vu(t)\\
         \btheta_i^{+}(t) &= C_i^{+}\vu(t)\\
         \Delta\vbtheta(t) &= \vPsi^+\vu(t)
@@ -50,6 +50,13 @@ where,
         C_{N-1}^- - C_{N-1}^+
     \end{bmatrix}
 \end{equation}
+Therefore, the coarse-grained states for element and interface $i$ are given by
+\begin{subequations}
+    \begin{align}
+        \vu_i(t) &= \sum_{k=1}^{N}\vvarphi_k^{i\top}\bar{u}_k(t) + \delta\vu_i(t),\: i=1,\dots,N\\
+        \Delta\theta_i(\vu,t) &= \sum_{k=1}^{N-1}\psi_k^i\Delta\btheta_k(t) + \delta\Delta\theta_i(\vu,t),\: i=1,\dots,N_{\Gamma}
+    \end{align}
+\end{subequations}
 
 
 \subsubsection{Coarse-Graining of Dynamics}

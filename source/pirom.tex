@@ -8,7 +8,7 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \subsubsection{Coarse-Graining of States}
 
-Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides, respectively. Formally,
+Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides. Formally,
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\
@@ -26,15 +26,10 @@ Therefore, the average temperature for component $j$ and the average temperature
 \end{subequations}
 where $\left|\Omega_j\right|$ and  $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$.
 
-
-Now, introducing the following constraint for the basis function,
-\begin{equation}
-    \int_{\Gamma_j\cap\partial E_m} \vphi_p^{j} d\Gamma = 0,\quad p>2
-\end{equation}
-it follows that,
+Therefore, it follows that,
 \begin{subequations}
     \begin{align}
-        \bar{\theta}_i^{-}(t) &= \sum_{i\in\cF_j^{-}}\frac{\left|\Gamma_i\right|}{\left|\Gamma_j\right|}\vvarphi_i^{j\top}\vu_i(t)
+        \bar{\theta}_j^{-}(t) &= \sum_{i\in\cF_j^{-}}\frac{\left|\Gamma_i\right|}{\left|\Gamma_j\right|}\bar{u}_i = \sum_{i\in\cF_j^{-}}\frac{\left|\Gamma_i\right|}{\left|\Gamma_j\right|}\vvarphi_i^{j\top}\vu_i(t)
     \end{align}
 \end{subequations}
 

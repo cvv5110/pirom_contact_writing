@@ -21,6 +21,11 @@ The FOM is obtained by spatially discretizing the governing PDE using a Disconti
 
 Consider a DG-FEM spatial discretization of the governing PDE, where the domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, and the temperature field is approximated by a set of local basis functions $\vphi_i$ defined on each element $E_i$. 
 
+We can introduce the following condition to express the average interface temperature as a function of the element-wise temperature states (the average),
+\begin{equation}
+    \int_{\Gamma_j\cap\partial E_m} \vphi_p^{j} d\Gamma = 0,\quad p>2
+\end{equation}
+
 \subsection{One-Dimensional Model}
 
 This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially-varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].

@@ -4,19 +4,11 @@ The formulation of PIROM for TPS starts by mathematically connecting the FOM, i.
 
 \subsection{Deriving the Reduced-Physics Model via Coarse-Graining}
 
-As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a special case of the DG-FEM, where the mesh partition is extremely coarse, and the trail and test functions are piece-wise constants. In this sense, the LCM is a coarse zeroth-order DG-FEM with the inverse of thermal resistance chosen as the element-wise penalty factors. 
+As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a special case of the DG-FEM, where the mesh partition is extremely coarse, and the trail and test functions are piece-wise constants. In this setting, the LCM becomes a coarse zeroth-order DG-FEM with the inverse of thermal resistance chosen as the element-wise penalty factors. In this work, the presence of unknown TCRs motivates the design of a coarse-graining procedure that explicitly accounts for the presence of interfaces with unknown contact conductances, which are not captured by the LCM. 
 
 \subsubsection{Coarse-Graining of States}
 
-Define the coarse-grained states,
-\begin{subequations}
-    \begin{align}
-        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
-        \btheta_i^{-}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i, \: i=1,\ldots,N_{\Gamma}\\
-        \btheta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i, \: i=1,\ldots,N_{\Gamma}
-    \end{align}
-\end{subequations}
-where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The index sets $\cV_j$, $\cF_i^-$, and $\cF_i^+$ include the indices of elements that are contained in component $j$, and the indices of elements that are adjacent to the interface $\Gamma_i$ on the negative and positive sides, respectively. More formally, these index sets are defined as follows,
+Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides, respectively. Formally,
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\
@@ -24,10 +16,20 @@ where $\left|\Omega_j\right|$ and $\left|\Gamma_i\right|$ are the area $(d=2)$ o
         \cF_i^+ &= \{n: \Gamma_i\cap\partial E_n\neq\emptyset, E_n\subset\Omega_{j^+}\}
     \end{align}
 \end{subequations}
+Therefore, the average temperature for component $j$ and the average temperatures on the negative and positive sides of interface $i$ are given by,
+\begin{subequations}
+    \begin{align}
+        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
+        \btheta_i^{-}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i, \: i=1,\ldots,N_{\Gamma}\\
+        \btheta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i, \: i=1,\ldots,N_{\Gamma}
+    \end{align}
+\end{subequations}
+where $\left|\Omega_j\right|$ and  $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$.
+
 
 Now, introducing the following constraint for the basis function,
 \begin{equation}
-    \int_{\Gamma_j\cap\partial E_m} \vphi_p^{j} d\Gamma = 0, p>2
+    \int_{\Gamma_j\cap\partial E_m} \vphi_p^{j} d\Gamma = 0,\quad p>2
 \end{equation}
 it follows that,
 \begin{subequations}

@@ -17,7 +17,9 @@ where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal 
 
 \subsection{Full-Order Model}
 
-The FOM is described by a three-dimensional finite-element model of the four-layered TPS shown in Fig. [X], where the TCRs are treated as unknown parameters. 
+The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions aer performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
+
+Consider a DG-FEM spatial discretization of the governing PDE, where the domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, and the temperature field is approximated by a set of local basis functions $\vphi_i$ defined on each element $E_i$. 
 
 \subsection{One-Dimensional Model}
 

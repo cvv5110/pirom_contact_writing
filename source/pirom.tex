@@ -16,15 +16,15 @@ Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N
         \cF_i^+ &= \{n: \Gamma_i\cap\partial E_n\neq\emptyset, E_n\subset\Omega_{j^+}\}
     \end{align}
 \end{subequations}
-Therefore, the average temperature for component $j$ and the average temperatures on the negative and positive sides of interface $i$ are given by,
+Therefore, the volume and left-and-right interface averages for component $j$ and interface $k$ are given by,
 \begin{subequations}
     \begin{align}
         \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
-        \btheta_i^{-}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{m\in\cF_i^-}\int_{\Gamma_i\cap\partial E_m} \vphi_m^\top\vu_m d\Gamma_i, \: i=1,\ldots,N_{\Gamma}\\
-        \btheta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\sum_{n\in\cF_i^+}\int_{\Gamma_i\cap\partial E_n} \vphi_n^\top\vu_n d\Gamma_i, \: i=1,\ldots,N_{\Gamma}
+        \btheta_k^{-}(t) &= \frac{1}{\left|\Gamma_k\right|}\sum_{m\in\cF_k^-}\int_{\Gamma_k\cap\partial E_m} \vphi_m^\top\vw_m d\Gamma_k, \: k=1,\ldots,N_{\Gamma}\\
+        \btheta_k^{+}(t) &= \frac{1}{\left|\Gamma_k\right|}\sum_{n\in\cF_k^+}\int_{\Gamma_k\cap\partial E_n} \vphi_n^\top\vw_n d\Gamma_k, \: k=1,\ldots,N_{\Gamma}
     \end{align}
 \end{subequations}
-where $\left|\Omega_j\right|$ and  $\left|\Gamma_i\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $i$ between two different components, respectively. The orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$.
+where $\left|\Omega_j\right|$ and  $\left|\Gamma_k\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $k$ between two different components, respectively. The orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$.
 
 Therefore, it follows that,
 \begin{subequations}

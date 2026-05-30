@@ -58,4 +58,12 @@ where $\tilde{\vPhi} = \vPhi - \vPsi E_{\Gamma}$, and $\delta\vu$ is the deviati
 
 \subsection{Coarse-Graining Example}
 
-Consider the three-layered TPS shown in Fig. [X], where the 
+Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
+\begin{subequations}
+    \begin{align}
+        \cV_j &= \left\{m\in\{1,\ldots,M\}:E_m\subseteq\Omega_j\right\},\\
+        \cF_k^{-} &= \left\{m\in\{1,\ldots,M\}:E_m\cap\Gamma_k\neq\emptyset, E_m\subseteq\Omega_{l(k)}\right\},\\
+        \cF_k^{+} &= \left\{m\in\{1,\ldots,M\}:E_m\cap\Gamma_k\neq\emptyset, E_m\subseteq\Omega_{r(k)}\right\}
+    \end{align}
+\end{subequations}
+where $\Omega_{l(k)}$ and $\Omega_{r(k)}$ are the left and right components that form the interface $\Gamma_k$, respectively, with $\Gamma_k = \partial\Omega_{l(k)}\cap\partial\Omega_{r(k)}$.

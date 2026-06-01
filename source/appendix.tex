@@ -43,7 +43,7 @@ Using the Interior Penalty Galerkin (IPG) scheme [Cohen2018], the variational fo
 where $\epsilon$ is a user-specified parameter, and,
 \begin{subequations}
     \begin{align}
-        a^e_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\partial_t w + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
+        a^e_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
         &\quad + \epsilon \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
         a^c_{\epsilon,i}(v,w) &= -\sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} h_{x,il}v\left(w^- - w^+\right)d\Gamma_{il}\\
         L_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
@@ -53,7 +53,15 @@ In the bi-linear form above, the notations of $\left[\right]$ and $\left\{\right
 \begin{equation}
     \left[u\right] = u\Big|_{E_i} - u\Big|_{E_j},\quad \left\{u\right\} = \frac{1}{2}\left(u\Big|_{E_i} + u\Big|_{E_j}\right),\quad x\in e_{ij}=\partial E_i\cap\partial E_j
 \end{equation}
-Furthermore, the terms associated with $\sigma$ are introduced to enforce the Dirichlet boundary conditions, where $\sigma$ is a user-specified penalty parameter whose value depend on the size of an element. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have similar convergence rate with respect to mesh size. In the following derivations, the case 
+Furthermore, the terms associated with $\sigma$ are introduced to enforce the Dirichlet boundary conditions, where $\sigma$ is a user-specified penalty parameter whose value depend on the size of an element. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have similar convergence rate with respect to mesh size.
+
+\subsubsection{Discontinous Galerkin Model}
+
+Next, the DG-based FOM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in Eq. [X] that satisfy the conditions in Eq. [X]. Using test functions same as trial functions, the dynamics of the coefficients $\vu_i(t) = \left[u_{i,1}(t),\ldots,u_{i,P}(t)\right]$ for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
+\begin{equation}
+    a^e_{\epsilon,i}(\phi_k^i,T) + a^c_{\epsilon,i}(\phi_k^i,T) = L_i(\phi_k^i),\quad k=1,\ldots,P
+\end{equation}
+where $\phi_k^i$ is the $k$-th basis function for the $i$-th element. Stacking the coefficients of all the elements, 
 
 \subsection{Lumped Capacitance Model}
 

@@ -1,6 +1,6 @@
 \section{Modeling of Hypersonic Protection Systems}
 
-The following discussion introduces the governing equations in the heat conduction problem for hypersonic TPS with unknown contact resistances. Moreover, three different physics-based approaches of decreasing fidelity are presented for solving the governing equations: (i) a fine three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped-mass representation of the TPS termed the \emph{lumped capacitance model} (LCM). The governing equations and their three solutions strategies are presented next.
+The following discussion introduces the governing equations in the heat conduction problem for hypersonic TPS with imperfect contact resistances. Moreover, three different physics-based approaches of decreasing fidelity are presented for solving the governing equations: (i) a fine three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped-mass representation of the TPS termed the \emph{lumped capacitance model} (LCM). The governing equations and their three solutions strategies are presented next.
 
 \subsection{Governing Equations}
 
@@ -13,13 +13,23 @@ Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ with $d=1,2,3$ as show
     T(x,0) &= T_0(x), \: x\in\Omega
  \end{align}
 \end{subequations}
-where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^N$, as illustrated in Fig. [X] for $N=2$, where the thermal contact resistance (TCR) at the interfaces between adjacent components is treated as an unknown parameter. The presence of TCRs introduces a temperature discontinuity at the interfaces, which significantly affects the heat transfer across the interfaces, and thus the overall thermal response of the system. 
+where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, as illustrated in Fig. [X] for $N_C=3$, where the thermal contact resistance (TCR) at the interfaces between adjacent components is treated as an unknown parameter. The TCRs often translate into a temperature discontinuity at the interfaces, which has a significant impact on the heat transfer across the interfaces, and thus the overall thermal response of the system. 
 
 \subsection{Full-Order Model}
 
-The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions aer performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
+The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM spatial discretization of the governing PDE, where the domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, and the temperature field is approximated by a set of local basis functions $\vphi_i$ defined on each element $E_i$. 
+Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, in an element $E_i$, its shared boundaries with another element $E_j$, boundary $\Gamma$, Neumann BC, and Dirichlet BC are denoted as $\Gamma_{ij}$, $\Gamma_{i,q}$, and $\Gamma_{i,T}$, respectively. Lastly, $\left|\Gamma\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\Gamma$. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
+\begin{equation}
+    T_i(x,t) = \sum_{p=1}^P \vphi_p(x) u_{i,p}(t),\qquad x\in E_i
+\end{equation}
+Moreover, without loss of generality, the trial functions are assumed to satisfy the following conditions,
+\begin{equation}
+    \int_{E_i}\phi_p\phi_q d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i} \phi_p d\Gamma = 0,\quad p>2
+\end{equation}
+where $\delta_{pq}$ is the Kronecker delta.
+
+and the temperature field is approximated by a set of local basis functions $\vphi_i$ defined on each element $E_i$. 
 
 The DG-FEM states are given by,
 \begin{subequations}

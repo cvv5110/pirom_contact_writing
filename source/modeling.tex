@@ -13,13 +13,13 @@ Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ show in Fig. X. A heat
     T(x,0) &= T_0(x), \: x\in\Omega
  \end{align}
 \end{subequations}
-where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, as illustrated in Fig. [X] for $N_C=3$, where the thermal contact resistance (TCR) at the interfaces between adjacent components is treated as an unknown parameter. The TCRs often translate into a temperature discontinuity at the interfaces, which has a significant impact on the heat transfer across the interfaces, and thus the overall thermal response of the system. The following discussion presents the modeling of the TPS with TCRs using the three different approaches of decreasing fidelity, starting with the FOM, followed by the 1D-FEM, and finally the LCM.
+where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, with imperfect component contacts on $N_{\Gamma}$ different interfaces. For example, Fig. [X] contains $N_C=4$ components and $N_{\Gamma}=3$ imperfect contacts between components. The imperfect contact between components translates into a \emph{thermal contact resistance} (TCR), which translate into temperature discontinuities at the interfaces. Therefore, large uncertainties in TCRs may have a significant impact on the overall heat transfer dyamics of TPS. The following discussion presents the simulation of hypersonic TPS under the presence of TCRs, where three different approaches of decreasing fidelity are presented: a full-order three-dimensional finite-element model (FOM), a one-dimensional FEM approximation, and a modified lumped capacitance model (LCM).
 
 \subsection{Full-Order Model}
 
 The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, the shared boundary of element $E_i$ with another element $E_{j}$ of the same component, the shared boundary between different components $i$ and $j$, Neumann, and Dirichlet boundary conditions, are denoted as $e_{ij}$, $\Gamma_{ij}$, $\Gamma_{i,q}$, and $\Gamma_{i,T}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. 
+Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfacces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{i,q}$, and $e_{i,T}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. 
 
 For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
 \begin{equation}
@@ -29,7 +29,7 @@ Without loss of generality, the basis functions of element $i$ are assumed to sa
 \begin{equation}
     \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i\cap\Gamma} \phi_p^i d\Gamma = 0,\quad p>2
 \end{equation}
-where $\delta_{pq}$ is the Kronecker delta, and $\Gamma$ is any of the component interfaces. Furthermore, for simplifying the subsequent model derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the average temperature of the element, while the remaining basis functions capture the spatially-varying temperature distribution within the element.
+where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma$. Furthermore, for simplifying the subsequent model derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
@@ -42,7 +42,7 @@ where the DG-FEM states are collected as,
         \vw(t) &= \left[\vw_1(t), \vw_2(t), \dots, \vw_M(t)\right]^\top\in\mathbb{R}^{KP}
     \end{align}
 \end{subequations}
-where $\vu$ includes all the DG variables, while $\vw$ includes the subset of DG variables that are adjacent to the interfaces between components, and thus are used to compute the temperature jumps across the interfaces, $\vf\in\mathbb{R}^{MP}$ is the external forcing vector, including Neumann and Dirichlet contributions, while $\vA$ and $\vB$ are due to heat capacity and thermal conductivity contributions, respectively. The TCRs at the interfaces are incorporated into the FOM via the numerical fluxes at the interfaces, which are functions of the temperature jumps across the interfaces, and thus are functions of $\vw$. 
+where $\vu$ includes all the DG variables, while $\vw$ includes the subset of DG variables corresponding to elements interfacing with imperfect contact surfaces, which are later used to compute average temperature jumps across interfaces. Additionally, $\vf\in\mathbb{R}^{MP}$ corresponds to the external forcing vector, including Neumann and Dirichlet contributions, while $\vA$ and $\vB$ are due to heat capacity and thermal conductivity contributions, respectively. The TCRs at the interfaces are incorporated into the FOM via the numerical fluxes at the interfaces, which are functions of the temperature jumps across the interfaces, and thus are functions of $\vw$. 
 
 
 
@@ -56,11 +56,6 @@ The DG-FEM states are given by,
 \end{subequations}
 where $\vw$ corresponds to a subset of the DG-FEM states that are adjacent to the interfaces between components, and thus are used to compute the temperature jumps across the interfaces. Clearly, $M\gg K$, since the number of elements is much larger than the number of elements adjacent to the interfaces, nonetheless, $KP$ remains much larger than the $N_{C}+N_{\Gamma}$ which is the total number of components and interfaces.
 
-We can introduce the following condition to express the average interface temperature as a function of the element-wise temperature states (the average),
-\begin{equation}
-    \int_{\Gamma_j\cap\partial E_m} \vphi_p^{j} d\Gamma = 0,\quad p>2
-\end{equation}
-
 \subsection{One-Dimensional Model}
 
 This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially-varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
@@ -71,11 +66,15 @@ As with the FOM, the TCR introduces additional considerations in the formulation
 
 This work leverages the \emph{lumped capacitance model} (LCM), a first-principle physics-based model of the TPS that captures the transient component-wise average temperature of the TPS [Incropera2011]. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations since the temperature drop across an interface includes, in addition to the bulk drop across the interface, a contribution from the contact resistance. The following discussion presents the formulation of the LCM for modeling the transient thermal response of the TPS with unknown TCRs, and the separation of dynamics into \emph{bulk} and \emph{contact} contributions.
 
-\paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
+\paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], a modified version of the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
 \begin{equation}
-    \int_{\Omega_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN_i}\int_{\Gamma_{ij}}q_{ij}d\Gamma + \int_{\Gamma_{iq}}q_{b}d\Gamma + \int_{\Gamma_{iT}}q_{T}d\Gamma
+    \int_{\Omega_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN^e_i}\int_{e_{ij}}q^{(e)}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{(c)}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma
 \end{equation}
-where $q_{ij}$ and $\Gamma_{ij}$, are the heat flux and contact interface between neighboring components $i$ and $j$, $q_b$ and $\Gamma_{iq}$ are the heat flux and boundary where Neumann conditions are applied, and $q_T$ and $\Gamma_{iT}$ are the heat flux and boundary where Dirichlet conditions are applied. The set $\cN_i$ corresponds to the neighboring components of component $i$, which are defined as those components that share an interface with component $i$. For a perfect contact between components, the heat flux $q_{ij}$ is written as $q_{ij} = G_{ij}(\bar{\vu})(\bar{u}_i - \bar{u}_j)$ where $G_{ij}(\bar{\vu})$ is the effective conductance. However, the presence of TCRs introduces an additional temperature drop across the interface, as discussed next.
+where $q^{(e)}_{ij}$ and $q^{(c)}_{ij}$ correspond to the heat flux due to neighboring elements with perfect ($e_{ij}$) and imperfect $(\Gamma_{ij})$ interfacing surfaces, while $q_{ib}$ and $q_{iT}$ are the heat flux contributions from the Neumann and Dirichlet boundary conditions on the $e_{iq}$ and $e_{iT}$ interfaces.
+
+
+
+The set $\cN_i$ corresponds to the neighboring components of component $i$, which are defined as those components that share an interface with component $i$. For a perfect contact between components, the heat flux $q_{ij}$ is written as $q_{ij} = G_{ij}(\bar{\vu})(\bar{u}_i - \bar{u}_j)$ where $G_{ij}(\bar{\vu})$ is the effective conductance. However, the presence of TCRs introduces an additional temperature drop across the interface, as discussed next.
 
 \paragraph*{Contact Dynamics} Consider Fig. [X], where the interface $\Gamma_k=\partial\Omega_{l(k)}\cap\partial\Omega_{r(l)}$ is magnified to depict the governing heat transfer mechanisms. For interface $\Gamma_k$ define the average temperature on the 
 

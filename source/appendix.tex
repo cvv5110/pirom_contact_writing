@@ -45,7 +45,7 @@ where $\epsilon$ is a user-specified parameter, and,
     \begin{align}
         a^e_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
         &\quad + \epsilon \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
-        a^c_{\epsilon,i}(v,w) &= -\sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} h_{x,il}v\left(w^- - w^+\right)d\Gamma_{il}\\
+        a^c_{\epsilon,i}(v) &= -\sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} v q^{(c)}_{il}d\Gamma_{il}\\
         L_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
     \end{align}
 \end{subequations}

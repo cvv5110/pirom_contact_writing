@@ -23,30 +23,19 @@ Let $\cN_i$ denote the collection of elements neighboring element $E_i$. The fol
 \begin{equation}
     \cN_i = \cN_i^{e}\cup\cN_i^{c}
 \end{equation}
-where $\cN_i^{e}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_i^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ij}$. Moreover, on the imperfect-contact interface $\Gamma_{ij}$, the interface represents a physical thermal resistance between two neighboring components. Let $R_{x,ij}$ denote the thermal contact resistance and define the corresponding thermal contact conductance as $h_{x,ij} = 1/R_{x,ij}$. Then, the heat flux across the interface is governed by,
-\begin{equation}
-    q^{(c)}_{ij} = h_{x,ij}\left(T^{-}_i(x,t) - T^{+}_j(x,t)\right), \quad x\in\Gamma_{ij}
-\end{equation}
-where $T^{-}_i$ and $T^{+}_j$ denote the temperature traces on the minus and plus sides of the interface $\Gamma_{ij}$, respectively. The normal conditions on the interface are given by the conservation of energy across the interface,
-\begin{subequations}
-    \begin{align}
-        -\kappa_i\nabla T^{-}_i(x,t)\cdot\vn_i &= q^{(c)}_{ij}, \quad x\in\Gamma_{ij},\\
-        -\kappa_j\nabla T^{+}_j(x,t)\cdot\vn_j &= -q^{(c)}_{ij}, \quad x\in\Gamma_{ij}
-    \end{align}
-\end{subequations}
-where $\vn_i=-\vn_j$ is the unit normal vector of the interface $\Gamma_{ij}$ pointing from component $i$ to component $j$. Thus, across an imperfect contact interface, the heat flux is conserved, while the temperature is allowed to be discontinuous.
+where $\cN_i^{e}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_i^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{l}$, with $l\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. The imperfect contact interface $\Gamma_l$ introduces a thermal resistance $R_{x,l}$ between two neighboring components,
 
 Using the Interior Penalty Galerkin (IPG) scheme [Cohen2018], the variational form of Eq. [X] is given by,
 \begin{equation}
-    \sum_{i=1}^{M}\left(a^e_{\epsilon,i}(v,w) + a^c_{\epsilon,i}(v,w)\right) = \sum_{i=1}^{M} L_i(v)
+    \sum_{i=1}^{M}a_{\epsilon,i}(v,w) = \sum_{i=1}^{M}\left( L_i^{(c)}(v) + L^{(b)}_i(v) \right)
 \end{equation}
 where $\epsilon$ is a user-specified parameter, and,
 \begin{subequations}
     \begin{align}
-        a^e_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
+        a_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
         &\quad + \epsilon \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
-        a^c_{\epsilon,i}(v) &= -\sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} v q^{(c)}_{il}d\Gamma_{il}\\
-        L_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
+        L^{(c)}_{i}(v) &= \sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} v q^{(c)}_{il}d\Gamma_{il}\\
+        L^{(b)}_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
     \end{align}
 \end{subequations}
 In the bi-linear form above, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at a boundary $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
@@ -62,6 +51,20 @@ Next, the DG-based FOM is written in an element-wise form. For the $i$-th elemen
     a^e_{\epsilon,i}(\phi_k^i,T) + a^c_{\epsilon,i}(\phi_k^i,T) = L_i(\phi_k^i),\quad k=1,\ldots,P
 \end{equation}
 where $\phi_k^i$ is the $k$-th basis function for the $i$-th element. Stacking the coefficients of all the elements, 
+
+
+Moreover, on the imperfect-contact interface $\Gamma_{l}$, the interface represents a physical thermal resistance between two neighboring components. Let $R_{x,l}$ denote the thermal contact resistance and define the corresponding thermal contact conductance as $h_{x,l} = 1/R_{x,l}$. Then, the heat flux across the interface is governed by,
+\begin{equation}
+    q^{(c)}_{ij} = h_{x,ij}\left(T^{-}_i(x,t) - T^{+}_j(x,t)\right), \quad x\in\Gamma_{ij}
+\end{equation}
+where $T^{-}_i$ and $T^{+}_j$ denote the temperature traces on the minus and plus sides of the interface $\Gamma_{ij}$, respectively. The normal conditions on the interface are given by the conservation of energy across the interface,
+\begin{subequations}
+    \begin{align}
+        -\kappa_i\nabla T^{-}_i(x,t)\cdot\vn_i &= q^{(c)}_{ij}, \quad x\in\Gamma_{ij},\\
+        -\kappa_j\nabla T^{+}_j(x,t)\cdot\vn_j &= -q^{(c)}_{ij}, \quad x\in\Gamma_{ij}
+    \end{align}
+\end{subequations}
+where $\vn_i=-\vn_j$ is the unit normal vector of the interface $\Gamma_{ij}$ pointing from component $i$ to component $j$. Thus, across an imperfect contact interface, the heat flux is conserved, while the temperature is allowed to be discontinuous.
 
 \subsection{Lumped Capacitance Model}
 

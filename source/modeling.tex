@@ -27,36 +27,15 @@ For the $i$-th element, use a set of $P$ basis functions, such as polynomials, t
 \end{equation}
 Without loss of generality, the basis functions of element $i$ are assumed to satisfy the following conditions,
 \begin{equation}
-    \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i\cap\Gamma} \phi_p^i d\Gamma = 0,\quad p>2
+    \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i\cap\Gamma_l} \phi_p^i d\Gamma_l = 0,\quad p>2
 \end{equation}
-where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma$. Furthermore, for simplifying the subsequent model derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
+where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma_l$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma_l$. Furthermore, for simplifying the subsequent model derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
-    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf(t) + \vf^{(c)}(t)
+    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf^{(b)}(t) + \vf^{(c)}(t)
 \end{equation}
-where the following DG-FEM splitting of variables is introduced to aid in subequent coarse-graining derivations,
-\begin{subequations}
-    \begin{align}
-        \vu(t) &= \left[\vu_1(t), \vu_2(t), \dots, \vu_M(t)\right]^\top\in\mathbb{R}^{MP}\\
-        \vw(t) &= \left[\vw_1(t), \vw_2(t), \dots, \vw_M(t)\right]^\top\in\mathbb{R}^{KP}
-    \end{align}
-\end{subequations}
-Here, $\vu$ includes all the DG variables, and $\vw$ includes the subset of DG variables corresponding to elements interfacing with imperfect contact surfaces, which become useful for subsequent coarse-graining derivations. Clearly, it follows that $M>K$. Additionally, $\vf\in\mathbb{R}^{MP}$ corresponds to the external forcing vector, including Neumann and Dirichlet contributions, 
-
-while $\vA$ and $\vB$ are due to heat capacity and thermal conductivity contributions, respectively. The TCRs at the interfaces are incorporated into the FOM via the numerical fluxes at the interfaces, which are functions of the temperature jumps across the interfaces, and thus are functions of $\vw$. 
-
-
-
-
-The DG-FEM states are given by,
-\begin{subequations}
-    \begin{align}
-        \vu(t) &= \left[\vu_1(t), \vu_2(t), \dots, \vu_M(t)\right]^\top\in\mathbb{R}^{MP}\\
-        \vw(t) &= \left[\vw_1(t), \vw_2(t), \dots, \vw_M(t)\right]^\top\in\mathbb{R}^{KP}
-    \end{align}
-\end{subequations}
-where $\vw$ corresponds to a subset of the DG-FEM states that are adjacent to the interfaces between components, and thus are used to compute the temperature jumps across the interfaces. Clearly, $M\gg K$, since the number of elements is much larger than the number of elements adjacent to the interfaces, nonetheless, $KP$ remains much larger than the $N_{C}+N_{\Gamma}$ which is the total number of components and interfaces.
+where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ corresponds to the DG-FEM states, $\vA$ and $\vB$ are the mass and stiffness matrices, respectively, which are functions of the temperature-dependent material properties, and $\vf^{(b)}$ and $\vf^{(c)}$ correspond to the contributions of the boundary conditions and the TCRs, respectively. An additional set of DG-FEM states, $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_M^\top\right]^\top\in\mathbb{R}^{KP}$, is introduced to denote the subset of DG-FEM states that are adjacent to the imperfect contact interfaces, where $K$ is the number of elements adjacent to the imperfect contact interfaces. Clearly, $M>K$, since the number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
 
 \subsection{One-Dimensional Model}
 

@@ -48,9 +48,23 @@ Furthermore, the terms associated with $\sigma$ are introduced to enforce the Di
 
 Next, the DG-based FOM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in Eq. [X] that satisfy the conditions in Eq. [X]. Using test functions same as trial functions, the dynamics of the coefficients $\vu_i(t) = \left[u_{i,1}(t),\ldots,u_{i,P}(t)\right]$ for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
 \begin{equation}
-    a^e_{\epsilon,i}(\phi_k^i,T) + a^c_{\epsilon,i}(\phi_k^i,T) = L_i(\phi_k^i),\quad k=1,\ldots,P
+    a_{\epsilon,i}(\phi_k^i,T) = L^{(b)}_i(\phi_k^i) + L^{(c)}_i(\phi_k^i),\quad k=1,\ldots,P
 \end{equation}
-where $\phi_k^i$ is the $k$-th basis function for the $i$-th element. Stacking the coefficients of all the elements, 
+where $\phi_k^i$ is the $k$-th basis function for the $i$-th element, where the conditions from Eq. [X] are satisfied. Using test functions same as basis functions, the dynamics of $\vu_i$ is obtained by evaluating the element-wise bi-linear forms,
+\begin{equation}
+    a_{\epsilon,i}(\phi_k^i,T) = L^{(b)}_i(\phi_k^i) + L^{(c)}_i(\phi_k^i),\quad k=1,\ldots,P
+\end{equation}
+leading to the following system of ordinary differential equations (ODEs) for the coefficients $\vu_i$,
+\begin{equation}
+    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \sum_{l\in\cN_i^{c}} \vf_{il}^{(c)} + \vf_i^{(b)}
+\end{equation}
+where, for $k,l=1,2,\dots,P$,
+\begin{subequations}
+    \begin{align}
+        \left[\vA_i\right]_{kl} &= \int_{E_i}\rho_i c_{p,i}\phi_k^i\phi_l^i dE_i\\
+        \left[\vB_i\right]_{kl} &= \int_{E_i}\vk_i\nabla\phi_k^i\cdot\nabla\phi_l^i dE_i
+    \end{align}
+\end{subequations}
 
 
 Moreover, on the imperfect-contact interface $\Gamma_{l}$, the interface represents a physical thermal resistance between two neighboring components. Let $R_{x,l}$ denote the thermal contact resistance and define the corresponding thermal contact conductance as $h_{x,l} = 1/R_{x,l}$. Then, the heat flux across the interface is governed by,

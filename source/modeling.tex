@@ -33,16 +33,18 @@ where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma$ is any 
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
-    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf(t)
+    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf(t) + \vf^{(c)}(t)
 \end{equation}
-where the DG-FEM states are collected as,
+where the following DG-FEM splitting of variables is introduced to aid in subequent coarse-graining derivations,
 \begin{subequations}
     \begin{align}
         \vu(t) &= \left[\vu_1(t), \vu_2(t), \dots, \vu_M(t)\right]^\top\in\mathbb{R}^{MP}\\
         \vw(t) &= \left[\vw_1(t), \vw_2(t), \dots, \vw_M(t)\right]^\top\in\mathbb{R}^{KP}
     \end{align}
 \end{subequations}
-where $\vu$ includes all the DG variables, while $\vw$ includes the subset of DG variables corresponding to elements interfacing with imperfect contact surfaces, which are later used to compute average temperature jumps across interfaces. Additionally, $\vf\in\mathbb{R}^{MP}$ corresponds to the external forcing vector, including Neumann and Dirichlet contributions, while $\vA$ and $\vB$ are due to heat capacity and thermal conductivity contributions, respectively. The TCRs at the interfaces are incorporated into the FOM via the numerical fluxes at the interfaces, which are functions of the temperature jumps across the interfaces, and thus are functions of $\vw$. 
+Here, $\vu$ includes all the DG variables, and $\vw$ includes the subset of DG variables corresponding to elements interfacing with imperfect contact surfaces, which become useful for subsequent coarse-graining derivations. Clearly, it follows that $M>K$. Additionally, $\vf\in\mathbb{R}^{MP}$ corresponds to the external forcing vector, including Neumann and Dirichlet contributions, 
+
+while $\vA$ and $\vB$ are due to heat capacity and thermal conductivity contributions, respectively. The TCRs at the interfaces are incorporated into the FOM via the numerical fluxes at the interfaces, which are functions of the temperature jumps across the interfaces, and thus are functions of $\vw$. 
 
 
 

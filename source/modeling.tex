@@ -4,32 +4,37 @@ The following discussion presents the modeling of the transient heat conduction 
 
 \subsection{Governing Equations}
 
-Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ show in Fig. X. A heat flux $q_b$ (i.e., Neumann boundary condition) is prescribed on boundary $\Gamma_q$, while a temperature $T_b$ (i.e., Dirichlet boundary condition) is prescribed on boundary $\Gamma_T$, and $\partial\Omega=\Gamma_q\cup\Gamma_T$. The transient heat conduction dynamics is governed by the following energy PDE,
+Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ show in Fig.~\ref{fig_general_domain}. A heat flux $q_b$ (i.e., Neumann boundary condition) is prescribed on boundary $e_q$, while a temperature $T_b$ (i.e., Dirichlet boundary condition) is prescribed on boundary $e_T$, and $\partial\Omega = \cup_{i=1}^{N}\partial\Omega_i$ where $e_{iq},e_{iT}\subset\partial\Omega_i$. The transient heat conduction dynamics is governed by the following energy PDE,
 \begin{subequations}
  \begin{align}
     \rho c_p \partial_t T - \nabla\cdot\left(\vk(T)\nabla T\right) &= 0, \: x\in\Omega\\
-    -\vk(T)\nabla T\cdot\vn &= q_b(x,t), \: x\in\Gamma_q\\
-    T(x,t) &= T_b(x,t), \: x\in\Gamma_T\\
+    -\vk(T)\nabla T\cdot\vn &= q_b(x,t), \: x\in e_q\\
+    T(x,t) &= T_b(x,t), \: x\in e_T\\
     T(x,0) &= T_0(x), \: x\in\Omega
  \end{align}
 \end{subequations}
-where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, with imperfect component contacts on $N_{\Gamma}$ different interfaces. For example, Fig. [X] contains $N_C=4$ components and $N_{\Gamma}=3$ imperfect contacts between components. The imperfect contact between components translates into a \emph{thermal contact resistance} (TCR), which translate into temperature discontinuities at the interfaces. Therefore, large uncertainties in TCRs may have a significant impact on the overall heat transfer dyamics of TPS. The following discussion presents the simulation of hypersonic TPS under the presence of TCRs, where three different approaches of decreasing fidelity are presented: a full-order three-dimensional finite-element model (FOM), a one-dimensional FEM approximation, and a modified lumped capacitance model (LCM).
+where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where $N_{\Gamma}$ different imperfect contacts are present at the interfaces between components. For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\Gamma}=3$ imperfect contacts between components. Imperfect contacts translate into \emph{thermal contact resistances} (TCRs), which lead to temperature discontinuities at the interfaces between TPS layers. Therefore, large uncertainties in TCRs may have a significant impact on the overall heat transfer dynamics of TPS. The following discussion presents the simulation of hypersonic TPS under the presence of TCRs, where three different approaches of decreasing fidelity are presented: a full-order three-dimensional finite-element model (FOM), a one-dimensional FEM approximation, and a modified lumped capacitance model (LCM).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.99\textwidth]{./figs/modeling/domain.png}
+    \caption{Schematic of the general TPS domain $\Omega$ composed of $N_C=3$ components and $N_{\Gamma}=3$ imperfect contacts between components.}
+    \label{fig_general_domain}
+\end{figure}
 
 \subsection{Full-Order Model}
 
 The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfacces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{i,q}$, and $e_{i,T}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. 
-
-For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
+Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
 \begin{equation}
     T_i(x,t) = \sum_{p=1}^P \vphi_p(x) u_{i,p}(t),\qquad x\in E_i
 \end{equation}
-Without loss of generality, the basis functions of element $i$ are assumed to satisfy the following conditions,
+Without loss of generality, let the basis functions on element $E_i$ satisfy the following conditions,
 \begin{equation}
     \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i\cap\Gamma_l} \phi_p^i d\Gamma_l = 0,\quad p>2
 \end{equation}
-where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma_l$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma_l$. Furthermore, for simplifying the subsequent model derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
+where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma_l$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma_l$, as depicted in Fig.~\ref{fig_general_domain}. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
@@ -39,7 +44,7 @@ where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}
 
 \subsection{One-Dimensional Model}
 
-This approach follows the classical FEM approach with a linear basis function to capture the through-thickess spatially-varying temperature distributions inside each component of the TPS. This modeling simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
+This approach follows a \emph{one-dimensional} FEM (1D-FEM) approach, where the governing PDE is spatially discretized using a standard FEM with linear basis functions along the thickness direction of the TPS, while the in-plane temperature gradients are neglected. This simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
 
 As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
 

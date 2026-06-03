@@ -17,15 +17,20 @@ This section provides the detailed formulation of the finite-element model (FEM)
 
 \subsubsection{Weak Form of Discontinuous Galerkin Method}
 
-Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component-to-component interfaces support a finite temperature jump caused by imperfect thermal contact.
+Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite tenperature jump across the interface caused by imperfect thermal contact.
 
 Let $\cN_i$ denote the collection of elements neighboring element $E_i$. The following separation is introduced,
 \begin{equation}
-    \cN_i = \cN_i^{e}\cup\cN_i^{c}
+    \cN_i = \cN_i^{e}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
 \end{equation}
-where $\cN_i^{e}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_i^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{l}$, with $l\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. The imperfect contact interface $\Gamma_l$ introduces a thermal resistance $R_{x,l}$ between two neighboring components,
-
-Using the Interior Penalty Galerkin (IPG) scheme [Cohen2018], the variational form of Eq. [X] is given by,
+where $\cN_i^{e}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
+\begin{subequations}
+    \begin{align}
+        \cN_i^{e} &= \left\{j\in\{1,\ldots,M\} \:|\: E_j\cap E_i = e_{ij}\neq\emptyset, e_{ij}\subseteq\Omega\right\},\\
+        \cN_{ir}^{c} &= \left\{j\in\{1,\ldots,M\} \:|\: \partial E_i\cap \partial E_j \cap\Gamma_r \neq \emptyset\right\}
+    \end{align}
+\end{subequations}
+Under this separation, the Interior Penalty Galerkin (IPG) scheme yields the following bi-linear form for the variational formulation of the governing equations [Cohen2018],
 \begin{equation}
     \sum_{i=1}^{M}a_{\epsilon,i}(v,w) = \sum_{i=1}^{M}\left( L_i^{(c)}(v) + L^{(b)}_i(v) \right)
 \end{equation}
@@ -34,7 +39,7 @@ where $\epsilon$ is a user-specified parameter, and,
     \begin{align}
         a_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
         &\quad + \epsilon \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
-        L^{(c)}_{i}(v) &= \sum_{l\in\cN_i^{c}}\int_{\Gamma_{il}} v q^{(c)}_{il}d\Gamma_{il}\\
+        L^{(c)}_{i}(v) &= \sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^{c}}\int_{\Gamma_{il}} v q^{(c,r)}_{il}d\Gamma_{il}\\
         L^{(b)}_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
     \end{align}
 \end{subequations}
@@ -52,7 +57,7 @@ Next, the DG-based FOM is written in an element-wise form. For the $i$-th elemen
 \end{equation}
 where $\phi_k^i$ is the $k$-th basis function for the $i$-th element, where the conditions from Eq. [X] are satisfied. Evaluating the bi-linear forms leads to the following system of ODEs,
 \begin{equation}
-    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \sum_{l\in\cN_i^{c}} \vf_{il}^{(c)} + \vf_i^{(b)}
+    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)} + \vf_i^{(b)}
 \end{equation}
 where, for $k,l=1,2,\dots,P$,
 \begin{subequations}
@@ -67,12 +72,41 @@ where, for $k,l=1,2,\dots,P$,
             &\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_i^{e}\cup\left\{T\right\}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
-        \left[\vf_{il}^{(c)}\right]_{k} &= \int_{\Gamma_{il}} \phi_k^i q^{(c)}_{il}d\Gamma_{il}\\
+        \left[\vf_{i}^{(c)}\right]_{k} &= \left\{\begin{matrix}
+            &\sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^{c}} \int_{\Gamma_{il}} \phi_k^i q^{(c,r)}_{il}d\Gamma, & l\in\cN_{ir}^{c}\\
+            &0, & \text{otherwise}
+        \end{matrix}\right.\\
         \left[\vf_i^{(b)}\right]_{k} &= \int_{e_{iq}}\phi_k^iq_b de_{iq} 
     \end{align}
 \end{subequations}
 Note that the matrices $\vA_i$, $\vB_i$, $\vB_{ij}^i$, and $\vB_{ij}^j$ depend on $\rho$, $c_p$, and $\vk$, respectively, and hence can be non-linear functions of the state $\vu_i$ if the material properties are temperature-dependent. Since the basis functions are orthogonal, if $\rho c_p$ is constant within an element, then $\vA_i$ is a diagonal matrix; otherwise, $\vA_i$ is symmetric and positive-definite, as $\rho c_p > 0$.
 
+For compactness, the element-wise ODEs are stacked together to obtain the following system of ODEs for the entire TPS,
+\begin{equation}
+    \vA(\vu)\dot{\vu} = \vB(\vu)\vu + \vf^{(c)}(\vu,t) + \vf^{(b)}\label{eqn_compact_dg_fem}
+\end{equation}
+where $\vu = \left[\vu_1^\top,\ldots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ and $\vf^{(b)} = \left[\vf_1^{(b)\top},\ldots,\vf_M^{(b)\top}\right]^\top\in\mathbb{R}^{MP}$, and for $i,j=1,2,\dots,M$, it follows that,
+\begin{subequations}
+    \begin{align}
+        \vB_{ij} &= \left\{
+        \begin{matrix}
+            &\vB_i(\vu) + \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\vB_{ij}^i, & i=j\\
+            &\vB_{ij}^j, & i\neq j, j\in\cN_i^{e}\cup\left\{T\right\}\\
+            &\vzero, &i\neq j, j\in\cN_i^c\\
+            &\vzero, &\text{otherwise}
+        \end{matrix}
+        \right.\\
+        \vf_i^{(c)} &= \left\{
+            \begin{matrix}
+                &\sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^c} \vf_{il}^{(c,r)}, & l\in\cN_{ir}^c\\
+                &\vzero, & \text{otherwise}
+            \end{matrix}
+        \right.
+    \end{align}
+\end{subequations}
+where $\cN_i^{c} = \bigcup_{r=1}^{N_{\Gamma}} \cN_{ir}^{c}$. The dependency of $\vA$, $\vB$, and $q_{il}^{(c,r)}$ on $\vu$ is explicitly noted in Eq. [X], which is the main source of non-linearities in the system.
+
+Particularly, the contact heat flux $q^{(c)}$ across the imperfect-contact interface is written as a function of the state $\vu$ by evaluating the temperature traces on the interface using the basis functions. Let $R_{x,il}$ denote the thermal contact resistance of the interface $\Gamma_{il}$, and $h_{x,il} = 1/R_{x,il}$ be the corresponding thermal contact conductance. Moreover, let $T_{il}$
 
 
 
@@ -89,7 +123,7 @@ where $T^{-}_i$ and $T^{+}_j$ denote the temperature traces on the minus and plu
 \end{subequations}
 where $\vn_i=-\vn_j$ is the unit normal vector of the interface $\Gamma_{ij}$ pointing from component $i$ to component $j$. Thus, across an imperfect contact interface, the heat flux is conserved, while the temperature is allowed to be discontinuous.
 
-\subsection{Lumped Capacitance Model}
+\subsection{Modified Lumped Capacitance Model}
 
 The TPS is divided into $N$ components with $M$ elements. For component $i$, define $\Omega_i$ as the spatial domain of the component, and $\partial\Omega_i$ as the boundary of the component. For each interface between two components, define $l(i)$ and $r(i)$ as the left and right components that form the interface, respectively. 
 

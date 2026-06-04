@@ -8,67 +8,43 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \subsubsection{Coarse-Graining of States}
 
-Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides. 
-
-An additional set of DG-FEM states, $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_M^\top\right]^\top\in\mathbb{R}^{KP}$, is introduced to denote the subset of DG-FEM states that are adjacent to the imperfect contact interfaces, where $K$ is the number of elements adjacent to the imperfect contact interfaces. Clearly, $M>K$, since the number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
-
-Formally,
+Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ imperfect interfaces; clearly, $M\gg N$. Define the sets of indices $\cV_j$, $\cF_i^-$, and $\cF_i^+$, corresponding to the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides, respectively. Formally, the sets are defined as,
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\
-        \cF_i^- &= \{m: \Gamma_i\cap\partial E_m\neq\emptyset, E_m\subset\Omega_{j^-}\}\\
-        \cF_i^+ &= \{n: \Gamma_i\cap\partial E_n\neq\emptyset, E_n\subset\Omega_{j^+}\}
+        \cF_i^- &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_L(i)\}\\
+        \cF_i^+ &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_{R(i)}\}
     \end{align}
 \end{subequations}
-Therefore, the volume and left-and-right interface averages for component $j$ and interface $k$ are given by,
-\begin{subequations}
-    \begin{align}
-        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
-        \btheta_k^{-}(t) &= \frac{1}{\left|\Gamma_k\right|}\sum_{m\in\cF_k^-}\int_{\Gamma_k\cap\partial E_m} \vphi_m^\top\vw_m d\Gamma_k, \: k=1,\ldots,N_{\Gamma}\\
-        \btheta_k^{+}(t) &= \frac{1}{\left|\Gamma_k\right|}\sum_{n\in\cF_k^+}\int_{\Gamma_k\cap\partial E_n} \vphi_n^\top\vw_n d\Gamma_k, \: k=1,\ldots,N_{\Gamma}
-    \end{align}
-\end{subequations}
-where $\left|\Omega_j\right|$ and  $\left|\Gamma_k\right|$ are the area $(d=2)$ or volume $(d=3)$ of component $j$, and the area of the interface $k$ between two different components, respectively. The orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$.
+where $\Gamma_r=\partial\Omega_{L(r)}\cap\partial\Omega_{R(r)}$ is the imperfect interface between the left (minus) $\Omega_{L(r)}$ and right (plus) $\Omega_{R(r)}$ components. To aid in the subsequent derivations, introduce a new variable $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}$, where $\vw_i$ corresponds to the DG-FEM states of element $i$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$ correspond to the DG-FEM states of the elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Note that $K = K^- + K^+$, where $K^-$ and $K^+$ are the number of elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Clearly, $M>K$, since the total number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
 
-Therefore, it follows that,
-\begin{subequations}
-    \begin{align}
-        \bar{\theta}_j^{-}(t) &= \sum_{i\in\cF_j^{-}}\frac{\left|\Gamma_i\right|}{\left|\Gamma_j\right|}\bar{u}_i = \sum_{i\in\cF_j^{-}}\frac{\left|\Gamma_i\right|}{\left|\Gamma_j\right|}\vvarphi_i^{j\top}\vu_i(t)
-    \end{align}
-\end{subequations}
 
-Note that,
+Therefore, the volume and left-and-right interface averages for component $j$ and interface $r$ are given by,
 \begin{subequations}
     \begin{align}
-        \delta\theta_i^{-}(\vu,t) &= T_i^{-}(\vu,t) - \btheta_i^{-}(\vu,t)\\
-        \delta\theta_i^{+}(\vu,t) &= T_i^{+}(\vu,t) - \btheta_i^{+}(\vu,t)
+        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\left|E_i\right|\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
+        \btheta_r^{-}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^-}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{-}}\alpha_{mr}^{-}\vmu_{mr}^{\top}\vw_{mr}^{-}, \: r=1,\ldots,N_{\Gamma}\\
+        \btheta_r^{+}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^+}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{+}}\alpha_{mr}^{+}\vmu_{mr}^{\top}\vw_{mr}^{+}, \: r=1,\ldots,N_{\Gamma}
     \end{align}
 \end{subequations}
-so that,
+where the orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$. Moreover, $\alpha_{mr}^{-} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ and $\alpha_{mr}^{+} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ are the area or volume fractions of the interface segment $\Gamma_{mr}$ with respect to the total interface $\Gamma_r$, $\vw_{mr}^{-}$ and $\vw_{mr}^{+}$ correspond to the DG-FEM states of the element adjacent to the imperfect contact interface $\Gamma_{r}$ with $r=1,2,\dots,N_{\Gamma}$ on the negative and positive sides, respectively, and $\vmu_{mr} = \frac{1}{\left|\Gamma_{mr}\right|}\int_{\Gamma_{mr}} \vphi^{\top}_m d\Gamma_{mr}\in\mathbb{R}^{P}$. Moreover, the $\Gamma_{rm} = \Gamma_r\cap\partial E_m$, and $\left|\Gamma_{rm}\right|$ is the area $(d=2)$ or volume $(d=3)$ of the interface segment $\Gamma_{rm}$.
+
+Conversely, given the average temperatures of the $N_C$ components, as well as the average minus-and-plus temperatures on the two sides of the $N_{\Gamma}$ imperfect interfaces, the DG-FEM states may be written as,
 \begin{subequations}
     \begin{align}
-        \Delta\theta_i(\vu,t) &= \left(\btheta_i^{-}(t) - \btheta_i^{+}(t)\right)  + \left(\delta\theta_i^{-}(\vu,t) - \delta\theta_i^{+}(\vu,t)\right)\\
-        \btheta_i^{-}(t) &= C_i^{-}\vu(t)\\
-        \btheta_i^{+}(t) &= C_i^{+}\vu(t)\\
-        \Delta\vbtheta(t) &= \vPsi^+\vu(t)
+        \vu_i &= \sum_{k=1}^{N_C}\vvarphi_i^k\bar{u}_k + \delta\vu_i,\quad i=1,2,\dots,M\\
+        \vw_{ir}^{-} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r-}\btheta_k^{-} + \delta\vw_{ir}^{-},\quad i\in\cF_r^{-},r=1,2,\dots,N_{\Gamma}\\
+        \vw_{ir}^{+} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r+}\btheta_k^{+} + \delta\vw_{ir}^{+},\quad i\in\cF_r^{+},r=1,2,\dots,N_{\Gamma}
+    \end{align}\label{eqn_element_states}
+\end{subequations}
+where $\vpsi_k^{r-}=0$ if $k\neq r$ and $\vpsi_k^{r+}=0$ if $k\neq r$, so that the average minus-and-plus temperatures on the two sides of the imperfect contact interface $\Gamma_r$ only contribute to the states of the elements adjacent to such interface, and $\delta\vu_i$, $\delta\vw_{ir}^{-}$, and $\delta\vw_{ir}^{+}$ correspond to the residuals between the DG-FEM states and the reconstructed states from the average temperatures. Collectively, Eqs.~\cref{eqn_element_states} can be written in matrix form as,
+\begin{subequations}
+    \begin{align}
+        \vu &= \vPhi\bar{\vu} + \delta\vu\\
+        \vw &= \vPi\bar{\vtheta} + \delta\vw
     \end{align}
 \end{subequations}
 where,
-\begin{equation}
-    \vPsi^+ = \begin{bmatrix}
-        C_1^- - C_1^+\\
-        C_2^- - C_2^+\\
-        \vdots\\
-        C_{N-1}^- - C_{N-1}^+
-    \end{bmatrix}
-\end{equation}
-Therefore, the coarse-grained states for element and interface $i$ are given by
-\begin{subequations}
-    \begin{align}
-        \vu_i(t) &= \sum_{k=1}^{N}\vvarphi_k^{i\top}\bar{u}_k(t) + \delta\vu_i(t),\: i=1,\dots,N\\
-        \Delta\theta_i(\vu,t) &= \sum_{k=1}^{N-1}\psi_k^i\Delta\btheta_k(t) + \delta\Delta\theta_i(\vu,t),\: i=1,\dots,N_{\Gamma}
-    \end{align}
-\end{subequations}
 
 
 \subsubsection{Coarse-Graining of Dynamics}

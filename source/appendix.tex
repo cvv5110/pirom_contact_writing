@@ -106,7 +106,17 @@ where $\vu = \left[\vu_1^\top,\ldots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ a
 \end{subequations}
 where $\cN_i^{c} = \bigcup_{r=1}^{N_{\Gamma}} \cN_{ir}^{c}$. The dependency of $\vA$, $\vB$, and $q_{il}^{(c,r)}$ on $\vu$ is explicitly noted in Eq. [X], which is the main source of non-linearities in the system.
 
-Particularly, the contact heat flux $q^{(c)}$ across the imperfect-contact interface is written as a function of the state $\vu$ by evaluating the temperature traces on the interface using the basis functions. Let $R_{x,il}$ denote the thermal contact resistance of the interface $\Gamma_{il}$, and $h_{x,il} = 1/R_{x,il}$ be the corresponding thermal contact conductance. Moreover, let $T_{il}$
+Particularly, the contact heat flux $q^{(c,r)}_{il}$ between elements $E_i$ and $E_l$ across the imperfect-contact interface $\Gamma_r$ becomes a function of the DG-FEM state $\vu$ through the following relationship,
+\begin{equation}
+    q^{(c,r)}_{il} = h_{x,il}\left(T^{-}_i(x,t) - T^{+}_l(x,t)\right), \quad x\in\Gamma_{il}\subseteq\Gamma_r
+\end{equation}
+where $T^{-}_i$ and $T^{+}_l$ are the temperature traces on the minus and plus sides of the interface $\Gamma_{il}$, respectively, which can be evaluated as a function of the state $\vu$ by evaluating the temperature traces on the interfaces. 
+
+
+is written as a function of the state $\vu$ by evaluating the temperature traces on the interfaces. 
+
+
+and interface $\Gamma_l$ is written as a function of the state $\vu$ by evaluating the temperature traces on the interface. Let $R_{x,il}$ denote the thermal contact resistance of the interface $\Gamma_{il}$, and $h_{x,il} = 1/R_{x,il}$ be the corresponding thermal contact conductance. Moreover, let $T^{-}_{il}$ and $T^{+}_{il}$ 
 
 
 

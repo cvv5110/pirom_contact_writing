@@ -30,11 +30,11 @@ Consider a DG-FEM spatial discretization of the governing PDE, where the entire 
 \begin{equation}
     T_i(x,t) = \sum_{p=1}^P \vphi_p(x) u_{i,p}(t),\qquad x\in E_i
 \end{equation}
-Without loss of generality, let the basis functions on element $E_i$ satisfy the following conditions,
+Without loss of generality, let the basis functions on element $E_i$ satisfy the following orthogonality condition,
 \begin{equation}
-    \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q,\quad \int_{\partial E_i\cap\Gamma_l} \phi_p^i d\Gamma_l = 0,\quad p>2
+    \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q\label{eqn_basis_functions_condition}
 \end{equation}
-where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma_l$ is any interfacing surface between element $i$ and an imperfect contact surface $\Gamma_l$, as depicted in Fig.~\ref{fig_general_domain}. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
+where $\delta_{pq}$ is the Kronecker delta. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
@@ -42,7 +42,7 @@ By standard variational procedure, e.g., [Pernet2018], the full governing equati
 \end{equation}
 where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ corresponds to the DG-FEM states, $\vA$ and $\vB$ are the mass and stiffness matrices, respectively, which are functions of the temperature-dependent material properties, and $\vf^{(b)}$ and $\vf^{(c)}$ correspond to the contributions of the boundary conditions and the TCRs, respectively.
 
-\subsection{One-Dimensional Model}
+\subsection{One-Dimensional Finite-Element Model}
 
 This approach follows a \emph{one-dimensional} FEM (1D-FEM) approach, where the governing PDE is spatially discretized using a standard FEM with linear basis functions along the thickness direction of the TPS, while the in-plane temperature gradients are neglected. This simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
 

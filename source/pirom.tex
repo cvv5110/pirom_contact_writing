@@ -8,7 +8,11 @@ As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a
 
 \subsubsection{Coarse-Graining of States}
 
-Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides. Formally,
+Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ interfaces; clearly, $M\gg N$. Let $\cV_j$, $\cF_i^-$, and $\cF_i^+$ be the sets of indices for the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides. 
+
+An additional set of DG-FEM states, $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_M^\top\right]^\top\in\mathbb{R}^{KP}$, is introduced to denote the subset of DG-FEM states that are adjacent to the imperfect contact interfaces, where $K$ is the number of elements adjacent to the imperfect contact interfaces. Clearly, $M>K$, since the number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
+
+Formally,
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\

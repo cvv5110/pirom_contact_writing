@@ -38,9 +38,9 @@ where $\delta_{pq}$ is the Kronecker delta, and $\partial E_i\cap\Gamma_l$ is an
 
 By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
 \begin{equation}
-    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf^{(b)}(t) + \vf^{(c)}(t)
+    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf^{(b)}(t) + \vf^{(c)}(\vu,t)
 \end{equation}
-where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ corresponds to the DG-FEM states, $\vA$ and $\vB$ are the mass and stiffness matrices, respectively, which are functions of the temperature-dependent material properties, and $\vf^{(b)}$ and $\vf^{(c)}$ correspond to the contributions of the boundary conditions and the TCRs, respectively. An additional set of DG-FEM states, $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_M^\top\right]^\top\in\mathbb{R}^{KP}$, is introduced to denote the subset of DG-FEM states that are adjacent to the imperfect contact interfaces, where $K$ is the number of elements adjacent to the imperfect contact interfaces. Clearly, $M>K$, since the number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
+where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ corresponds to the DG-FEM states, $\vA$ and $\vB$ are the mass and stiffness matrices, respectively, which are functions of the temperature-dependent material properties, and $\vf^{(b)}$ and $\vf^{(c)}$ correspond to the contributions of the boundary conditions and the TCRs, respectively.
 
 \subsection{One-Dimensional Model}
 

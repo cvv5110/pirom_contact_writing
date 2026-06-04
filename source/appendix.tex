@@ -57,7 +57,7 @@ Next, the DG-based FOM is written in an element-wise form. For the $i$-th elemen
 \end{equation}
 where $\phi_k^i$ is the $k$-th basis function for the $i$-th element, where the conditions from Eq. [X] are satisfied. Evaluating the bi-linear forms leads to the following system of ODEs,
 \begin{equation}
-    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)} + \vf_i^{(b)}
+    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)}(\vu,t) + \vf_i^{(b)}
 \end{equation}
 where, for $k,l=1,2,\dots,P$,
 \begin{subequations}

@@ -58,10 +58,6 @@ This work leverages the \emph{lumped capacitance model} (LCM), a first-principle
 \end{equation}
 where $q^{(e)}_{ij}$ and $q^{(c)}_{ij}$ correspond to the heat flux due to neighboring elements with perfect ($e_{ij}$) and imperfect $(\Gamma_{ij})$ interfacing surfaces, while $q_{ib}$ and $q_{iT}$ are the heat flux contributions from the Neumann and Dirichlet boundary conditions on the $e_{iq}$ and $e_{iT}$ interfaces.
 
-
-
-The set $\cN_i$ corresponds to the neighboring components of component $i$, which are defined as those components that share an interface with component $i$. For a perfect contact between components, the heat flux $q_{ij}$ is written as $q_{ij} = G_{ij}(\bar{\vu})(\bar{u}_i - \bar{u}_j)$ where $G_{ij}(\bar{\vu})$ is the effective conductance. However, the presence of TCRs introduces an additional temperature drop across the interface, as discussed next.
-
 \paragraph*{Contact Dynamics} Consider Fig. [X], where the interface $\Gamma_k=\partial\Omega_{l(k)}\cap\partial\Omega_{r(l)}$ is magnified to depict the governing heat transfer mechanisms. For interface $\Gamma_k$ define the average temperature on the 
 
 

@@ -107,9 +107,12 @@ where $\vu = \left[\vu_1^\top,\ldots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ a
 where $\cN_i^{c} = \bigcup_{r=1}^{N_{\Gamma}} \cN_{ir}^{c}$. The dependency of $\vA$, $\vB$, and $q_{il}^{(c,r)}$ on $\vu$ is explicitly noted in Eq. [X], which is the main source of non-linearities in the system.
 
 Particularly, the contact heat flux $q^{(c,r)}_{il}$ between elements $E_i$ and $E_l$ across the imperfect-contact interface $\Gamma_r$ becomes a function of the DG-FEM state $\vu$ through the following relationship,
-\begin{equation}
-    q^{(c,r)}_{il} = h_{x,il}\left(T^{-}_i(x,t) - T^{+}_l(x,t)\right), \quad x\in\Gamma_{il}\subseteq\Gamma_r
-\end{equation}
+\begin{subequations}
+    \begin{align}
+        q^{(c,r)}_{il}(\vw,t) &= h_{x,il}\left(T^{-}_i(x,t) - T^{+}_l(x,t)\right),\notag\\
+        &= h_{x,il}\left(\sum_{p=1}^{P}\phi_p^{i} u_p^i - \sum_{p=1}^{P}\phi_p^{l} u_p^{l}\right),\quad x\in\Gamma_{il}\subseteq\Gamma_r, l\in\cN_{ir}^{c}
+    \end{align}
+\end{subequations}
 where $T^{-}_i$ and $T^{+}_l$ are the temperature traces on the minus and plus sides of the interface $\Gamma_{il}$, respectively, which can be evaluated as a function of the state $\vu$ by evaluating the temperature traces on the interfaces. 
 
 

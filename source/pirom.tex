@@ -12,11 +12,11 @@ Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N
 \begin{subequations}
     \begin{align}
         \cV_j &= \{i: E_i\subset\Omega_j\}\\
-        \cF_i^- &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_L(i)\}\\
-        \cF_i^+ &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_{R(i)}\}
+        \cF_i^- &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_i^{-}\}\\
+        \cF_i^+ &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_i^+\}
     \end{align}
 \end{subequations}
-where $\Gamma_r=\partial\Omega_{L(r)}\cap\partial\Omega_{R(r)}$ is the imperfect interface between the left (minus) $\Omega_{L(r)}$ and right (plus) $\Omega_{R(r)}$ components. To aid in the subsequent derivations, introduce a new variable $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}$, where $\vw_i$ corresponds to the DG-FEM states of element $i$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$ correspond to the DG-FEM states of the elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Note that $K = K^- + K^+$, where $K^-$ and $K^+$ are the number of elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Clearly, $M>K$, since the total number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
+where $\Gamma_r=\partial\Omega_i^{-}\cap\partial\Omega_i^{+}$ is the imperfect interface between the minus $\Omega^{-}_i$ and plus $\Omega_i^{+}$ components. To aid in the subsequent derivations, introduce a new variable $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}$, where $\vw_i$ corresponds to the DG-FEM states of element $i$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$ correspond to the DG-FEM states of the elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Note that $K = K^- + K^+$, where $K^-$ and $K^+$ are the number of elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Clearly, $M>K$, since the total number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
 
 
 Therefore, the volume and left-and-right interface averages for component $j$ and interface $r$ are given by,
@@ -27,9 +27,9 @@ Therefore, the volume and left-and-right interface averages for component $j$ an
         \btheta_r^{+}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^+}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{+}}\alpha_{mr}^{+}\vmu_{mr}^{\top}\vw_{mr}^{+}, \: r=1,\ldots,N_{\Gamma}
     \end{align}
 \end{subequations}
-where the orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$. Moreover, $\alpha_{mr}^{-} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ and $\alpha_{mr}^{+} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ correspond to the fractions of the interface segment $\Gamma_{mr}$ with respect to the total interface $\Gamma_r$, $\vw_{mr}^{-}$ and $\vw_{mr}^{+}$ correspond to the DG-FEM states of the element $E_m$, which is adjacent to the imperfect interface $\Gamma_{r}$ with $r=1,2,\dots,N_{\Gamma}$ on the negative and positive sides, respectively, and $\vmu_{mr} = \frac{1}{\left|\Gamma_{mr}\right|}\int_{\Gamma_{mr}} \vphi^{\top}_m d\Gamma_{mr}\in\mathbb{R}^{P}$. Moreover, the $\Gamma_{rm} = \Gamma_r\cap\partial E_m$, and $\left|\Gamma_{rm}\right|$ is the area $(d=2)$ or volume $(d=3)$ of the interface segment $\Gamma_{rm}$.
+where the orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$. Moreover, $\alpha_{mr}^{-} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ and $\alpha_{mr}^{+} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ correspond to the fractions of the interface segment $\Gamma_{mr}$ with respect to the total interface $\Gamma_r$, $\vw_{mr}^{-}$ and $\vw_{mr}^{+}$ correspond to the DG-FEM states of the element $E_m$, which is adjacent to the imperfect interface $\Gamma_{r}$ with $r=1,2,\dots,N_{\Gamma}$ on the negative and positive sides, respectively, and $\vmu_{mr} = \frac{1}{\left|\Gamma_{mr}\right|}\int_{\Gamma_{mr}} \vphi^{\top}_m d\Gamma_{mr}\in\mathbb{R}^{P}$. Moreover, the $\Gamma_{rm} = \Gamma_r\cap\partial E_m$, and $\left|\Gamma_{rm}\right|$ is the point $(d=2)$ or area $(d=3)$ of the interface segment $\Gamma_{rm}$.
 
-Conversely, given the average temperatures of the $N_C$ components, as well as the average minus-and-plus temperatures on the two sides of the $N_{\Gamma}$ imperfect interfaces, the DG-FEM states may be written as,
+Conversely, given the average temperatures of the $N_C$ components, as well as the average minus-and-plus temperatures on the two sides of the $N_{\Gamma}$ different imperfect interfaces, the DG-FEM states may be written as,
 \begin{subequations}
     \begin{align}
         \vu_i &= \sum_{k=1}^{N_C}\vvarphi_i^k\bar{u}_k + \delta\vu_i,\quad i=1,2,\dots,M\\
@@ -37,23 +37,23 @@ Conversely, given the average temperatures of the $N_C$ components, as well as t
         \vw_{ir}^{+} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r+}\btheta_k^{+} + \delta\vw_{ir}^{+},\quad i\in\cF_r^{+},r=1,2,\dots,N_{\Gamma}
     \end{align}\label{eqn_element_states}
 \end{subequations}
-where $\vpsi_k^{r-}=0$ if $k\neq r$ and $\vpsi_k^{r+}=0$ if $k\neq r$, so that the average minus-and-plus temperatures on the two sides of the imperfect contact interface $\Gamma_r$ only contribute to the states of the elements adjacent to such interface, and $\delta\vu_i$, $\delta\vw_{ir}^{-}$, and $\delta\vw_{ir}^{+}$ correspond to the residuals between the DG-FEM states and the reconstructed states from the average temperatures.
+where $\vpsi_k^{r\pm}=\vzero\in\mathbb{R}^{P}$ if $k\neq r$, so that the average minus-and-plus temperatures on the two sides of the imperfect contact interface $\Gamma_r$ only contribute to the states of the elements adjacent to such interface, and $\delta\vu_i$, $\delta\vw_{ir}^{-}$, and $\delta\vw_{ir}^{+}$ correspond to the residuals between the DG-FEM states and the reconstructed states from the average temperatures.
 
 Collectively, Eq.\cref{eqn_element_states} can be written in matrix form as,
 \begin{subequations}
     \begin{align}
-        \vu &= \vPhi\bar{\vu} + \delta\vu,\quad \bvu=\vPhi^{+}\vu\\
-        \vw &= \vPi\bar{\vtheta} + \delta\vw,\quad \bvtheta=\vPi^+\vw
+        \vu &= \vPhi\bar{\vu} + \delta\vu,\quad \bvu=\vPhi^{\dagger}\vu\\
+        \vw &= \vPi\bar{\vtheta} + \delta\vw,\quad \bvtheta=\vPi^{\dagger}\vw
     \end{align}
 \end{subequations}
-where $\vPhi\in\mathbb{R}^{MP\times N_C}$ is a matrix of $M\times N_{C}$ blocks, with the $(i,j)$-th block as $\vvarphi_i^j$, $\vPhi^+\in\mathbb{R}^{N_{C}\times MP}$ is the left inverse of $\vPhi$, with the $(i,j)$-th block as $\vvarphi_i^{j+}=\frac{|E_i|}{|\Omega_j|}\vvarphi_i^{jT}$ and $\delta\vu$ is the collection of deviations from the average temperature. Moreover,
+where $\vPhi\in\mathbb{R}^{MP\times N_C}$ is a matrix of $M\times N_{C}$ blocks, with the $(i,j)$-th block as $\vvarphi_i^j$, $\vPhi^{\dagger}\in\mathbb{R}^{N_{C}\times MP}$ is the left inverse of $\vPhi$, with the $(i,j)$-th block as $\vvarphi_i^{j\dagger}=\frac{|E_i|}{|\Omega_j|}\vvarphi_i^{jT}$ and $\delta\vu$ is the collection of deviations from the average temperature. Moreover,
 \begin{equation}
     \vPi = \begin{bmatrix}
         \vM & \vzero\\
         \vzero & \vN
-    \end{bmatrix},\quad \vPi^{+} = \begin{bmatrix}
-        \vM^{+} & \vzero\\
-        \vzero & \vN^{+}
+    \end{bmatrix},\quad \vPi^{\dagger} = \begin{bmatrix}
+        \vM^{\dagger} & \vzero\\
+        \vzero & \vN^{\dagger}
     \end{bmatrix}
 \end{equation}
 where $\vM\in\mathbb{R}^{K^{-}P\times\NGamma}$, $\vN\in\mathbb{R}^{K^{+}P\times\NGamma}$ correspond to the lifting matrices from the minus-and-plus interface average temperatures $\bvtheta^{-},\bvtheta^{+}\in\mathbb{R}^{\NGamma}$. By their definitions, the projection matrices satisfy,

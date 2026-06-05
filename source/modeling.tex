@@ -54,11 +54,18 @@ This work leverages the \emph{lumped capacitance model} (LCM), a first-principle
 
 \paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], a modified version of the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
 \begin{equation}
-    \int_{\Omega_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN^e_i}\int_{e_{ij}}q^{(e)}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{(c)}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma
+    \int_{\Omega_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN^e_i}\int_{e_{ij}}q^{(e)}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{(c)}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma\label{eqn_general_lcm}
 \end{equation}
-where $q^{(e)}_{ij}$ and $q^{(c)}_{ij}$ correspond to the heat flux due to neighboring elements with perfect ($e_{ij}$) and imperfect $(\Gamma_{ij})$ interfacing surfaces, while $q_{ib}$ and $q_{iT}$ are the heat flux contributions from the Neumann and Dirichlet boundary conditions on the $e_{iq}$ and $e_{iT}$ interfaces.
+where $q^{(e)}_{ij}$ and $q^{(c)}_{ij}$ correspond to the heat flux due to neighboring elements with perfect ($e_{ij}$) and imperfect $(\Gamma_{ij})$ interfacing surfaces, while $q_{ib}$ and $q_{iT}$ are the heat flux contributions from the Neumann and Dirichlet boundary conditions on the $e_{iq}$ and $e_{iT}$ interfaces. A multi-layered example is provided in Appendix [X] describing the derivation of \cref{eqn_general_lcm} from the DG-FEM formulation. 
 
-\paragraph*{Contact Dynamics} Consider Fig. [X], where the interface $\Gamma_k=\partial\Omega_{l(k)}\cap\partial\Omega_{r(l)}$ is magnified to depict the governing heat transfer mechanisms. For interface $\Gamma_k$ define the average temperature on the 
+\paragraph*{Contact Dynamics} Consider Fig. [X], where the interface $\Gamma_r=\partial\Omega^{-}_{r}\cap\partial\Omega^{+}_r$ is magnified to depict the governing heat transfer mechanisms. For interface $\Gamma_r$, define the average trace temperatures as,
+\begin{equation}
+    \btheta_r^{-}(t) = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T_r^{-}(\vu,t)d\Gamma,\quad \btheta_r^{+}(t) = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T_r^{+}(\vu,t)d\Gamma
+\end{equation}
+where $\btheta_r^{-}$ and $\btheta_r^{+}$ correspond to the averaged interfacial temperatures on either side of interface $\Gamma_r$. Now, the total temperature drop between lumped masses $i$ and $j$ across interface $\Gamma_r$ may be written as,
+\begin{equation}
+    \bu_i - \bu_j = 
+\end{equation}
 
 
 

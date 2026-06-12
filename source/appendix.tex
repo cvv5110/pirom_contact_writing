@@ -21,12 +21,12 @@ Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulat
 
 Let $\cN_i$ denote the collection of elements neighboring element $E_i$. The following separation is introduced,
 \begin{equation}
-    \cN_i = \cN_i^{e}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
+    \cN_i = \cN_i^{b}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
 \end{equation}
-where $\cN_i^{e}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
+where $\cN_i^{b}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
 \begin{subequations}
     \begin{align}
-        \cN_i^{e} &= \left\{j\in\{1,\ldots,M\} \:|\: E_j\cap E_i = e_{ij}\neq\emptyset, e_{ij}\subseteq\Omega\right\},\\
+        \cN_i^{b} &= \left\{j\in\{1,\ldots,M\} \:|\: E_j\cap E_i = e_{ij}\neq\emptyset, e_{ij}\subseteq\Omega\right\},\\
         \cN_{ir}^{c} &= \left\{j\in\{1,\ldots,M\} \:|\: \partial E_i\cap \partial E_j \cap\Gamma_r \neq \emptyset\right\}
     \end{align}
 \end{subequations}
@@ -37,10 +37,10 @@ Under this separation, the Interior Penalty Galerkin (IPG) scheme yields the fol
 where $\epsilon$ is a user-specified parameter, and,
 \begin{subequations}
     \begin{align}
-        a_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
-        &\quad + \epsilon \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
+        a_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
+        &\quad + \epsilon \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
         L^{(c)}_{i}(v) &= \sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^{c}}\int_{\Gamma_{il}} v q^{(c,r)}_{il}d\Gamma_{il}\\
-        L^{(b)}_i(v) &= \epsilon\sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
+        L^{(b)}_i(v) &= \epsilon\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
     \end{align}
 \end{subequations}
 In the bi-linear form above, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at a boundary $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
@@ -57,7 +57,7 @@ Next, the DG-based FOM is written in an element-wise form. For the $i$-th elemen
 \end{equation}
 where $\phi_k^i$ is the $k$-th basis function for the $i$-th element, where the conditions from Eq. [X] are satisfied. Evaluating the bi-linear forms leads to the following system of ODEs,
 \begin{equation}
-    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{e}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)}(\vu,t) + \vf_i^{(b)}
+    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{b}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)}(\vu,t) + \vf_i^{(b)}
 \end{equation}
 where, for $k,l=1,2,\dots,P$,
 \begin{subequations}
@@ -65,11 +65,11 @@ where, for $k,l=1,2,\dots,P$,
         \left[\vA_i\right]_{kl} &= \int_{E_i}\rho_i c_{p,i}\phi_k^i\phi_l^i dE_i\\
         \left[\vB_i\right]_{kl} &= \int_{E_i}\vk_i\nabla\phi_k^i\cdot\nabla\phi_l^i dE_i\\
         \left[\vB_{ij}^{i}\right]_{kl} &= \left\{\begin{matrix}
-            &-\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn_i\right\}\phi_l^i + \sigma\left[\phi_k^i\right]\phi_l^id\Gamma, & j\in\cN_i^{e}\cup\left\{T\right\}\\
+            &-\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn_i\right\}\phi_l^i + \sigma\left[\phi_k^i\right]\phi_l^id\Gamma, & j\in\cN_i^{b}\cup\left\{T\right\}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
         \left[\vB_{ij}^{j}\right]_{kl} &= \left\{\begin{matrix}
-            &\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_i^{e}\cup\left\{T\right\}\\
+            &\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_i^{b}\cup\left\{T\right\}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
         \left[\vf_{i}^{(c)}\right]_{k} &= \left\{\begin{matrix}
@@ -90,8 +90,8 @@ where $\vu = \left[\vu_1^\top,\ldots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ a
     \begin{align}
         \vB_{ij} &= \left\{
         \begin{matrix}
-            &\vB_i(\vu) + \sum_{j\in\cN_i^{e}\cup\left\{T\right\}}\vB_{ij}^i, & i=j\\
-            &\vB_{ij}^j, & i\neq j, j\in\cN_i^{e}\cup\left\{T\right\}\\
+            &\vB_i(\vu) + \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\vB_{ij}^i, & i=j\\
+            &\vB_{ij}^j, & i\neq j, j\in\cN_i^{b}\cup\left\{T\right\}\\
             &\vzero, &i\neq j, j\in\cN_i^c\\
             &\vzero, &\text{otherwise}
         \end{matrix}

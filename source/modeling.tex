@@ -62,7 +62,7 @@ where $q^{b}_{ij}$ and $q^{c}_{ij}$ correspond to the heat flux due to neighbori
 
 \paragraph*{Closure for Interfcial Heat Flux} The presence of TCRs at the component interfaces introduces additional modeling considerations for the heat flux constraints $q_{ij}^{c}$. Consider Fig. [X], where the interface $\Gamma_r=\partial\Omega^{c,-}_{r}\cap\partial\Omega^{c,+}_r$ is magnified to depict the governing heat transfer mechanisms, and where $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ denote the left and right \emph{contact subdomains} of components that share an imperfect interface $\Gamma_r$, respectively. Moreover, let $\btheta_r^{-}$ and $\btheta_r^{+}$ denote the average trace temperatures to the left and right of the interfaces defined as,
 \begin{equation}
-    \btheta_r^{-} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{-}d\Gamma,\qquad \btheta_r^{+} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{+}d\Gamma
+    \btheta_r^{-} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{-}(\vu,t)d\Gamma,\qquad \btheta_r^{+} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{+}(\vu,t)d\Gamma
 \end{equation}
 where $T^{-}$ and $T^{+}$ are the temperature fields in $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$, respectively. Now, the total temperature difference between the lumped massess across the interface $\Gamma_r$ is given by,
 \begin{subequations}
@@ -76,7 +76,7 @@ Additionally, define the bulk thermal resistances of the left and right layers a
     \bar{q}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)} = g_{r}\Delta\btheta_r\label{eqn_interface_heat_flux_closure}
 \end{equation}
 
-\paragraph*{Temperature Jump Dynamics} Under the presence of TCRs, the classical LCM is modified to include the contact temperature jumps $\Delta\btheta_r$ as additional states, governed by the heat-flux continuity constraints across the interfaces. The temperature jump dynamics is derived from either: (i) the DG-FEM formulation using a coarse-grained approach as detailed in [APPENDIX], or (ii) the energy conservation constraints at the interface level. From the energy conservation point of view, the algebraic constraints in Eq. [X] are differentiated with respect to time to capture the transient response of the contact temperature jump to changes in boundary conditions, material properties, and TCRs.
+\paragraph*{Temperature Jump Dynamics} Under the presence of TCRs, the classical LCM is modified to include the contact temperature jumps $\Delta\btheta_r$ as additional states, governd by heat-flux continuity across interfaces. The temperature jump dynamics is derived from either: (i) the DG-FEM formulation using a coarse-grained approach as detailed in [APPENDIX], or (ii) the energy conservation constraints at the interface level. From energy conservation, the algebraic constraints in Eq. [X] are differentiated with respect to time to capture the transient temperature jump dynamics to changes in boundary conditions, material propeties, and TCRs.
 
 For instance, the heat flux closure in Eq.~\eqref{eqn_interface_heat_flux_closure} is differnetiated with respect to time to yield,
 \begin{equation}

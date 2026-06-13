@@ -1,11 +1,9 @@
 \appendix
 \section{Appendix}
 
-This appendix provides the technical details of the main text. 
+This appendix provides the technical details of the main text, providing the DG-FEM formulation of the FOM, the derivation of the lifted LCM model, and a coarse-grainig example for a three-layered TPS.
 
 \subsection{Modeling of Hypersonic Thermal Protection Systems}
-
-This section provides the detailed formulation of the finite-element model (FEM) based on the Discontinuous Galerkin (DG) method, as well as the one-dimensional FEM, and the lumped capacitance model for the modeling of the thermal dynamics of multi-layered TPS with imperfect interface contacts.
 
 \subsubsection{Governing Equations}
 
@@ -13,17 +11,22 @@ This section provides the detailed formulation of the finite-element model (FEM)
 
 \subsubsection{Full-Order Model: Finite Element Method}
 
-\paragraph*{Domain Discretization} Consider the partition of the domain $\Omega$ into $M$ non-overlapping elements $\left\{E_m\right\}_{m=1}^M$, such that $\cup_{m=1}^ME_m = \Omega$ and $E_m\cap E_n = \emptyset$ for $m\neq n$. For each element, define the set of basis functions $\left\{\phi_j(x)\right\}_{j=1}^P$. The temperature field is approximated as,
+\paragraph*{Domain Discretization} Consider the partition of the TPS domain in Fig. [X] into $N_{C}$ components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where each component is continuous domain with its own temperature-varying material properties. Each component $\Omega_i$ is further divided into two sub-components: (i) $\Omega_i^c\subset\Omega_i$ consistsing of a thin layer of material that \emph{is in direct contact with a neighboring component across an imperfect-contact interface}, and (ii) $\Omega_i^{b}\subset\Omega_i$ consisting of the \emph{remaining bulk material that do not have boundaries in direct contact with neighboring components}. Note that one component may have multiple imperfect-contact interfaces, and thus may have multiple contact domains $\Omega_i^c$. For example, in Fig. [X], the component $\Omega_2$ has two neighboring components with imperfect contacts on $\Gamma_1$ and $\Gamma_3$, and thus has two contact domains $\Omega_2^{c,1}$ and $\Omega_2^{c,3}$, and one non-contact domain $\Omega_2^{b}$ that is not in direct contact with any neighboring component; clearly, $\Omega_2 = \Omega_2^{c,1}\cup\Omega_2^{c,3}\cup\Omega_2^{b}$ and $\Omega_2^{c,1}\cap\Omega_2^{c,3} = \emptyset$.
+
+Additionally, denote the collection of all elements as $\left\{E_i\right\}_{i=1}^{M}$, and let $\cV=\left\{1,2,\dots,M\right\}$ be the index set of all elements. 
+
+
+
+
+domain $\Omega$ into $M$ non-overlapping elements $\left\{E_m\right\}_{m=1}^M$, such that $\cup_{m=1}^ME_m = \Omega$ and $E_m\cap E_n = \emptyset$ for $m\neq n$. For each element, define the set of basis functions $\left\{\phi_j(x)\right\}_{j=1}^P$. The temperature field is approximated as,
 
 \subsubsection{Weak Form of Discontinuous Galerkin Method}
 
-Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite tenperature jump across the interface caused by imperfect thermal contact.
-
-Let $\cN_i$ denote the collection of elements neighboring element $E_i$. The following separation is introduced,
+Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite temperature jump across the interface caused by imperfect thermal contact. For each element, let $\cN_i$ denote the collection of elements neighboring element $E_i$, where the following separation of neighboring elements is introduced,
 \begin{equation}
     \cN_i = \cN_i^{b}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
 \end{equation}
-where $\cN_i^{b}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, and $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
+Here, $\cN_i^{b}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, while $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
 \begin{subequations}
     \begin{align}
         \cN_i^{b} &= \left\{j\in\{1,\ldots,M\} \:|\: E_j\cap E_i = e_{ij}\neq\emptyset, e_{ij}\subseteq\Omega\right\},\\

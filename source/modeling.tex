@@ -26,9 +26,9 @@ For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\
 
 \subsection{Full-Order Model}
 
-The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) that captures the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is chosen to describe the FOM as it: (i) provices a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
+The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) for the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is leveraged for discretization as it: (i) provides a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM spatial discretization of the governing PDE, where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, where each element belong to one and only one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
+Consider a DG-FEM discretization where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, and where each element belongs to one and one one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
 \begin{equation}
     T_i(x,t) = \sum_{p=1}^P \vphi_p(x) u_{i,p}(t),\qquad x\in E_i
 \end{equation}
@@ -52,40 +52,48 @@ As with the FOM, the TCR introduces additional considerations in the formulation
 
 \section{Lumped Capacitance Model with Imperfect Contacts}
 
-This work leverages the \emph{lumped capacitance model} (LCM), a first-principle physics-based model of the TPS that captures the transient component-wise average temperature of the TPS [Incropera2011]. Nonetheless, the presence of TCRs at the interfaces introduces additional modeling considerations since the temperature drop across an interface includes, in addition to the bulk drop across the interface, a contribution from the contact resistance. The following discussion presents the formulation of the LCM for modeling the transient thermal response of the TPS with unknown TCRs, and the separation of dynamics into \emph{bulk} and \emph{contact} contributions.
+This work leverages the \emph{lumped capacitance model} (LCM) as the physics-based model for in the PIROM to capture the transient component-wise average temperature of the TPS [Incropera2011]. The presence of TCRs at the interfaces introduces additional modeling considerations since the temperature drop across an interface includes, in addition to the bulk drop temperature drop, a contribution fromn the contac resistance. The following discussion presents the formulation of the LCM for modeling the transient thermal response of the TPS with unknown TCRs, and the separation of dynamics into \emph{bulk} and \emph{contact} contributions.
 
 \paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], a modified version of the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
 \begin{equation}
     \int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN^b_i}\int_{e_{ij}}q^{b}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{c}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma\label{eqn_general_lcm}
 \end{equation}
-where $q^{b}_{ij}$ and $q^{c}_{ij}$ correspond to the heat flux due to neighboring elements with perfect ($e_{ij}$) and imperfect $(\Gamma_{ij})$ interfacing surfaces, while $q_{ib}$ and $q_{iT}$ are the heat flux contributions from the Neumann and Dirichlet boundary conditions on the $e_{iq}$ and $e_{iT}$ interfaces. A multi-layered example is provided in Appendix [X] describing the derivation of \cref{eqn_general_lcm} from a coarse DG-FEM discretization of the governing PDE.
+where $q^{b}_{ij}$, $q^{c}_{ij}$, $q_{ib}$, and $q_{iT}$ are the heat flux contributions due to neighboring elementts with perfect ($e_{ij}$) contact, imperfect ($\Gamma_{ij}$) contact, Neumann boundary conditions ($e_{iq}$), and Dirichlet boundary conditions ($e_{iT}$), respectively. Moreover, $\cN_i^b$ and $\cN_i^c$ are the sets of neighboring elements with perfect and imperfect contact, respectively.
 
 \paragraph*{Closure for Interfcial Heat Flux} The presence of TCRs at the component interfaces introduces additional modeling considerations for the heat flux constraints $q_{ij}^{c}$. Consider Fig. [X], where the interface $\Gamma_r=\partial\Omega^{c,-}_{r}\cap\partial\Omega^{c,+}_r$ is magnified to depict the governing heat transfer mechanisms, and where $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ denote the left and right \emph{contact subdomains} of components that share an imperfect interface $\Gamma_r$, respectively. Moreover, let $\btheta_r^{-}$ and $\btheta_r^{+}$ denote the average trace temperatures to the left and right of the interfaces defined as,
 \begin{equation}
     \btheta_r^{-} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{-}(\vu,t)d\Gamma,\qquad \btheta_r^{+} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{+}(\vu,t)d\Gamma
 \end{equation}
-where $T^{-}$ and $T^{+}$ are the temperature fields in $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$, respectively. Now, the total temperature difference between the lumped massess across the interface $\Gamma_r$ is given by,
+where $T^{-}$ and $T^{+}$ correspond to the temperature fields on $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$, respectively. The total temperature difference between the lumped masses across the interface $\Gamma_r$ is given by,
 \begin{subequations}
     \begin{align}
         \underbrace{\bu^{-} - \bu^{+}}_{\text{total lumped drop}} &= \underbrace{\bigl(\bu^{-} - \btheta_r^-\bigr) + \bigl( \btheta_r^+  - \bu^{+}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\btheta_r^- - \btheta_r^+\bigr)}_{\text{contact drop}}\\
         &= \left(\bu^{-} - \btheta_r^-\right) + \left(\btheta_r^+ - \bu^{+}\right) - \Delta\btheta_r\label{eqn_drop_decomposition}
     \end{align}
 \end{subequations}
-Additionally, define the bulk thermal resistances of the left and right layers as $R_r^{-} = l_r^{-}/k_r^{-}(\bu^{-})A$ and $R_r^{+} = l_r^{+}/k_r^{+}(\bu^{+})A$, respectively, and let $S_r(\bvu) = R_r^{-} + R_r^{+}$ be the effective bulk resistance between the lumped masses. Moreover, the contact resistance and conductances across the interface are denoted as $R_{r}$ and $g_{r} = 1/R_{r}$, respectively. By conservation of energy, the total bulk heat flux across the interface is equal to the contact heat flux across the interface, therefore,
+Additionally, define the bulk left $R_r^{-} = \frac{l_r^{-}}{k_r^{-}A}$, bulk right $R_r^{+} = \frac{l_r^{+}}{k_r^{+}(\bu^{+})A}$, and imperfect contact $R_r = \frac{1}{g_r}$ thermal resistances, with $S_r(\bvu) = R_r^{-} + R_r^{+}$ as the effective bulk resistance between the lumped masses. Then, by conservation of energy across $\Gamma_r$, the total bulk heat flux across the interface is equal to the contact heat flux across the interface, therefore,
 \begin{equation}
-    \bar{q}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)} = g_{r}\Delta\btheta_r\label{eqn_interface_heat_flux_closure}
+    q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)} = g_{r}\Delta\btheta_r = q^{c}_r(t)\label{eqn_interface_heat_flux_closure}
 \end{equation}
 
-\paragraph*{Temperature Jump Dynamics} Under the presence of TCRs, the classical LCM is modified to include the contact temperature jumps $\Delta\btheta_r$ as additional states, governd by heat-flux continuity across interfaces. The temperature jump dynamics is derived from either: (i) the DG-FEM formulation using a coarse-grained approach as detailed in [APPENDIX], or (ii) the energy conservation constraints at the interface level. From energy conservation, the algebraic constraints in Eq. [X] are differentiated with respect to time to capture the transient temperature jump dynamics to changes in boundary conditions, material propeties, and TCRs.
-
-For instance, the heat flux closure in Eq.~\eqref{eqn_interface_heat_flux_closure} is differnetiated with respect to time to yield,
+\paragraph*{Temperature Jump Dynamics} The classical LCM is modified to include the contact temperature jumps $\Delta\btheta_r$ as additional states, governed by the heat-flux continuity constraints at the imperfect interfaces. The temperature jump dynamics may be derived form either: (i) the DG-FEM formulation using coarse-graining as detailed in [APPENDIX], or (ii) the energy conservation constraints at the interface level. From an energy conservation standpoint, the algebraic constraints in Eq. [X] are differentiated with respect to time to capture the transient temperature jump dynamics to changes in boundary conditions, material propeties, and TCRs. The result is written as,
 \begin{equation}
     \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\btheta}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}
 \end{equation}
 Collecting terms for all interfaces yields the following syste of ODEs governing the dynamics of the contact temperature jumps,
 \begin{equation}
-    \vC\left(\bvu;\vR_x\right)
+    \left[\vI + \vG \vS(\bvu)\right]\Delta\dot{\btheta} = \vD\dot{\bvu} - \vG \Delta\btheta \,\dot{\vS}(\bvu)
 \end{equation}
+where,
+\begin{subequations}
+    \begin{align}
+        \vG =& \text{diag}(g_1, g_2, \dots, g_{N_{\Gamma}})\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}\\
+        \vS(\bvu) =& \text{diag}(S_1(\bvu), S_2(\bvu), \dots, S_{N_{\Gamma}}(\bvu))\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}
+    \end{align}
+\end{subequations}
+with $\vD\in\mathbb{R}^{N_{\Gamma}\times N_C}$ as the difference
+
+is the difference matrix that computes the lumped temperature differences across the interfaces.
 
 
 \begin{equation}
@@ -93,6 +101,10 @@ Collecting terms for all interfaces yields the following syste of ODEs governing
 \end{equation}
 
 
+\paragraph*{Lifted State-Space Formulation}  
+
+
+A multi-layered examplem is provided in Appendix [X] describing the derivation of \cref{eqn_general_lcm} from a coarse DG-FEM discretization of the governing PDE.
 
 
 

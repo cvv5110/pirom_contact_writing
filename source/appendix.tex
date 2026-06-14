@@ -1,28 +1,20 @@
 \appendix
 \section{Appendix}
 
-This appendix provides the technical details of the main text, providing the DG-FEM formulation of the FOM, the derivation of the lifted LCM model, and a coarse-grainig example for a three-layered TPS.
+This appendix provides the technical details of the main text, providing the DG-FEM formulation of the FOM, coarse-graining procedure for the LCM,
 
-\subsection{Modeling of Hypersonic Thermal Protection Systems}
+the derivation of the lifted LCM model, and a coarse-grainig example for a three-layered TPS.
 
-\subsubsection{Governing Equations}
-
-\dots
-
-\subsubsection{Full-Order Model: Finite Element Method}
+\subsection{Discontinuous Galerkin Finite-Element Formulation}
 
 \paragraph*{Domain Discretization} Consider the partition of the TPS domain in Fig. [X] into $N_{C}$ components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where each component is continuous domain with its own temperature-varying material properties. Each component $\Omega_i$ is further divided into two sub-components: (i) $\Omega_i^c\subset\Omega_i$ consistsing of a thin layer of material that \emph{is in direct contact with a neighboring component across an imperfect-contact interface}, and (ii) $\Omega_i^{b}\subset\Omega_i$ consisting of the \emph{remaining bulk material that do not have boundaries in direct contact with neighboring components}. Note that one component may have multiple imperfect-contact interfaces, and thus may have multiple contact domains $\Omega_i^c$. For example, in Fig. [X], the component $\Omega_2$ has two neighboring components with imperfect contacts on $\Gamma_1$ and $\Gamma_3$, and thus has two contact domains $\Omega_2^{c,1}$ and $\Omega_2^{c,3}$, and one non-contact domain $\Omega_2^{b}$ that is not in direct contact with any neighboring component; clearly, $\Omega_2 = \Omega_2^{c,1}\cup\Omega_2^{c,3}\cup\Omega_2^{b}$ and $\Omega_2^{c,1}\cap\Omega_2^{c,3} = \emptyset$.
 
 Additionally, denote the collection of all elements as $\left\{E_i\right\}_{i=1}^{M}$, and let $\cV=\left\{1,2,\dots,M\right\}$ be the index set of all elements. 
 
 
-
-
 domain $\Omega$ into $M$ non-overlapping elements $\left\{E_m\right\}_{m=1}^M$, such that $\cup_{m=1}^ME_m = \Omega$ and $E_m\cap E_n = \emptyset$ for $m\neq n$. For each element, define the set of basis functions $\left\{\phi_j(x)\right\}_{j=1}^P$. The temperature field is approximated as,
 
-\subsubsection{Weak Form of Discontinuous Galerkin Method}
-
-Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite temperature jump across the interface caused by imperfect thermal contact. For each element, let $\cN_i$ denote the collection of elements neighboring element $E_i$, where the following separation of neighboring elements is introduced,
+\paragraph*{Variational Formulation} Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite temperature jump across the interface caused by imperfect thermal contact. For each element, let $\cN_i$ denote the collection of elements neighboring element $E_i$, where the following separation of neighboring elements is introduced,
 \begin{equation}
     \cN_i = \cN_i^{b}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
 \end{equation}
@@ -52,9 +44,7 @@ In the bi-linear form above, the notations of $\left[\right]$ and $\left\{\right
 \end{equation}
 Furthermore, the terms associated with $\sigma$ are introduced to enforce the Dirichlet boundary conditions, where $\sigma$ is a user-specified penalty parameter whose value depend on the size of an element. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have similar convergence rate with respect to mesh size.
 
-\subsubsection{Discontinous Galerkin Model}
-
-Next, the DG-based FOM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in Eq. [X] that satisfy the conditions in Eq. [X]. Using test functions same as trial functions, the dynamics of the coefficients $\vu_i(t) = \left[u_{i,1}(t),\ldots,u_{i,P}(t)\right]^\top$ for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
+\paragraph*{Galerkin Projections} Next, the DG-based FOM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in Eq. [X] that satisfy the conditions in Eq. [X]. Using test functions same as trial functions, the dynamics of the coefficients $\vu_i(t) = \left[u_{i,1}(t),\ldots,u_{i,P}(t)\right]^\top$ for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
 \begin{equation}
     a_{\epsilon,i}(\phi_k^i,T) = L^{(c)}_i(\phi_k^i) + L^{(b)}_i(\phi_k^i),\quad k=1,\ldots,P
 \end{equation}
@@ -139,65 +129,11 @@ where $T^{-}_i$ and $T^{+}_j$ denote the temperature traces on the minus and plu
 \end{subequations}
 where $\vn_i=-\vn_j$ is the unit normal vector of the interface $\Gamma_{ij}$ pointing from component $i$ to component $j$. Thus, across an imperfect contact interface, the heat flux is conserved, while the temperature is allowed to be discontinuous.
 
-\subsection{Modified Lumped Capacitance Model}
+\subsection{Coarse-Graining Procedure}
 
-The TPS is divided into $N$ components with $M$ elements. For component $i$, define $\Omega_i$ as the spatial domain of the component, and $\partial\Omega_i$ as the boundary of the component. For each interface between two components, define $l(i)$ and $r(i)$ as the left and right components that form the interface, respectively. 
+\paragraph*{Detailed Derivation of Coarse-Graining} The coarse-graining procedure for the 
 
-For interface $i$, define $\Gamma_i=\partial\Omega_{l(i)}\cap\partial\Omega_{r(i)}$,
-\begin{subequations}
-    \begin{align}
-        \theta_i^{-} (t) &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} T^{-}_h(x,t)d\Gamma,\\
-        \theta_i^{+}(t) &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} T^{+}_h(x,t)d\Gamma\\
-        \Delta\theta_i(t) &= \theta_i^{-}(t) - \theta_i^{+}(t)
-    \end{align}
-\end{subequations}
-Define the trace operators,
-\begin{subequations}
-    \begin{align}
-        C_i^{-}\vu &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} \sum_{j=1}^{N_u} u_j(t)\phi_j(x)d\Gamma,\\
-        C_i^{+}\vu &= \frac{1}{\left|\Gamma_i\right|}\int_{\Gamma_i} \sum_{j=1}^{N_u}u_j(t)\phi_j(x)d\Gamma
-    \end{align}
-\end{subequations}
-Stacking all the $N_{\Gamma}$ interfaces, define the trace extraction operator as,
-\begin{equation}
-    \vPsi^+ = \begin{bmatrix}
-        C_1^{-} - C_1^{+}\\
-        \vdots\\
-        C_{N_{\Gamma}}^{-} - C_{N_{\Gamma}}^{+}
-    \end{bmatrix}\in\mathbb{R}^{N_{\Gamma}\times MP}
-\end{equation}
-where $M$ is the number of elements and $P$ is the number of basis functions per element. Therefore, it follows that,
-\begin{equation}
-    \vs(t) = \vPsi^+\vu(t)
-\end{equation}
-Thus,
-\begin{equation}
-    \vPi^+ = \begin{bmatrix}
-        \vPhi^+ \\ 
-        \vPsi^+
-    \end{bmatrix}
-\end{equation}
-
-Introduce the lifting matrix,
-\begin{equation}
-    \vPsi\in\mathbb{R}^{MP\times N_{\Gamma}}
-\end{equation}
-such that,
-\begin{equation}
-    \vPhi^+\vPsi = \vzero,\quad \vPsi^+\vPsi = \vI
-\end{equation}
-
-Note that $\Phi\bvu$ contributes $E_{\Gamma}\bvu$ to the interface jump, therefore the state decomposition can be written as,
-\begin{equation}
-    \vu = \vPhi\bvu + \vPsi\left(\Deltavtheta - E_{\Gamma}\bvu\right) + \delta\vu = \tilde{\vPhi}\bvu + \vPsi\Deltavtheta + \delta\vu
-\end{equation}
-where $\tilde{\vPhi} = \vPhi - \vPsi E_{\Gamma}$, and $\delta\vu$ is the deviation from the average temperature in the components.
-
-\paragraph*{Important point:} The critical assumption is that the contact domains $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ are sufficiently thin such that their transient thermal response is negligible, and thus the contact temperature jumps $\Delta\btheta_r$ are governed by algebraic constraints for heat-flux continuity across the interfaces.
-
-\subsection{Coarse-Graining Example}
-
-Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
+\paragraph*{Coarse-Graining Example} Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
 \begin{subequations}
     \begin{align}
         \cV_j &= \left\{m\in\{1,\ldots,M\}:E_m\subseteq\Omega_j\right\},\\
@@ -206,3 +142,5 @@ Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\
     \end{align}
 \end{subequations}
 where $\Omega_{l(k)}$ and $\Omega_{r(k)}$ are the left and right components that form the interface $\Gamma_k$, respectively, with $\Gamma_k = \partial\Omega_{l(k)}\cap\partial\Omega_{r(k)}$.
+
+\paragraph*{Important point:} The critical assumption is that the contact domains $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ are sufficiently thin such that their transient thermal response is negligible, and thus the contact temperature jumps $\Delta\btheta_r$ are governed by algebraic constraints for heat-flux continuity across the interfaces.

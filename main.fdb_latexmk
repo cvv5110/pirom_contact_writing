@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1781460500.78149 "/Users/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1781460502.22885 0
-  "/Users/cavarga/pirom_contact_writing/main.tex" 1781281425.65234 3748 3015b2736e05610bd8f09155b2337ee6 ""
+["pdflatex"] 1781544092.4279 "/Users/cavarga/pirom_contact_writing/main.tex" "main.pdf" "main" 1781544093.86369 0
+  "/Users/cavarga/pirom_contact_writing/main.tex" 1781537983.69902 3784 e36afe12f448e153bf878dc8bdd074a5 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy6.tfm" 1246382020 1124 14ccf5552bc7f77ca02a8a402bea8bfb ""
   "/usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy8.tfm" 1246382020 1120 200be8b775682cdf80acad4be5ef57e4 ""
@@ -88,12 +88,12 @@
   "figs/modeling/interface.png" 1781237085.68347 40717 c739c5c9582d775f38e75589d8f8da8c ""
   "figs/results/rpm4_tc1.png" 1781237085.68524 659901 986141210fb2b7c51731fb3e5b28fc7e ""
   "figs/results/rpm4_tc6.png" 1781237085.68694 761280 2941c36a144ed85b8de489c8d72b47f0 ""
-  "main.aux" 1781460502.17562 6239 f7c5cbd454f024083b13b24926d38008 "pdflatex"
-  "main.tex" 1781281425.65234 3748 3015b2736e05610bd8f09155b2337ee6 ""
+  "main.aux" 1781544093.81389 6239 6e5873b92c71ea27180d1a71b7258891 "pdflatex"
+  "main.tex" 1781537983.69902 3784 e36afe12f448e153bf878dc8bdd074a5 ""
   "source/appendix.tex" 1781456016.04069 13349 b96a581a6d0c0eef80470d7e96e6b1b3 ""
   "source/conclusions.tex" 1781237085.81589 1459 5bfb20e7372563b7674e8f1e9c1c5b6b ""
-  "source/introduction.tex" 1781460500.61572 6449 d09e0e4b31692244707a64c87ce7f711 ""
-  "source/modeling.tex" 1781460385.42511 23268 9a1b7471e70b769812e39be48c78b99d ""
+  "source/introduction.tex" 1781536112.5768 6449 d09e0e4b31692244707a64c87ce7f711 ""
+  "source/modeling.tex" 1781544092.25326 24739 8b8012443b6213a199823aaf9c0169d6 ""
   "source/pirom.tex" 1781237085.81619 11076 9fc5cde4f046e4413abd55ebc06f4d0f ""
   "source/results.tex" 1781237085.8163 2486 74f5a19bb2093b3102b23c8c94cac771 ""
   (generated)

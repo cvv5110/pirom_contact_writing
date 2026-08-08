@@ -2,32 +2,58 @@
 
 In this section, the proposed PIROM approach is applied to modeling a four-layered hypersonic TPS with unknown contact resistances, and is compared against a representative physics-based model, i.e., FEMs, and data-driven surrogate model, i.e., a neural ordinary differential equation (NODE) model. The performance of the models is assessed in terms of their ability to infer the TCRs, and to predict the transient temperature dynamics under varying boundary conditions and material properties. The configuration of the TPS, problem parametrization, optimal model design for inference, and numerical results are presented next.
 
-\subsection{Configuration of Thermal Protection System}
+\subsection{Problem Description and Parametrization}
 
-\subsection{Problem Parametrization}
 
-\subsection{Optimal Model Design for Inference}
+\subsection{Model Selection}
 
-This section presents the procedure for optimally selecting the physics-based model for inferring the TCR. Two critical design choices are discussed: (i) formulation of the physics-based model, and (ii) experimental limitations. In the first design choice, the resolution of the physics-based model is selected to balance the trade-off between model bias and computational cost. In the second design choice, experimental limitations, such as the number of thermocouples and their placement, are selected to ensure the identifiability of the TCR inference problem.
 
-\subsubsection{Resolution of the Physics-Based Model}
 
-The dimensionality of the physics-based model is critical for the performance of the PIROM, as it directly affects the computational cost and identifiability of the TCR inference problem. A coarse model may introduce undesirable model biases that can compromise the accuracy of the inferred TCRs, while a highly-refined model may introduce unnecessary computational costs that hinder efficiency during inference. 
+\subsubsection{One-Dimensional Finite-Element Model}
+\begin{enumerate}
+    \item Discuss sensor placement and how it is done for this specific system (i.e. LBFs)
+    \item Tradeoff for $C$ vs $\delta$ vs $\mathrm{SNR}$ (however, this might be best placed in the appendix with the main takeaways in the main document)
+\end{enumerate}
 
-\paragraph*{One-Dimensional Finite-Element Model}
 
-\paragraph*{Lumped Capacitance Model}
 
-\paragraph*{Lumped Capacitance Model with Jump Dynamics}
 
-\subsubsection{Thermocouple Placement}
 
-In addition to the resolution of the physics-based model, the placement of the thermocouples is also critical for the performance of the PIROM, as it directly affects the identifiability of the TCR inference problem. 
 
-\begin{figure}
+
+
+
+
+\subsubsection{Lumped Capacitance Model}
+\begin{enumerate}
+    \item Discuss sensor placement and how it is done for this specific system (i.e. moving indices in FEM)
+    \item Tradeoff for $C$ vs $\delta$ vs $\mathrm{SNR}$ (however, this might be best placed in the appendix with the main takeaways in the main document)
+\end{enumerate}
+
+
+
+
+\subsubsection{Remarks}
+
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.45\textwidth]{./figs/results/rpm4_tc1.png}
-    \includegraphics[width=0.45\textwidth]{./figs/results/rpm4_tc6.png}
+    \includegraphics[width=0.99\textwidth]{./figs/results/cond_mean.png}
+    \caption{.}
+    \label{fig:side-by-side}
 \end{figure}
 
-\subsection{Numerical Results}
+\begin{enumerate}
+    \item What model won? E.g. Model A with Noise B performed the best
+    \item All else should perhaps be placed in the appendix, with this section only highlighting what model we will compare the PIROM to (to reduce total number of combinations and overall noise in the paper)
+\end{enumerate}
+\subsubsection{Model Performance on Transient-Dominated Timescale}
+\subsection{PIROM Results}
+\subsubsection{PIROM Optimization}
+\begin{enumerate}
+    \item Hidden dynamics
+    \item TCR
+    \item Training costs
+\end{enumerate}
+\subsubsection{BC Generalization}
+\subsubsection{Material Generalization}
+\subsubsection{TCR Generalization}

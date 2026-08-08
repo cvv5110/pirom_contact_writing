@@ -1,21 +1,22 @@
 \section{Modeling of Hypersonic Thermal Protection Systems}
 
-The following discussion presents the modeling of the transient heat conduction problem in multi-layered hypersonic thermal protection systems (TPS) with imperfect contact resistances. Moreover, three different physics-based approaches of decreasing fidelity are presented for solving the governing equations: (i) a fine three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped-mass representation of the TPS termed the \emph{lumped capacitance model} (LCM). The governing equations and their three solutions strategies are presented next.
+The following discussion presents the modeling of the transient heat conduction problem in multi-layered hypersonic thermal protection systems (TPS) with imperfect contact resistances. Moreover, three different physics-based solution approaches are presented for solving the governing equations: (i) a fine three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped-mass representation of the TPS termed the \emph{lumped capacitance model} (LCM). The governing equations and their three solutions strategies are presented next.
 
 \subsection{Governing Equations}
 
-Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ show in Fig.~\ref{fig_general_domain}. A heat flux $q_b$ (i.e., Neumann boundary condition) is prescribed on boundary $e_q$, while a temperature $T_b$ (i.e., Dirichlet boundary condition) is prescribed on boundary $e_T$, and $\partial\Omega = \cup_{i=1}^{N}\partial\Omega_i$ where $e_{iq},e_{iT}\subset\partial\Omega_i$. The transient heat conduction dynamics is governed by the following energy PDE,
+Consider the generic domain $\Omega\subset\mathbb{R}^{d}$ show in Fig.~\ref{fig_general_domain}. A heat flux $q_b$ (i.e., Neumann boundary condition) is prescribed on boundary $e_q$, while a temperature $T_b$ (i.e., Dirichlet boundary condition) is prescribed on boundary $e_T$, and $\partial\Omega = \cup_{i=1}^{N}\partial\Omega_i$ where $e_{iq},e_{iT}\subset\partial\Omega_i$. The transient heat transfer is governed by the following energy PDE,
 \begin{subequations}
  \begin{align}
     \rho c_p \partial_t T - \nabla\cdot\left(\vk(T)\nabla T\right) &= 0, \: x\in\Omega\\
-    -\vk(T)\nabla T\cdot\vn &= q_b(x,t), \: x\in e_q\\
-    T(x,t) &= T_b(x,t), \: x\in e_T\\
-    T(x,0) &= T_0(x), \: x\in\Omega
+    -\vk(T)\nabla T\cdot\vn &= q_b(r,t), \: r\in e_q\\
+    T(r,t) &= T_b(r,t), \: r\in e_T\\
+    T(r,0) &= T_0(r), \: x\in\Omega
  \end{align}
+ \label{eq:gen_eq}
 \end{subequations}
-where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is divided into $N_C$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where $N_{\Gamma}$ different imperfect contacts are present at the interfaces between components. To aid in subsequent derivations, each component is further divided into: (i) a \emph{contact subdomain} $\Omega_i^c$ consisting of the region of the component that is in direct contact with a neighboring component across an imperfect-contact interface, and (ii) a \emph{bulk subdomain} $\Omega_i^b$ consisting of the remaining bulk material that do not have boundaries in direct contact with neighboring components; therefore, each component $\Omega_i$ is decomposed into a bulk and contact subdomain as $\Omega_i = \Omega_i^b\cup\Omega_i^c$ and $\Omega_i^b\cap\Omega_i^c = \emptyset$. The contact subdomains are introduced to capture the temperature jumps across the interfaces due to the presence of TCRs, and to provide a systematic framework for deriving reduced-order models that separate bulk and contact contributions to the overall TPS thermal response.
+\noindent where the density $\rho$ is constant, while the heat capacity $c_p$ and thermal conductivity $\vk\in\mathbb{R}^{d\times d}$ are temperature-dependent. The TPS domain is further divided into $N$ non-overlapping components $\left\{\Omega_i\right\}_{i=1}^{N}$, with $\NGamma$ different imperfect interfaces between components. Specifically, to facilitate subsequent model derivations, each domain $\Omega_i$ is further subdivided into: (i) a \emph{contact subdomain} $\Omega_i^c$ consisting of the portion of TPS layer that is in direct contact with a neighboring layer across and imperfect interface, and (ii) a \emph{bulk subdomain} $\Omega_i^b$ consisting of the remaining interior bulk material; clearly, $\Omega_i = \Omega_i^b\cup\Omega_i^c$, and $\Omega_i^b\cap\Omega_i^c = \emptyset$.
 
-For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\Gamma}=3$ imperfect contacts between components. Imperfect contacts translate into \emph{thermal contact resistances} (TCRs), which lead to temperature discontinuities at the interfaces between TPS layers. Therefore, large uncertainties in TCRs may have a significant impact on the overall heat transfer dynamics of TPS. The following discussion presents the simulation of hypersonic TPS under the presence of TCRs, where three different approaches of decreasing fidelity are presented: a full-order three-dimensional finite-element model (FOM), a one-dimensional FEM approximation, and a modified lumped capacitance model (LCM).
+For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\Gamma}=3$ imperfect contacts between components. Such partition of the TPS is introduced to systematically model the \emph{bulk} and \emph{contact} heat transfer as separate but coupled mechanisms, which becomes critical in subsequent sections to infer TCRs and learn the hidden dynamics in the PIROM. The following discussion introduces three different approaches of decreasing fidelity to modeling the hypersonic TPS system: (i) a FOM based on a three-dimensional FEM, (ii) a coarse one-dimensional FEM, and (iii) a coarse finite-volume, i.e., lumped capacitance model (LCM).
 
 \begin{figure}
     \centering
@@ -24,68 +25,141 @@ For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\
     \label{fig_general_domain}
 \end{figure}
 
-\subsection{Full-Order Model}
+\subsection{Full-Order Finite-Element Model}
 
-The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM to result in a high-dimensional system of ordinary differential equations (ODEs) for the transient temperature dynamics of the TPS with high fidelity. As in previous work [VargasVenegas2026], the DG-FEM is leveraged for discretization as it: (i) provides a systematic framework for modeling multi-layered TPS with complex geometries and material properties, (ii) provides a natural framework for incorporating TCRs at the interfaces, and (iii) is amenable to systematic model reduction via coarse-graining. In Sec. [X] the FOM numerical solutions are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
+The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM, to result in a high-dimensional system of ODEs that model the transient temperature dynamics of the TPS. The DG-FEM formulation is leveraged for discretization as it: (i) provides a systematic framework for modeling multi-layered TPS with complex geometries, varying material properties, and interfacial TCRs, and (ii) is amenable to systematic model-order reduction via coarse-graining. Note that the high-fidelity numerical simulations in Sec. \hl{[X]} are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM discretization where the entire domain $\Omega$ is partitioned into $M$ non-overlapping elements $\left\{E_i\right\}_{i=1}^M$, and where each element belongs to one and one one component of the TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
-\begin{equation}
-    T_i(x,t) = \sum_{p=1}^P \vphi_p(x) u_{i,p}(t),\qquad x\in E_i
+Consider a DG-FEM discretization where the entire domain $\Omega$ is partitioned into non-overlapping bulk $\left\{B_i\right\}_{i=1}^{B}$ and interfacial $\left\{W_i\right\}_{i=1}^{K}$ elements, so that $\left\{E_i\right\}_{i=1}^{M}$ with $M=K+B$ corresponds to the complete collection of elements, and each element belongs to one and only one component in the TPS partition. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, for an element $E_i$, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
+3\begin{equation}
+    T_i(r,t) = \sum_{p=1}^P \vphi_p(r) x_{i,p}(t),\qquad r\in E_i\label{eqn_temperature_approximation}
 \end{equation}
-Without loss of generality, let the basis functions on element $E_i$ satisfy the following orthogonality condition,
+where $\left\{x_{i,p}\right\}_{p=1}^{P}$ corresponds to the states of the $i$-th element. Without loss of generality, let the basis functions on element $E_i$ satisfy the following orthogonality condition,
 \begin{equation}
     \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q\label{eqn_basis_functions_condition}
 \end{equation}
-where $\delta_{pq}$ is the Kronecker delta. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially-varying temperature distributions within the element.
+where $\delta_{pq}$ is the Kronecker delta. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially varying temperature distributions within the element.
 
-By standard variational procedure, e.g., [Pernet2018], the full governing equation is denoted as,
+Using standard variational procedures, e.g., [Pernet2018], as detailed in Appendix [X], the full governing equation is denoted as,
 \begin{equation}
-    \vA(\vu)\dot{\vu} = \vB\left(\vu\right)\vu + \vf^{(b)}(t) + \vf^{(c)}(\vu,t)
+    \vcA(\vx)\dot{\vx} = \vcB\left(\vx\right)\vx + \vcF(t)\label{eqn_dg_fem}
 \end{equation}
-where $\vu=\left[\vu_1^\top,\vu_2^\top,\dots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ corresponds to the DG-FEM states, $\vA\in\mathbb{R}^{MP\times MP}$ and $\vB\in\mathbb{R}^{MP\times MP}$ are the tempeature-dependent mass and stiffness matrices, and $\vf^{(b)}$ and $\vf^{(c)}$ correspond to the contributions of the Neumann and imperfect contact boundary conditions, respectively.
+where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes the states for $B$ bulk and $K$ contact elements, i.e., $\vcA\in\mathbb{R}^{MP\times MP}$ and $\vcB\in\mathbb{R}^{MP\times MP}$ are the temperature-dependent mass and stiffness matrices, and $\vcF(t)$ corresponds to the contributions from the boundary conditions, respectively.
 
 \subsection{One-Dimensional Finite-Element Model}
 
-This approach follows a \emph{one-dimensional} FEM (1D-FEM) approach, where the governing PDE is spatially discretized using a standard FEM with linear basis functions along the thickness direction of the TPS, while the in-plane temperature gradients are neglected. This simplification is commonly used in the literature for modeling heat conduction in multi-layered TPS, since under hypersonic thermal loading, the temperature gradient along the thickness direction of the structure is significantly higher than the in-plane temperature gradients, and thus the through-thickness temperature distribution dominates the overall thermal response of the system [Gao2026].
+Next, a \emph{one-dimensional} FEM (1D-FEM) ROM for the TPS is presented. This model assumes heat transfer is \emph{one dimensional} alon the TPS thickness, where the space-time varyin temperature inside each layer is describd using linear basis functions over a single finite element. Such 1D-FEM reduced-order modeling approach is commonly adopted in the literature due to the development of large temperature gradients along the thickness direction of the TPS, relative to in-plane temperature gradients [Gao2026, X]. Figure~\ref{fig:gen_1D} depicts an example where $N_C=3$ components are connected in series with $N_\Gamma2=$ imperfect contacts.
 
-As with the FOM, the TCR introduces additional considerations in the formulation of the 1D-FEM. 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{./figs/modeling/1D_FEM_General.png}
+    \caption{Schematic of a one-dimensional TPS domain $\Omega$ consisting of $N_C=3$ components linearly discretized with only $N_\Gamma=2$ imperfect interfaces.\hl{check comment}}
+    \label{fig:gen_1D}
+\end{figure}
 
-\section{Lumped Capacitance Model with Imperfect Contacts}
-
-This work leverages the \emph{lumped capacitance model} (LCM) as the physics-based model for in the PIROM to capture the transient component-wise average temperature of the TPS [Incropera2011]. The presence of TCRs at the interfaces introduces additional modeling considerations since the temperature drop across an interface includes, in addition to the bulk drop temperature drop, a contribution fromn the contac resistance. The following discussion presents the formulation of the LCM for modeling the transient thermal response of the TPS with unknown TCRs, and the separation of dynamics into \emph{bulk} and \emph{contact} contributions.
-
-\paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], a modified version of the LCM is leveraged in this work as the physics-based component in the PIROM. The LCM may be derived at the component level from a point of view of energy conservation, and is written as,
+Generalizing for a TPS containing $M$ non-overlapping elements --- still expressed with a coarse one-dimensional assumption --- then yeilds
 \begin{equation}
-    \int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u})\dot{\bar{u}}_i d\Omega = \sum_{j\in\cN^b_i}\int_{e_{ij}}q^{b}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{c}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma,\: i=1,2,\dots,N_C\label{eqn_general_lcm}
+    \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{F}(t)
+    \label{eq:full_mat_form}
 \end{equation}
-where $q^{b}_{ij}$, $q^{c}_{ij}$, $q_{ib}$, and $q_{iT}$ are the heat flux contributions due to neighboring elementts with perfect ($e_{ij}$) contact, imperfect ($\Gamma_{ij}$) contact, Neumann boundary conditions ($e_{iq}$), and Dirichlet boundary conditions ($e_{iT}$), respectively. Moreover, $\cN_i^b$ and $\cN_i^c$ are the sets of neighboring elements with perfect and imperfect contact, respectively.
-
-\paragraph*{Temperature Jump Dynamics} The presence of TCRs at the component interfaces introduces additional modeling considerations for the heat flux constraints $q_{ij}^{c}$. Consider Fig. [X], where an interface $\Gamma_r=\partial\Omega^{c,-}_{r}\cap\partial\Omega^{c,+}_r$ is magnified to describe the governing heat transfer mechanisms at the interface, and where $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ denote the left and right \emph{contact subdomains} of components that share an imperfect interface $\Gamma_r$, respectively. Moreover, let $\btheta_r^{-}$ and $\btheta_r^{+}$ denote the average trace temperatures to the left and right of the interfaces defined as,
-\begin{equation}
-    \btheta_r^{-} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{-}(\vu,t)d\Gamma,\qquad \btheta_r^{+} = \frac{1}{\left|\Gamma_r\right|}\int_{\Gamma_r}T^{+}(\vu,t)d\Gamma
-\end{equation}
-where $T^{-}$ and $T^{+}$ correspond to the temperature fields on $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$, respectively. The total temperature difference between the lumped masses across the interface $\Gamma_r$ is given by,
+where $\boldsymbol{A}, \boldsymbol{B} \in \mathbb{R}^{2M\times 2M}$ are block diagonals containing the mass and stiffness matrices for each element, and $\boldsymbol{F}$
+is the forcing vector upholding the boundary condition at each edge. In a TPS system with perfect contacts, these components are solely products of the choice in basis function; for LBFs, they are defined as
 \begin{subequations}
+\label{eq:perf_cont}
     \begin{align}
-        \underbrace{\bu^{-} - \bu^{+}}_{\text{total lumped drop}} &= \underbrace{\bigl(\bu^{-} - \btheta_r^-\bigr) + \bigl( \btheta_r^+  - \bu^{+}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\btheta_r^- - \btheta_r^+\bigr)}_{\text{contact drop}}\\
-        &= \left(\bu^{-} - \btheta_r^-\right) + \left(\btheta_r^+ - \bu^{+}\right) - \Delta\btheta_r\label{eqn_drop_decomposition}
+        \boldsymbol{A}_i(\bar{u}) &= \rho c_p(\bar{u})\frac L6 \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ \end{bmatrix} 
+        \\
+        \boldsymbol{B}_i(\bar{u}) &= \frac{\text{k}(\bar{u})}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix} \\
+        \boldsymbol{F} &= \int_{\partial\Omega} \boldsymbol{\phi} q_b \, d\Gamma
     \end{align}
 \end{subequations}
-Additionally, define the bulk left $R_r^{-} = \frac{l_r^{-}}{k_r^{-}A}$, bulk right $R_r^{+} = \frac{l_r^{+}}{k_r^{+}(\bu^{+})A}$, and imperfect contact $R_r = \frac{1}{g_r}$ thermal resistances, with $S_r(\bvu) = R_r^{-} + R_r^{+}$ as the effective bulk resistance across an imperfect interface $\Gamma_r$. 
+where $\boldsymbol{A}_i, \boldsymbol{B}_i$ are the $i$-th blocks of $\boldsymbol{A}, \boldsymbol{B}$ respectively, and $\boldsymbol{F}$ is defined for the entire domain via its vector of LBFs, $\boldsymbol{\phi}$. 
 
-The temperature jump dynamics may be derived from either: (i) the DG-FEM formulation using coarse-graining as detailed in [APPENDIX], or (ii) the energy conservation constraints at the interface level. By energy conservation, the total bulk and contact heat fluxes across the interface are equal, which yields the following algebraic constraints,
+For a TPS with imperfect contacts, the bulk stiffness matrix in \cref{eqn:perf_cont} no longer captures the total governing conductance of the TPS system, and thus must also account for the thermal resistances introduced by the imperfect contacts through the following heat interface heat flux condition,
 \begin{equation}
-    q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)} = g_{r}\Delta\btheta_r = q^{c}_r(t)\label{eqn_interface_heat_flux_closure}
+\boldsymbol{B}= \underbrace{\boldsymbol{B}^b}_{\text{Satisfied}} + \underbrace{\boldsymbol{B}^c}_{\text{Missing}}
 \end{equation}
-The contact temperature jumps $\Delta\btheta_r$ for $r=1,2,\dots,N_{\Gamma}$ are introduced as additional state variables that are governed by heat flux continuity constraints in \cref{eqn_interface_heat_flux_closure}. These heat flux constraints are differentiated with respect to time to capture the transient temperature jump dynamics to changes in boundary conditions, material propeties, and TCRs. For each interface, the dynamics is written as,
+where the superscripts $b$ and $c$ differentiate the stiffness matrices that capture the \emph{bulk} and \emph{contact} heat fluxes, respectively. The choice in modeling the contact stiffness arises from the heat flux law 
 \begin{equation}
-    \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\btheta}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\btheta_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}
+\label{eq:heat_flux_law}
+    q = \frac{T_l - T_r}{R_{x}}
 \end{equation}
-Collecting terms for all interfaces yields the following system of ODEs governing the dynamics of the contact temperature jumps,
+where the flux across a given element is defined by the change in temperature between the left and right sides over its thermal resistance. Leveraging the relationship of conductance and resistance, or 
 \begin{equation}
-    \left[\vI + \vG \vS(\bvu)\right]\Delta\dot{\btheta} = \vD\dot{\bvu} - \vG\left(\Delta\btheta\odot\dot{\vS}(\bvu)\right)
+    C = \frac{1}{R_x}
 \end{equation}
-where the conductance $\vG\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}$ and bulk resistance $\vS(\bvu)\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}$ are defined as,
+Eq.~\eqref{eq:heat_flux_law} can be rewritten as
+\begin{equation}
+        q = C\left({T^- - T^+}\right)
+\end{equation}
+where $T^-$ and $T^+$ represent the left and right sides of a given material block, respectively. 
+Finally, generalizing for the full set of interactions between two locations on either side of a contact, the contact stiffness becomes
+\begin{equation}
+    \boldsymbol{B}^c_j = C_{j}\begin{bmatrix}
+        1 & -1 \\ -1 & 1
+    \end{bmatrix}
+\end{equation}
+for the $j$-th contact, where $j = i-1$ due to the linearity in alignment of the elements (due to the one-dimensional assumption). The contact matrix can also be organized into a block diagonal matrix of shape $\boldsymbol{B}^c \in \mathbb{R}^{2M\times2M}$, whose general structure is
+\begin{equation}
+    \boldsymbol{B}^c = \begin{bmatrix}
+        0 & 0 & \cdots & 0 & 0 \\
+        0 & \boldsymbol{B}_1^c & \cdots & 0 & 0 \\
+        \vdots & \vdots & \ddots & \vdots & \vdots \\
+        0 & 0& \cdots &\boldsymbol{B}^c_j&0\\0&0&\cdots&0&0
+    \end{bmatrix}
+\end{equation}
+as there is no contact interface on the edges of the TPS. 
+
+Expanding Eq.~\eqref{eq:full_mat_form} to now encompass all aspects of the distant contact problem yields
+\begin{equation}
+    \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}^b(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{B}^c{\boldsymbol{u}} + \boldsymbol{F}(t)
+\end{equation}
+where $\boldsymbol{B}^c$ is not a function of average temperature or time, as conductance of an imperfect contact is assumed non-zero and constant. 
+
+\subsection{Lumped Capacitance Model with Interface Temperature Dynamics}
+
+Next, the \emph{lumped capacitance model} (LCM) is presented as the RPM for the TPS, where each layer is modeled as a lumped mass with time-varying average temperatures [Incropera2011,TPS2026]. However, the presence of TCRs at imperfect layer interfaces introduces additional modeling considerations, since the temperature drop includes, in addition to the bulk temperature drop, contributions from the TCRs as temperature discontinuities between layers. The following discussion describes the separation of LCM dynamics into \emph{bulk} and \emph{contact} contributions, which becomes critical for the subsequent coarse-graining formulations, TCR identifiability, and PIROM formulations.
+
+\paragraph*{Bulk Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], a modified version of the LCM is presented that partitions the TPS layers into \emph{bulk} and \emph{contact} ODEs, with the contact temperature dynamics parametrized by TCRs. Specifically, the \emph{bulk} temperature dynamics of the LCM is derived at the component level from a point of view of energy balance,
+\begin{equation}
+    \bar{A}_i\dot{\bar{u}}_i = \sum_{j\in\cN^b_i}\int_{e_{ij}}q^{b}_{ij}d\Gamma + \sum_{j\in\cN_i^{c}}\int_{\Gamma_{ij}}q^{c}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma,\: i=1,2,\dots,N_B\label{eqn_general_lcm}
+\end{equation}
+where $\bar{A}_i(\bu_i) = \int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u})d\Omega$, and $q^{b}_{ij}$, $q^{c}_{ij}$, $q_{ib}$, and $q_{iT}$ correspond to the heat flux contributions due to neighboring elements with perfect ($e_{ij}$) contact, imperfect ($\Gamma_{ij}$) contact, Neumann boundary conditions ($e_{iq}$), and Dirichlet boundary conditions ($e_{iT}$), respectively. Moreover, $\cN_i^b$ and $\cN_i^c$ are the sets of neighboring elements across perfect and imperfect interfaces, respectively.
+
+\paragraph*{Temperature Jump Dynamics} The presence of TCRs between layers introduces additional modeling considerations for the heat flux $q_{ij}^{c}$ across imperfect interfaces. For instance, consider Fig. [X] where an interface $\Gamma_r$ is magnified to describe the governing heat transfer mechanisms at the interface. Here, $\Omega^{c,-}_r$ and $\Omega^{c,+}_r$ denote the left and right \emph{contact subdomains} of components that share an imperfect interface $\Gamma_r$, respectively. Note that over each contact sub-domain, an interfacial temperature may be defined as in the following remark,
+\begin{tcolorbox}[enhanced, breakable, title=Remark]
+    The average interfacing temperatures $\bw_i^-,\bw_i^+$ contribute to the first element state on the minus and plus sides of an imperfect contact interface $\Gamma_r$, while $\delta\vw_{ir}$ and $\delta\vw_{ir}^{+}$ correspond to deviations from the component's average temperature. Note that the average interfacial temperature may be computed as,
+\begin{subequations}
+    \begin{align}
+        \bw_r^{-}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^-}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{-}}\alpha_{mr}^{-}\vmu_{mr}^{\top}\vw_{mr}^{-}, \: r=1,\ldots,N_{\Gamma}\\
+        \bw_r^{+}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^+}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{+}}\alpha_{mr}^{+}\vmu_{mr}^{\top}\vw_{mr}^{+}, \: r=1,\ldots,N_{\Gamma}
+    \end{align}
+\end{subequations}
+where $\alpha_{mr}^{-} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ and $\alpha_{mr}^{+} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ are the fractions of the interface $\Gamma_{mr}$ to the total interface $\Gamma_r$, $\vw_{mr}^{-}$ and $\vw_{mr}^{+}$ correspond to the DG-FEM states of element $E_m$ adjacent to the imperfect interface $\Gamma_{r}$ on the negative and positive sides, respectively. Additionally, $\vmu_{mr} = \frac{1}{\left|\Gamma_{mr}\right|}\int_{\Gamma_{mr}} \vphi^{\top}_m d\Gamma_{mr}\in\mathbb{R}^{P}$ and $\Gamma_{rm} = \Gamma_r\cap\partial E_m$, with  $\left|\Gamma_{rm}\right|$ as the point $(d=2)$ or area $(d=3)$ of the interface segment $\Gamma_{rm}$.$\square$
+\end{tcolorbox}
+Note that the interfacing average temperatures differ from the bulk average temperatures $\left\{\bu_i\right\}_{i=1}^{N_B}$ due to the domain decomposition $\Omega_i=\Omega_i^b\cup\Omega_i^c$.
+
+Therefore, the total temperature difference between lumped masses across an interface $\Gamma_r$ may be written as,
+\begin{subequations}
+    \begin{align}
+        \underbrace{\bu^{-} - \bu^{+}}_{\text{total lumped drop}} &= \underbrace{\bigl(\bu^{-} - \bw_r^-\bigr) + \bigl( \bw_r^+  - \bu^{+}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\bw_r^- - \bw_r^+\bigr)}_{\text{contact drop}}\\
+        &= \left(\bu^{-} - \bw_r^-\right) + \left(\bw_r^+ - \bu^{+}\right) - \Delta\bw_r\label{eqn_drop_decomposition}
+    \end{align}
+\end{subequations}
+Now, define the left $R_r^{-} = \frac{l_r^{-}}{k_r^{-}A}$, right $R_r^{+} = \frac{l_r^{+}}{k_r^{+}(\bu^{+})A}$, and imperfect contact $R_r = 1/g_r$ thermal resistances, with $S_r(\bvu) = R_r^{-} + R_r^{+}$ as the effective bulk resistance across an imperfect interface $\Gamma_r$. 
+
+Next, two approaches are introduced to formulate the temperature jump dynamics: (i) coarse-graining the DG-FEM model as shown in [APPENDIX], or (ii) leveraging energy conservation at the interface level, with a \emph{zero-energy storage} assumption the contact subdomains. For brevity, the second approach is adopted here, which states \emph{that the total bulk and contact heat fluxes across an imperfect interface must be equal}, yielding the following algebraic constraints,
+\begin{equation}
+    q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)} = g_{r}\Delta\bw_r = q^{c}_r(t)\label{eqn_interface_heat_flux_closure}
+\end{equation}
+The contact temperature jumps $\Delta\bw_r$ for $r=1,2,\dots,N_{\Gamma}$ are introduced as additional state variables, governed by the heat flux continuity algebraic constraints from \cref{eqn_interface_heat_flux_closure}. These algebraic constraints are differentiated with respect to time, such that for each interface,
+\begin{equation}
+    \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\bw}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}
+\end{equation}
+Collecting equations from all imperfect interfaces, the following system of ODEs governs the average contact temperature jump,
+\begin{equation}
+    \left[\vI + \vG\odot\vS(\bvu)\right]\Delta\dot{\bar{\vw}} = \vD\dot{\bvu} - \vG\left(\Delta\bar{\vw}\odot\dot{\vS}(\bvu)\right)
+\end{equation}
+where the state $\Delta\bar{\vw}\in\mathbb{R}^{N_{\Gamma}}$, conductance $\vG\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}$ and bulk resistance $\vS(\bvu)\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}$ are defined as,
 \begin{subequations}
     \begin{align}
         \vG =& \text{diag}(g_1, g_2, \dots, g_{N_{\Gamma}})\\
@@ -94,340 +168,34 @@ where the conductance $\vG\in\mathbb{R}^{N_{\Gamma}\times N_{\Gamma}}$ and bulk 
 \end{subequations}
 while $\vD\in\mathbb{R}^{N_{\Gamma}\times N_C}$ is the difference matrix that computes the lumped temperature differences across the interfaces, and $\odot$ denotes the Hadamard product. 
 
-\paragraph*{Lifted State-Space Formulation} At component $i$, the following assumptions are employed: (i) the bulk temperature is spatially uniform and equal to the bulk average temperature $\bar{u}_i$, (ii) between neighboring components $i$ and $j$ with perfect contacts, the heat flux is modeled as,
+\paragraph*{Lumped Lumped Capacitance Model Formulation} At component $i$, the following assumptions are employed: (i) the bulk $\bu_i$ and contact $\bw^{\pm}_i$ average temperatures are uniform and equal to the spatial average over the their respective $\Omega_i^b$ and $\Omega_i^c$ sub-domains of component $\Omega_i$, (ii) for neighboring components $i$ and $j$ under perfect contact, the bulk heat flux is defined as $q_{ij}^{b} = g_{ij}\left(\bvu\right)\left(\bu_i - \bu_j\right)$. The term $g_{ij}(\bvu) = 1 / R_{ij}(\bvu)$ is the effective conductance, with $R_{ij} = R_{i} + R_{j}$ and $R_{ij}(\bvu) = \ell/k(\bvu)A$, where $\ell$ is the distance between lumped masses, $k(\bvu)$ is the temperature-dependent thermal conductivity, and $A$ is the cross-sectional area of the interface. Similarly, the heat flux due to the Dirichlet boundary condition is given by $q_{iT} = g_{iT}\left(\bu_i - \bu_T\right)$. For component $i$ and noting that $\cN_i^b = \cN_i^u\cup\cN_i^w$, \cref{eqn_general_lcm} may be written as,
+\begin{subequations}
+    \begin{align}
+        \bar{A}_i(\bu_i)\dot{\bu}_i &=\sum_{j\in\cN^u_i}\int_{e_{ij}}g_{ij}(\bvu)\left(\bu_i - \bu_j\right)de + \sum_{j\in\cN_i^w}\int_{e_{ij}}g_{ij}(\bvu)\left(\bu_i - \bw_j\right)de + \int_{e_{iq}}q_b de + \int_{e_{iT}}q_{T}de\\
+        &= \sum_{j\in\cN_i^b\cup\left\{T\right\}}g_{ij}(\bvu)\left|e_{ij}\right|\bu_i - \sum_{j\in\cN_i^u}g_{ij}(\bvu)\left|e_{ij}\right|\bu_j - \sum_{j\in\cN_i^w}g_{ij}(\bvu)\left|e_{ij}\right|\bw_j + \left|e_{iq}\right|\bar{q}_b - g_{iT}(\bvu)\left|e_{iT}\right|\bar{T}_b\\
+        &= \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\bar{B}_{ij}^{i}\bu_i + \sum_{j\in\cN_i^u}\bar{B}_{ij}^{j}\bu_j + \sum_{j\in\cN_i^w}\bar{B}_{ij}^{j}\bw_j + \bar{f}_i^{(b)}(t)
+    \end{align}
+\end{subequations}
+or,
+\begin{align}
+     \left(\int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u}) d\Omega\right)\dot{\bu}_i &= \left(\sum_{j\in\cN^b_i}\int_{e_{ij}}g_{ij}\left(\bu_i - \bu_j\right)d\Gamma\right)\\
+    &+ \sum_{j\in\cN_i^{c}}\left(\int_{\Gamma_{ij}}g_{x,ij}\Delta\bw_j d\Gamma\right) + \int_{e_{iq}}q_b d\Gamma + \int_{e_{iT}}q_{T}d\Gamma
+\end{align}
+
+Collecting $N_B$ bulk and $N_{\Gamma}$ interface terms, the system of equations governing the coarse-grained temperature dynamics of the TPS with imperfect thermal contacts is written as the following coupled system of ODEs,
 \begin{equation}
-    q_{ij}^{b} = h_{ij}(\bvu)\left(\bu_i - \bu_j\right)
-\end{equation}
-where $h_{ij} = 1 / R_{ij}(\bvu)$ is the effective conductance, and $R_{ij} = \ell/k(\bvu)A$ with $\ell$ as the distance between lumped masses, $k(\bvu)$ the temperature-dependent thermal conductivity, and $A$ the cross-sectional area of the interface; between components $R_{ij} = R_{i} + R_{j}$ is the effective bulk resistance. Additionally, the heat flux due to Dirichlet boundary conditions is computer as $q_{iT} = h_{iT}\left(\bu_i - \bu_T\right)$. Therefore, at component $i$ the bulk LCM dynamics is written as,
-\begin{equation}
-    \left[\int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u}) d\Omega\right]\dot{\bar{u}}_i = \left(\sum_{j\in\cN^b_i}\int_{e_{ij}}h_{ij}\left(\bu_i - \bu_j\right)d\Gamma\right) + \sum_{j\in\cN_i^{c}}\left|\Gamma_{ij}\right|\left(\frac{1}{\left|\Gamma_{ij}\right|}\int_{\Gamma_{ij}}q^{c}_{ij}d\Gamma\right) + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma
-\end{equation}
-
-
-Collecting $N_C$ bulk and $N_{\Gamma}$ contact terms, the system of equations governign the coarse-grained temperature dynamcis of the TPS with imperfect contact is written as the following coupled system of ODEs,
-\begin{equation}
-    \dot{\vs} = \vf\left(\vs,\bar{\vf};\vxi\right)
-\end{equation}
-
-
-A multi-layered examplem is provided in Appendix [X] describing the derivation of \cref{eqn_general_lcm} from a coarse DG-FEM discretization of the governing PDE.
-
-
-
-------------------------------------------------------------------------------------------------------------------
-\newpage
-
-
-\begin{equation}
-    \frac{\left(\bu_i - \bu_j\right) - \Delta\btheta_r}{S_r(\bvu)} - g_{r}\Delta\btheta_r = 0
-\end{equation}
-
-
-
-Therefore, at an interface $i\in\mathcal{I}$ with a contact resistance, the heat flux between neighboring components may be written as,
-\begin{equation}
-    q_{ij} = G_{ij}(\bar{\vu})\Bigl(\bigl(\bar{u}_i - \bar{u}_j\bigr) - \Delta\theta_{i}\Bigr)
-\end{equation}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\textwidth]{./figs/modeling/interface.png}
-    \caption{Schematic of the interface between two layers of the TPS, where the temperature drop across the interface is decomposed into a bulk drop and a contact drop.}
-    \label{fig_interface}
-\end{figure}
-
-
-
-
-
-
-Consider the lumped-mass average temperature state,
-\begin{equation}
-    \vu = \left[u_1, u_2, u_3, u_4\right]^T\in\mathbb{R}^{N}
-\end{equation}
-and temperature-dependent lumped-capacitance matrix,
-\begin{equation}
-    A(\vu) = \begin{bmatrix}
-        a_1(u_1) & 0 & 0 & 0 \\
-        0 & a_2(u_2) & 0 & 0 \\
-        0 & 0 & a_3(u_3) & 0 \\
-        0 & 0 & 0 & a_4(u_4)
-    \end{bmatrix}
-\end{equation}
-Let the external Neumann forcing be applied to the first lumped mass,
-\begin{equation}
-    \vf(t) = \begin{bmatrix} f(t) \\ 0 \\ 0 \\ 0 \end{bmatrix}
-\end{equation}
-For interfaces $i=1,2,3$, define the known \emph{bulk resistances}
-\begin{equation}
-    S_i(\vu)=R_i^{-}(\vu)+R_i^{+}(\vu)
-\end{equation}
-and the unknown contact resistance,
-\begin{equation}
-    R_{xi}>0,\qquad g_{xi}:=\frac{1}{R_{xi}}.
-\end{equation}
-
-The classical lumped-capacitance model with effective series resistances is,
-\begin{equation}
-    A\left(\vu\right)\dot{\vu} = B\left(\vu\right)\vu + \vf(t)\label{eqn_lcm}
+    \bvcA\left(\vs\right)\dot{\vs} = \bvcB\left(\vs\right) + \bvcF(t)
 \end{equation}
 where,
 \begin{equation}
-    B\left(\vu\right) = \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)+R_{xi}}\vK_i
-\end{equation}
-with standard nearest-neighbor diffusion stencils,
-\begin{equation}
-    \vK_1 = \begin{bmatrix}
-        1 & -1 & 0 & 0 \\
-        -1 & 1 & 0 & 0 \\
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0
-    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
-        0 & 0 & 0 & 0 \\
-        0 & 1 & -1 & 0 \\
-        0 & -1 & 1 & 0 \\
-        0 & 0 & 0 & 0
-    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 1 & -1 \\
-        0 & 0 & -1 & 1
+    \bvcA = \begin{bmatrix}
+        \bar{\vA}(\bvu) & \vzero\\
+        -\vD & \vI + \vG\odot\vS(\bvu)
+    \end{bmatrix},\quad \bvcB = \begin{bmatrix}
+        \bar{\vB}(\bvu) & \bar{\vK}(\bvu)\\
+        \vzero & -\vG\odot\dot{\vS}(\bvu)
+    \end{bmatrix},\quad \bvcF(t) = \begin{bmatrix}
+        \bar{\vf}(t) \\ \vzero
     \end{bmatrix}
 \end{equation}
-
-The effective heat flux through interface $i$ is therefore,
-\begin{equation}
-    q_i = \frac{u_{i+1}-u_i}{S_i(\vu)+R_{xi}}
-\end{equation}
-where the temperature-drop convention is always taken as,
-\begin{equation}
-    \Delta u_i = u_{i+1}-u_i
-\end{equation}
-
-\subsection{Total drop = bulk drop + contact drop}
-
-To separate bulk and contact contributions, introduce interface temperatures
-\begin{equation}
-    \theta_i^{+},\qquad \theta_i^{-},\qquad i=1,2,3,
-\end{equation}
-where $\theta_i^{-}$ and $\theta_i^{+}$ are the temperatures immediately to the left and right of contact $i$, respectively. Define the contact temperature jumps as,
-\begin{equation}
-    \Delta\theta_i:=\theta_i^{+}-\theta_i^{-}, \qquad i=1,2,3
-\end{equation}
-
-
-
-The total lumped-to-lumped temperature drop across interface $i$,
-\begin{equation}
-    u_{i+1}-u_i
-\end{equation}
-This total lumped-to-lumped temperature drop is the sum of the bulk drop across the interface and the contact jump across the interface,
-\begin{equation}
-    \underbrace{u_{i+1}-u_i}_{\text{total drop}} = \underbrace{\bigl(\theta_i^{-}-u_i\bigr)+\bigl(u_{i+1}-\theta_i^{+}\bigr)}_{\text{bulk drop}} + \underbrace{\bigl(\theta_i^{+}-\theta_i^{-}\bigr)}_{\text{contact drop}}.
-\end{equation}
-Hence,
-\begin{equation}
-    \underbrace{\left(\theta_i^- - u_i\right) + \left(u_{i+1}-\theta_i^+\right)}_{\text{bulk drop}} = \underbrace{(u_{i+1}-u_i)}_{\text{total drop}} - \underbrace{\Delta\theta_i}_{\text{contact drop}}
-\end{equation}
-
-\begin{equation}
-\text{bulk drop across interface }i
-=
-(u_{i+1}-u_i)-\Delta\theta_i.
-\label{eq:bulk_drop}
-\end{equation}
-
-Thus the lifted state is
-\[
-x=
-\begin{bmatrix}
-u\\ \Deltavtheta
-\end{bmatrix}
-=
-\begin{bmatrix}
-u_1\\u_2\\u_3\\u_4\\\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
-\end{bmatrix}
-\in \mathbb{R}^{7},
-\qquad
-\Deltavtheta=
-\begin{bmatrix}
-\Delta\theta_1\\\Delta\theta_2\\\Delta\theta_3
-\end{bmatrix}.
-\]
-
-\subsection{Heat-flux Continuity and DAE Formulation}
-
-Using the adopted convention, define the bulk and contact heat fluxes as
-\begin{equation}
-q_i^{(b)}
-=
-\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)},
-\qquad
-q_i^{(c)}
-=
-\frac{\Delta\theta_i}{R_{xi}}
-=
-g_{xi}\Delta\theta_i.
-\label{eq:q_bulk_contact}
-\end{equation}
-
-Heat-flux continuity across each interface requires
-\begin{equation}
-q_i^{(b)}=q_i^{(c)},
-\qquad i=1,2,3,
-\label{eq:flux_continuity}
-\end{equation}
-which yields the algebraic constraints
-\begin{equation}
-\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}
--
-g_{xi}\Delta\theta_i
-=
-0,
-\qquad i=1,2,3.
-\label{eq:algebraic_constraints}
-\end{equation}
-
-\subsection*{Lumped-temperature dynamics}
-
-The four lumped energy balances yield,
-\begin{subequations}
-    \begin{align}
-        a_1(u_1)\dot u_1 &= f(t) - q_{12}^{(b)}\\
-        a_2(u_2)\dot u_2 &= q_{12}^{(b)} - q_{23}^{(b)}\\
-        a_3(u_3)\dot u_3 &= q_{23}^{(b)} - q_{34}^{(b)}\\
-        a_4(u_4)\dot u_4 &= q_{34}^{(b)}
-    \end{align}
-\end{subequations}
-Substituting using the bulk heat fluxes yields,
-\begin{subequations}
-    \begin{align}
-        a_1(u_1)\dot u_1 &= f(t) - \frac{(u_2-u_1)-\Delta\theta_1}{S_1(u)}\\
-        a_2(u_2)\dot u_2 &= \frac{(u_2-u_1)-\Delta\theta_1}{S_1(u)} - \frac{(u_3-u_2)-\Delta\theta_2}{S_2(u)}\\
-        a_3(u_3)\dot u_3 &= \frac{(u_3-u_2)-\Delta\theta_2}{S_2(u)} - \frac{(u_4-u_3)-\Delta\theta_3}{S_3(u)}\\
-        a_4(u_4)\dot u_4 &= \frac{(u_4-u_3)-\Delta\theta_3}{S_3(u)}
-    \end{align}
-\end{subequations}
-
-\subsection*{Matrix form of DAE}
-
-Define the difference matrix,
-\begin{equation}
-    \vD = \begin{bmatrix}
-    -1 & 1 & 0 & 0 \\
-    0 & -1 & 1 & 0 \\
-    0 & 0 & -1 & 1
-    \end{bmatrix}, \:
-    \vD u = \begin{bmatrix}
-    u_2-u_1 \\
-    u_3-u_2 \\
-    u_4-u_3
-    \end{bmatrix}
-\end{equation}
-Define the bulk temperature stencils,
-\begin{equation}
-    \vK_1 = \begin{bmatrix}
-        1 & -1 & 0 & 0 \\
-        -1 & 1 & 0 & 0 \\
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0
-    \end{bmatrix},\: \vK_2 = \begin{bmatrix}
-        0 & 0 & 0 & 0 \\
-        0 & 1 & -1 & 0 \\
-        0 & -1 & 1 & 0 \\
-        0 & 0 & 0 & 0
-    \end{bmatrix},\: \vK_3 = \begin{bmatrix}
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 0 & 0 \\
-        0 & 0 & 1 & -1 \\
-        0 & 0 & -1 & 1
-    \end{bmatrix}
-\end{equation}
-and the bulk jump-coupling stencils,
-\begin{equation}
-    \vL_1 = \begin{bmatrix}
-        1 & 0 & 0 \\
-        -1 & 0 & 0 \\
-        0 & 0 & 0 \\
-        0 & 0 & 0
-    \end{bmatrix},\: \vL_2 = \begin{bmatrix}
-        0 & 0 & 0 \\
-        0 & 1 & 0 \\
-        0 & -1 & 0 \\
-        0 & 0 & 0
-    \end{bmatrix},\: \vL_3 = \begin{bmatrix}
-        0 & 0 & 0 \\ 
-        0 & 0 & 0 \\
-        0 & 0 & 1 \\
-        0 & 0 & -1
-    \end{bmatrix}
-\end{equation}
-Then,
-\begin{equation}
-    A(u)\dot{u} = \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u+\vL_i\Deltavtheta\Bigr) + \vf(t)
-\end{equation}
-and the algebraic constraints for heat flux continuity are written as,
-\begin{equation}
-    \operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right)\vD u - \left[\operatorname{diag}\!\left(\frac{1}{S_1(u)},\frac{1}{S_2(u)},\frac{1}{S_3(u)}\right) + G_x\right]\Deltavtheta = 0\label{eqn_algebraic_heat_flux_constraints}
-\end{equation}
-where
-\begin{equation}
-    G_x = \begin{bmatrix}
-    g_{x1} & 0 & 0 \\
-    0 & g_{x2} & 0 \\
-    0 & 0 & g_{x3}
-    \end{bmatrix}
-\end{equation}
-Equation \eqref{eqn_algebraic_heat_flux_constraints}, along with the lumped-temperature dynamics, defines a DAE system for the lifted state $x=[u,\Deltavtheta]$.
-
-\subsection{DAE index reduction}
-
-The DAE is index-reduced by differentiating the heat-flux continuity constraints with respect to time, which, for each interface $i$, yields,
-\begin{equation}
-    \frac{d}{dt}\left[\frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)} - g_{xi}\Delta\theta_i\right] = 0
-\end{equation}
-The contact conductances $g_{xi}$ are assumed constant, therefore,
-\begin{equation}
-    \bigl(1+g_{xi}S_i(u)\bigr)\Delta\dot{\theta}_i = \bigl(\dot{u}_{i+1} - \dot{u}_i\bigr) - \frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}\dot{S}_i(u)
-\end{equation}
-Using the original algebraic constraint
-\begin{equation}
-    \frac{(u_{i+1}-u_i)-\Delta\theta_i}{S_i(u)}=g_{xi}\Delta\theta_i,    
-\end{equation}
-the index-reduced dynamics become,
-\begin{equation}
-    \boxed{
-    \Delta\dot{\theta}_i = \frac{ \dot{u}_{i+1}-\dot{u}_i - g_{xi}\Delta\theta_i\,\dot{S}_i(u)}{1+g_{xi}S_i(u)}, \qquad i=1,2,3}
-\end{equation}
-
-Define
-\begin{equation}
-    M(u;R_x) = \begin{bmatrix}
-        1+g_{x1}S_1(u) & 0 & 0 \\
-        0 & 1+g_{x2}S_2(u) & 0 \\
-        0 & 0 & 1+g_{x3}S_3(u)
-    \end{bmatrix}
-\end{equation}
-and,
-\begin{equation}
-    \dot{S}(u) = \begin{bmatrix}
-        \dot{S}_1(u) \\
-        \dot{S}_2(u) \\
-        \dot{S}_3(u)
-    \end{bmatrix},\qquad \Deltavtheta\odot \dot{S}(u) = \begin{bmatrix}
-    \Delta\theta_1\dot{S}_1(u) \\
-    \Delta\theta_2\dot{S}_2(u) \\
-    \Delta\theta_3\dot{S}_3(u)
-    \end{bmatrix}
-\end{equation}
-Then, the index-reduced dynamics for the contact jumps can be written in matrix form as,
-\begin{equation}
-    M(u;R_x)\Delta\dot{\theta} = D\,\dot u - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
-\end{equation}
-Thus, the index-reduced lifted system is given by the coupled ODEs,
-\begin{subequations}
-    \begin{align}
-        A(u)\dot{u} &= \sum_{i=1}^{N-1}\frac{1}{S_i(u)}\Bigl(\vK_i u + \vL_i\Deltavtheta\Bigr) + \vf(t)\\
-        M(u;R_x)\Delta\dot{\theta} &= \vD\dot{u} - G_x\bigl(\Deltavtheta\odot \dot S(u)\bigr)
-    \end{align}
-\end{subequations}
+and where $\vs = \left[\bvu,\Delta\bar{\vw}\right]^\top\in\mathbb{R}^{N_C + N_{\Gamma}}$, and $\bvcA,\bvcB\in\mathbb{R}^{(\NC + \NGamma)\times(\NC+\NGamma)}$ are the mass and stiffness matrices of the lifted state-space formulation for the LCM. Note that the mass and stiffness matrices include temperature dependence that represents the primary source of non-linearities for the problems considered in this work.

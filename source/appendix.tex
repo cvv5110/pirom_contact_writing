@@ -1,137 +1,287 @@
 \appendix
 \section{Appendix}
 
-This appendix provides the technical details of the main text, providing the DG-FEM formulation of the FOM, coarse-graining procedure for the LCM,
-
-the derivation of the lifted LCM model, and a coarse-grainig example for a three-layered TPS.
+This section provides the technical details for the main text, including the DG-FEM formulation of the FOM, as well as the coarse-graining procedure to derive the LCM with interface temperature jump dynamics.
 
 \subsection{Discontinuous Galerkin Finite-Element Formulation}
 
-\paragraph*{Domain Discretization} Consider the partition of the TPS domain in Fig. [X] into $N_{C}$ components $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where each component is continuous domain with its own temperature-varying material properties. Each component $\Omega_i$ is further divided into two sub-components: (i) $\Omega_i^c\subset\Omega_i$ consistsing of a thin layer of material that \emph{is in direct contact with a neighboring component across an imperfect-contact interface}, and (ii) $\Omega_i^{b}\subset\Omega_i$ consisting of the \emph{remaining bulk material that do not have boundaries in direct contact with neighboring components}. Note that one component may have multiple imperfect-contact interfaces, and thus may have multiple contact domains $\Omega_i^c$. For example, in Fig. [X], the component $\Omega_2$ has two neighboring components with imperfect contacts on $\Gamma_1$ and $\Gamma_3$, and thus has two contact domains $\Omega_2^{c,1}$ and $\Omega_2^{c,3}$, and one non-contact domain $\Omega_2^{b}$ that is not in direct contact with any neighboring component; clearly, $\Omega_2 = \Omega_2^{c,1}\cup\Omega_2^{c,3}\cup\Omega_2^{b}$ and $\Omega_2^{c,1}\cap\Omega_2^{c,3} = \emptyset$.
+\paragraph*{Domain Discretization} Consider the partition of the TPS spatial domain into $N_{C}$ continuous components  $\left\{\Omega_i\right\}_{i=1}^{N_C}$, where each component has its own temperature-dependent material properties. The domain of each component $\Omega_i$ is further divided into two sub-domains: (i) $\Omega_i^c\subset\Omega_i$ consisting of a thin layer of material that \emph{is in direct contact with neighboring components across an imperfect interface}, and (ii) $\Omega_i^{b}\subset\Omega_i$ consisting of the \emph{remaining bulk material that does not have boundaries in direct contact with neighboring components}. Note that one component may have multiple imperfect-contact interfaces, and thus may have multiple contact sub-domains $\Omega_i^c$. For example, in Fig.~\ref{fig_general_domain} the domain $\Omega_2$ has two neighboring components with imperfect contacts over interfaces $\Gamma_1$ and $\Gamma_3$, and thus has two contact sub-domains $\Omega_2^{c,1}$ and $\Omega_2^{c,3}$, and one bulk sub-domain $\Omega_2^{b}$; clearly, $\Omega_2 = \Omega_2^{c,1}\cup\Omega_2^{c,3}\cup\Omega_2^{b}$ and $\Omega_2^{c,1}\cap\Omega_2^{c,3} = \emptyset$.
 
-Additionally, denote the collection of all elements as $\left\{E_i\right\}_{i=1}^{M}$, and let $\cV=\left\{1,2,\dots,M\right\}$ be the index set of all elements. 
-
-
-domain $\Omega$ into $M$ non-overlapping elements $\left\{E_m\right\}_{m=1}^M$, such that $\cup_{m=1}^ME_m = \Omega$ and $E_m\cap E_n = \emptyset$ for $m\neq n$. For each element, define the set of basis functions $\left\{\phi_j(x)\right\}_{j=1}^P$. The temperature field is approximated as,
-
-\paragraph*{Variational Formulation} Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained by applying the DG method element-wise to each component of the TPS. In contrast to the standard perfect-contact formulation, the component interfaces support a finite temperature jump across the interface caused by imperfect thermal contact. For each element, let $\cN_i$ denote the collection of elements neighboring element $E_i$, where the following separation of neighboring elements is introduced,
+\paragraph*{Variational Formulation} Choosing appropriate basis functions $v(x)$ and $w(x)$, the variational formulation of the governing equations is obtained element-wise for each component in the TPS. To aid in the subsequent model derivations, denote $\cN_i$ as the collection of neighboring elements to $E_i$, which are split into,
 \begin{equation}
-    \cN_i = \cN_i^{b}\cup\cN_{ir}^{c},\quad i=1,2,\dots,M, r=1,2,\dots,N_{\Gamma}
+    \cN_i = \cN_i^{b}\cup\cN_{i}^{c},\quad i=1,\dots,M
 \end{equation}
-Here, $\cN_i^{b}$ denotes the ordinary neighboring elements coupled by the standard DG interface terms through the interface $e_{ij}$, while $\cN_{ir}^{c}$ denotes the neighboring elements separated from $E_i$ by a an imperfect thermal contact interface $\Gamma_{ir}\subseteq\Gamma_r$, with $r\in\left\{1,2,\dots,N_{\Gamma}\right\}$ and $N_{\Gamma}$ is the total number of imperfect-contact interfaces in the TPS. Formally, the sets are defined as,
+where $\cN_i^{b}=\cN_i^u\cup\cN_i^w$ includes the indices of neighboring elements on the $\Omega_i^b$ and $\Omega_i^c$ sub-domains \emph{across perfect interfaces}. An additional set of neighboring elements \emph{across imperfect interfaces} $\cN_i^c$ is introduced. Both sets are formally defined as,
 \begin{subequations}
     \begin{align}
         \cN_i^{b} &= \left\{j\in\{1,\ldots,M\} \:|\: E_j\cap E_i = e_{ij}\neq\emptyset, e_{ij}\subseteq\Omega\right\},\\
-        \cN_{ir}^{c} &= \left\{j\in\{1,\ldots,M\} \:|\: \partial E_i\cap \partial E_j \cap\Gamma_r \neq \emptyset\right\}
+        \cN_{i}^{c} &= \left\{j\in\{1,\ldots,M\} \:|\: \partial E_i\cap \partial E_j \cap\Gamma_r \neq \emptyset\right\},\quad r=1,2,\dots,N_{\Gamma}
     \end{align}
 \end{subequations}
-Under this separation, the Interior Penalty Galerkin (IPG) scheme yields the following bi-linear form for the variational formulation of the governing equations [Cohen2018],
+where $\left\{\Gamma_r\right\}_{r=1}^{N_\Gamma}$ correspond to the collection of imperfect interfaces. Under this separation, the Interior Penalty Galerkin (IPG) scheme yields the following bi-linear form for the variational formulation of the governing equations [Cohen2018],
 \begin{equation}
-    \sum_{i=1}^{M}a_{\epsilon,i}(v,w) = \sum_{i=1}^{M}\left( L_i^{(c)}(v) + L^{(b)}_i(v) \right)
+    \sum_{i=1}^{M}\left[a_{1,i}(v,w) + a_{2,i}(v,w) + a_{3,i}(v,w)\right] = \sum_{i=1}^{M}L_i(v)
 \end{equation}
 where $\epsilon$ is a user-specified parameter, and,
 \begin{subequations}
     \begin{align}
-        a_{\epsilon,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i - \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij}\notag\\
-        &\quad + \epsilon \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij} + \sigma\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
-        L^{(c)}_{i}(v) &= \sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^{c}}\int_{\Gamma_{il}} v q^{(c,r)}_{il}d\Gamma_{il}\\
-        L^{(b)}_i(v) &= \epsilon\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
+        a_{1,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i\\
+        a_{2,i}(v,w) &= -\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij} + \epsilon \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij}\notag\\ 
+        &+ \sigma_b\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
+        a_{3,i}(v,w) &= -\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]d\Gamma + \epsilon \sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]d\Gamma\notag\\ 
+        &+ \sigma_c\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left[v\right]\left[w\right]d\Gamma\\
+        L_i(v) &= \epsilon\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
     \end{align}
 \end{subequations}
-In the bi-linear form above, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at a boundary $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
+where $a_{1,i}$, $a_{2,i}$, $a_{3,i}$, and $L_i(v)$ amount to heat conduction due to bulk energy transfer, between-element perfect interfaces $e_{ij}$, between-element imperfect interfaces $\Gamma_{ij}$, and boundary conditions, respectively. In the bi-linear forms, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at an interface $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
 \begin{equation}
     \left[u\right] = u\Big|_{E_i} - u\Big|_{E_j},\quad \left\{u\right\} = \frac{1}{2}\left(u\Big|_{E_i} + u\Big|_{E_j}\right),\quad x\in e_{ij}=\partial E_i\cap\partial E_j
 \end{equation}
-Furthermore, the terms associated with $\sigma$ are introduced to enforce the Dirichlet boundary conditions, where $\sigma$ is a user-specified penalty parameter whose value depend on the size of an element. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have similar convergence rate with respect to mesh size.
+where the same holds for an imperfect interface $\Gamma_{ij}$, and where $\sigma_b,\sigma_c$ are known user-specified bulk and interface penalty terms whose value depends on the element size. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have a similar convergence rate with respect to mesh size.
 
-\paragraph*{Galerkin Projections} Next, the DG-based FOM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in Eq. [X] that satisfy the conditions in Eq. [X]. Using test functions same as trial functions, the dynamics of the coefficients $\vu_i(t) = \left[u_{i,1}(t),\ldots,u_{i,P}(t)\right]^\top$ for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
+\paragraph*{Galerkin Projections} Next, the DG-FEM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in~\cref{eqn_temperature_approximation}. Using the same test functions as trial functions, the DG-FEM dynamics for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
 \begin{equation}
-    a_{\epsilon,i}(\phi_k^i,T) = L^{(c)}_i(\phi_k^i) + L^{(b)}_i(\phi_k^i),\quad k=1,\ldots,P
+    a_{1,i}(\phi_k^i,T) + a_{2,i}(\phi_k^i,T) + a_{3,i}(\phi_k^i,T) = L_i(\phi_k^i),\quad k=1,\ldots,P\quad i=1,2,\dots,M
 \end{equation}
-where $\phi_k^i$ is the $k$-th basis function for the $i$-th element, where the conditions from Eq. [X] are satisfied. Evaluating the bi-linear forms leads to the following system of ODEs,
-\begin{equation}
-    \vA_i(\vu_i)\vu_i = \vB_i(\vu_i)\vu_i + \sum_{j\in\cN_i^{b}}\left(\vB_{ij}^{i}\vu_i + \vB_{ij}^{j}\vu_j  \right) + \vf_{i}^{(c)}(\vu,t) + \vf_i^{(b)}
-\end{equation}
-where, for $k,l=1,2,\dots,P$,
+where $\phi_k^i$ is the $k$-th basis function for the $i$-th element. Evaluating for all basis functions, while leveraging the splitting of DG-FEM states into bulk and contact elements, the following system of coupled ODEs is obtained,
+\begin{itemize}
+    \item \textbf{Bulk elements}: for $i=1,\dots,B$,
+    \begin{equation}
+        \vA_i(\vu_i)\dot{\vu}_i = \underbrace{\left[\vB_i(\vu_i)\vu_i + \sum_{j\in\cN^{b}_i}\vB_{ij}^{i}\vu_i + \sum_{j\in\cN_i^u}\vB_{ij}^{j}\vu_j\right]}_{\text{bulk dynamics on $\Omega_i^b$}} + \underbrace{\left[\sum_{j\in\cN_i^w}\vB_{ij}^{j}\vw_j\right]}_{\text{coupling to dynamics on $\Omega_i^c$}} + \underbrace{\vf_i^{(b)}(t)}_{\text{heating BC}}\label{eqn_bulk_odes}
+    \end{equation}
+    \item \textbf{Imperfect interface elements}: for $i=1,\dots,K$,
+    \begin{gather}
+        \vD_i(\vw_i)\dot{\vw}_i = \underbrace{\left[\sum_{j\in\cN_i^u}\vB_{ij}^{j}\vu_j\right]}_{\text{coupling to dynamics on $\Omega_i^u$}} + \underbrace{\left[\vB_i(\vw_i)\vw_i + \sum_{j\in\cN_i^b}\vB_{ij}^{i}\vw_i + \sum_{j\in\cN_i^w}\vB_{ij}^{j}\vw_j\right]}_{\text{bulk dynamics on $\Omega_i^c$}}\notag\\
+        + \underbrace{\left[\sum_{j\in\cN_{i}^{c}}\left(\vK_{ij}^{i}\vw_i + \vK_{ij}^{j}\vw_j\right)\right]}_{\text{imperfect contact dynamics due to $\Gamma_r$}} + \underbrace{\vf_i^{(c)}(t)}_{\text{heating BC}}\label{eqn_contact_odes}
+    \end{gather}
+\end{itemize}
+where $M=K+B$. For $k,l=1,\dots,P$, the matrix elements are given by,
 \begin{subequations}
     \begin{align}
         \left[\vA_i\right]_{kl} &= \int_{E_i}\rho_i c_{p,i}\phi_k^i\phi_l^i dE_i\\
         \left[\vB_i\right]_{kl} &= \int_{E_i}\vk_i\nabla\phi_k^i\cdot\nabla\phi_l^i dE_i\\
         \left[\vB_{ij}^{i}\right]_{kl} &= \left\{\begin{matrix}
-            &-\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn_i\right\}\phi_l^i + \sigma\left[\phi_k^i\right]\phi_l^id\Gamma, & j\in\cN_i^{b}\cup\left\{T\right\}\\
+            &-\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn_i\right\}\phi_l^i + \sigma_b\left[\phi_k^i\right]\phi_l^id\Gamma, & j\in\cN_i^{u}\cup\left\{T\right\}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
         \left[\vB_{ij}^{j}\right]_{kl} &= \left\{\begin{matrix}
-            &\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_i^{b}\cup\left\{T\right\}\\
+            &\int_{e_{ij}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma_b\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_i^{u}\cup\left\{T\right\}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
-        \left[\vf_{i}^{(c)}\right]_{k} &= \left\{\begin{matrix}
-            &\sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^{c}} \int_{\Gamma_{il}} \phi_k^i q^{(c,r)}_{il}d\Gamma, & l\in\cN_{ir}^{c}\\
+        \left[\vK_{ij}^{i}\right]_{kl} &= \left\{\begin{matrix}
+            &-\int_{\Gamma_{ir}}\left\{\vk\nabla\phi_k^i\cdot\vn_i\right\}\phi_l^i + \sigma_c\left[\phi_k^i\right]\phi_l^id\Gamma, & j\in\cN_{i}^{c}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
-        \left[\vf_i^{(b)}\right]_{k} &= \int_{e_{iq}}\phi_k^iq_b de_{iq} 
-    \end{align}
+        \left[\vK_{ij}^{j}\right]_{kl} &= \left\{\begin{matrix}
+            &\int_{\Gamma_{ir}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma_c\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_{i}^{c}\\
+            &0, & \text{otherwise}
+        \end{matrix}\right.\\
+        \left[\vf_i^{(b,c)}\right]_{k} &= \int_{e_{iq}}\phi_k^iq_b de_{iq} 
+    \end{align}\label{eqn_dgfem_matrix_elements}
 \end{subequations}
-Note that the matrices $\vA_i$, $\vB_i$, $\vB_{ij}^i$, and $\vB_{ij}^j$ depend on $\rho$, $c_p$, and $\vk$, respectively, and hence can be non-linear functions of the state $\vu_i$ if the material properties are temperature-dependent. Since the basis functions are orthogonal, if $\rho c_p$ is constant within an element, then $\vA_i$ is a diagonal matrix; otherwise, $\vA_i$ is symmetric and positive-definite, as $\rho c_p > 0$.
+where the matrices $\vA_i$, $\vB_i$, $\vB_{ij}^i$, and $\vB_{ij}^j$ depend on $\rho$, $c_p$, and $\vk$, respectively, which are non-linear functions of temperature and thus become the main source of non-linearities in the problem. The TCRs are assumed constant in this work, and thus the stiffness matrices due to imperfect contacts $\vK_{ij}^{i}$ and $\vK_{ij}^{j}$ are temperature-independent. Moreover, since the basis functions are orthogonal $\rho c_p$ is constant within an element, and $\vA_i$ becomes a diagonal matrix; otherwise, $\vA_i$ is symmetric and positive definite, as $\rho c_p > 0$.
 
-For compactness, the element-wise ODEs are stacked together to obtain the following system of ODEs for the entire TPS,
+For compactness, the element-wise ODEs in \crefrange{eqn_bulk_odes}{eqn_contact_odes} are stacked together to obtain the following system of ODEs for all bulk and interfacing elements in the TPS,
 \begin{equation}
-    \vA(\vu)\dot{\vu} = \vB(\vu)\vu + \vf^{(c)}(\vu,t) + \vf^{(b)}\label{eqn_compact_dg_fem}
+    \vcA(\vx)\dot{\vx} = \vcB(\vx)\vx + \vcF(t)\label{eqn_compact_dg_fem}
 \end{equation}
-where $\vu = \left[\vu_1^\top,\ldots,\vu_M^\top\right]^\top\in\mathbb{R}^{MP}$ and $\vf^{(b)} = \left[\vf_1^{(b)\top},\ldots,\vf_M^{(b)\top}\right]^\top\in\mathbb{R}^{MP}$, and for $i,j=1,2,\dots,M$, it follows that,
+where $\vx = \left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ are the states, and the matrices are given by,
+\begin{equation}
+    \vcA(\vx) = \begin{bmatrix}
+            \vA(\vu) & \vzero\\
+            \vzero & \vD(\vw)
+        \end{bmatrix},\: \vcB(\vx) = \begin{bmatrix}
+            \vB(\vu) & \vC(\vu) \\ 
+            \vE(\vu) & \vF(\vw)
+        \end{bmatrix},\: \vcF(t) = \begin{bmatrix}
+            \vf^{(b)}(t) \\ 
+            \vf^{(c)}(t)
+        \end{bmatrix}
+\end{equation}
+where $M=B+K$ and $\vB\in\mathbb{R}^{BP\times BP}$, $\vC\in\mathbb{R}^{BP\times KP}$, $\vE\in\mathbb{R}^{KP\times BP}$, and $\vF\in\mathbb{R}^{KP\times KP}$, with Neumann and Dirichlet boundary conditions assumed to be applied only to the bulk domains. Given that the neighboring elements $\cN_i$ of $E_i$ are sub-divided into bulk $\cN_i^b=\cN_i^u\cup\cN_i^w$ and contact $\cN_i^c$, the $M\times M$ block structure to the mass $\vcA$ and stiffness $\vcB$ matrices is introduced,
 \begin{subequations}
     \begin{align}
-        \vB_{ij} &= \left\{
-        \begin{matrix}
-            &\vB_i(\vu) + \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\vB_{ij}^i, & i=j\\
-            &\vB_{ij}^j, & i\neq j, j\in\cN_i^{b}\cup\left\{T\right\}\\
-            &\vzero, &i\neq j, j\in\cN_i^c\\
-            &\vzero, &\text{otherwise}
-        \end{matrix}
-        \right.\\
-        \vf_i^{(c)} &= \left\{
+        \vA_{ij}(\vu) &= \left\{\begin{matrix}
+            \vA_i(\vu_i) & i=j,\\
+            \vzero & \text{otherwise}
+        \end{matrix}\right.,\quad i,j=1,\dots,B\\
+        \vD_{ij}(\vw) &= \left\{\begin{matrix}
+            \vD_i(\vw_i) & i=j,\\
+            \vzero & \text{otherwise}
+        \end{matrix}\right.,\quad i,j=1,\dots,K\\
+        \vB_{ij}(\vu) &= \left\{
             \begin{matrix}
-                &\sum_{r=1}^{N_{\Gamma}} \sum_{l\in\cN_{ir}^c} \vf_{il}^{(c,r)}(\vu,t), & l\in\cN_{ir}^c\\
-                &\vzero, & \text{otherwise}
+                \vB_i(\vu) + \sum_{l\in\cN^b_i}\vB_{il}^{i}(\vu) & i=j,\\
+                \vB_{ij}^{j}(\vu) & i\neq j \text{ and } j\in\cN_i^b\\
+                \vzero & \text{otherwise}
             \end{matrix}
-        \right.
+        \right.\quad i,j=1,\dots,B\\
+        \vC_{ij}(\vu) &= \left\{\begin{matrix}
+            \vB_{ij}^{j} & j\in\cN_i^w\\
+            \vzero & \text{otherwise}
+        \end{matrix}\right.\quad i=1,\dots,B, \: j=1,\dots,K\\
+        \vE_{ij}(\vu) &= \left\{\begin{matrix}
+            \vB_{ij}^{j} & j\in\cN_i^{u}\\
+            \vzero & \text{otherwise}s
+        \end{matrix}
+        \right.\quad i=1,\dots,K,\: j=1,2,\dots,B\\
+        \vF_{ij}(\vw) &= \left\{\begin{matrix}
+            \vB_i(\vw_i) + \sum_{l\in\cN_i^b}\vB_{il}^{i} + \sum_{l\in\cN_i^c}\vK_{il}^{i} & i=j\\
+            \vB_{ij}^{j} & i\neq j \text{ and } j\in\cN_i^w\\
+            \vK_{ij}^{j} & i\neq j \text{ and } j\in\cN_{i}^{c}\\
+            \vzero & \text{otherwise}
+        \end{matrix}
+        \right.\quad i,j=1,\dots,K
     \end{align}
 \end{subequations}
-where $\cN_i^{c} = \bigcup_{r=1}^{N_{\Gamma}} \cN_{ir}^{c}$. The dependency of $\vA$, $\vB$, and $q_{il}^{(c,r)}$ on $\vu$ is explicitly noted in Eq. [X], which is the main source of non-linearities in the system.
 
-Particularly, the contact heat flux $q^{(c,r)}_{il}$ between elements $E_i$ and $E_l$ across the imperfect-contact interface $\Gamma_r$ becomes a function of the DG-FEM state $\vu$ through the following relationship,
-\begin{subequations}
-    \begin{align}
-        q^{(c,r)}_{il}(\vw,t) &= h_{x,il}\left(T^{-}_i(x,t) - T^{+}_l(x,t)\right),\notag\\
-        &= h_{x,il}\left(\sum_{p=1}^{P}\phi_p^{i} u_p^i - \sum_{p=1}^{P}\phi_p^{l} u_p^{l}\right),\quad x\in\Gamma_{il}\subseteq\Gamma_r, l\in\cN_{ir}^{c}
-    \end{align}
-\end{subequations}
-where $T^{-}_i$ and $T^{+}_l$ are the temperature traces on the minus and plus sides of the interface $\Gamma_{il}$, respectively, which can be evaluated as a function of the state $\vu$ by evaluating the temperature traces on the interfaces. 
+\subsection{Reduced-Physics Model}
 
+A \emph{lumped capacitance model} (LCM) under imperfect TPS layer contacts is formulated in this section as the physics-based backbone of the PIROM formulation. The LCM is a classical physics-based low-order model for predicting the temporal variation of average temperatures in multiple interconnected components [INCROPERA]. The LCM is derived at the component level from a point of view of energy conservation, where the following assumptions are employed: (i) bulk $\Omega_i^b$ and interface $\Omega_i^{c}$ components have uniform temperatures $\bar{u}_i$, respectively, which are collected into an average variable $\bvx_i=\left[\bu_i,\bw_i\right]^\top$; (ii) between neighboring $i$ and $j$, the heat flux is given by $q_{ij} = g_{ij}(\bvx)\left(\bu_i - \bu_j\right)$ for $i,j\in\cN_i^b$ through a \emph{perfect}, and $q_{ij} = g_{x,ij}\left(\bw_i-\bw_j\right)$ for $i,j\in\cN_i^c$ through an \emph{imperfect} contact.
 
-is written as a function of the state $\vu$ by evaluating the temperature traces on the interfaces. 
+... in progress
 
-
-and interface $\Gamma_l$ is written as a function of the state $\vu$ by evaluating the temperature traces on the interface. Let $R_{x,il}$ denote the thermal contact resistance of the interface $\Gamma_{il}$, and $h_{x,il} = 1/R_{x,il}$ be the corresponding thermal contact conductance. Moreover, let $T^{-}_{il}$ and $T^{+}_{il}$ 
-
-
-
-Moreover, on the imperfect-contact interface $\Gamma_{l}$, the interface represents a physical thermal resistance between two neighboring components. Let $R_{x,l}$ denote the thermal contact resistance and define the corresponding thermal contact conductance as $h_{x,l} = 1/R_{x,l}$. Then, the heat flux across the interface is governed by,
-\begin{equation}
-    q^{(c)}_{ij} = h_{x,ij}\left(T^{-}_i(x,t) - T^{+}_j(x,t)\right), \quad x\in\Gamma_{ij}
-\end{equation}
-where $T^{-}_i$ and $T^{+}_j$ denote the temperature traces on the minus and plus sides of the interface $\Gamma_{ij}$, respectively. The normal conditions on the interface are given by the conservation of energy across the interface,
-\begin{subequations}
-    \begin{align}
-        -\kappa_i\nabla T^{-}_i(x,t)\cdot\vn_i &= q^{(c)}_{ij}, \quad x\in\Gamma_{ij},\\
-        -\kappa_j\nabla T^{+}_j(x,t)\cdot\vn_j &= -q^{(c)}_{ij}, \quad x\in\Gamma_{ij}
-    \end{align}
-\end{subequations}
-where $\vn_i=-\vn_j$ is the unit normal vector of the interface $\Gamma_{ij}$ pointing from component $i$ to component $j$. Thus, across an imperfect contact interface, the heat flux is conserved, while the temperature is allowed to be discontinuous.
 
 \subsection{Coarse-Graining Procedure}
 
-\paragraph*{Detailed Derivation of Coarse-Graining} The coarse-graining procedure for the 
+This section provides the details of coarse-graining for the TPS problem, the magnitude analysis of residual dynamics after coarse-graining, and an illustrative 2D example demonstrating the derivation of the LCM from the DG-FEM FOM.
+
+\subsubsection{Detailed Derivation of Coarse-Graining}
+
+This section supplements the details pertaining to the coarse-graining procedure presented in Sec.\hl{X}. First, by definition,
+\begin{subequations}
+    \begin{align}
+        \vr^{(1)}\left(\bvx,t\right) &= \cP\left[\vX^{\dagger}\vr(\vx,t)\right]\\
+        &= \cP\left[\vX^{\dagger}\vcA(\vx)^{-1}\vcB(\vx)\vx + \vX^{\dagger}\vcA(\vx)^{-1}\vcF(t)\right]\\
+        &= \cP\left[\vX^{\dagger}\vcA\left(\vx\right)^{-1}\vB\left(\vx\right)\vx\right] + \cP\left[\vX^{\dagger}\vcA\left(\vx\right)^{-1}\vcF(t)\right]\\
+        &= \vX^{\dagger}\vcA\left(\vP\vx\right)^{-1}\vB\left(\vP\vx\right)\vP\vx + \vX^{\dagger}\vcA\left(\vP\vx\right)^{-1}\vP\vcF(t)\\
+        &=[\underbrace{\vX^{\dagger}\vA\left(\vX\bvx\right)^{-1}\vX}_{\# 1}][\underbrace{\vX^{\dagger}\vB\left(\vX\bvx\right)\vX}_{\# 2}]\bvx + \vX^{\dagger}\vcA\left(\vX\bvx\right)^{-1}\vX[\underbrace{\vX^{\dagger}\vcF(t)}_{\# 3}]
+    \end{align}
+\end{subequations}
+where the terms \#1, \#2, and \#3 are the coarse-grained representation of the inverted heat capacitance, heat conduction, and heat load matrices. Following the coarse-graining procedure developed in our previous work Ref. [VargasVenegas20206], these terms are treated one by one to demonstrate the equivalence between the LCM matrices and coarsened DG-FEM matrices.
+
+\paragraph{Term \#1:} The capacitance matrix $\vcA$ is block diagonal, and composed of the bulk $\vA$ and interface $\vD$ capacitance matrices. These bulk and contact capacitance matrices are themselves diagonal, with their $i$-th diagonal blocks as $\vA_i\in\mathbb{R}^{P\times P}$ and $\vD_i\in\mathbb{R}^{P\times P}$, which become diagonal if the material properties are constant within the element. Take an element $E_i\in\Omega_j$ and denote $\overline{\rho c_p}_j$ as the value of $\rho c_p$ evaluated at the average $\bar{u}_j$ so that $\vA_i=\overline{\rho c_p}_j\left|B_i\right|\vI$ and $\vD_i=\overline{\rho c_p}_j\left|W_i\right|\vI$ with $\left|E_i\right|$ as the element size. The $(k,l)$-th element of the coarse-grained \emph{bulk} and \emph{contact} capacitance matrices are computed next.
+
+\begin{tcolorbox}[enhanced, breakable, title=Coarse-Grained Capacitance Matrices]
+    The coarse-grained \emph{bulk} capacitance matrix is computed as,
+    \begin{subequations}
+        \begin{align}
+            \left[\vPhi^{\dagger}\vA\left(\vPhi\bvu\right)^{-1}\vPhi\right]_{kl} &= \sum_{i=1}^{B}\sum_{j=1}^{B}\vvarphi_i^{k\dagger}\vA_{ij}\left(\vPhi\bvu\right)^{-1}\vvarphi_j^{l}\\
+            &= \sum_{i=1}^{B}\sum_{j=1}^{B}\vvarphi_i^{k\dagger}\left[\left(\overline{\rho c_p}_k\left|B_i\right|\right)^{-1}\vI\delta_{ij}\right]\vvarphi_j^l\\
+            &= \sum_{i=1}^{B}\vvarphi_i^{k\dagger}\left(\overline{\rho c_p}_k\left|B_i\right|\right)^{-1}\vvarphi_i^l\\
+            &= \sum_{i\in\cV_k}\vvarphi_i^{k\dagger}\left(\overline{\rho c_p}_k\left|B_i\right|\right)^{-1}\vvarphi_i^l\\
+            &=\sum_{i\in\cV_k}\frac{\left|B_i\right|}{\left|\Omega_k^b\right|}\vvarphi_i^{k\top}\left(\overline{\rho c_p}_k\left|B_i\right|\right)^{-1}\vvarphi_i^k\\
+            &= \sum_{i\in\cV_k}\frac{1}{\Omega_k^b}\vvarphi_i^{k\top}\left(\overline{\rho c_p}_k\right)^{-1}\vvarphi_i^k\\
+            &= \sum_{i\in\cV_k}\left(\overline{\rho c_p}_k\left|\Omega_k^b\right|\right)^{-1}\\
+            &= \left|\cV_k\right|\left(\overline{\rho c_p}_k\left|\Omega_k^b\right|\right)^{-1}
+        \end{align}
+    \end{subequations}
+    Similarly, the coarse-grained \emph{contact} capacitance matrix is computed as,
+    \begin{subequations}
+        \begin{align}
+            \left[\vPi^{\dagger}\vD\left(\vPi\bvw\right)^{-1}\vPi\right]_{kl} &= \sum_{i=1}^{K}\sum_{j=1}^{K}\vpsi_i^{k\dagger}\vD_{ij}\left(\vPi\bvw\right)^{-1}\vpsi_j^{l}\\
+            &= \sum_{i=1}^{K}\sum_{j=1}^{K}\vpsi_i^{k\dagger}\left[\left(\overline{\rho c_p}_k\left|W_i\right|\right)^{-1}\vI\delta_{ij}\right]\vpsi_j^l\\
+            &= \sum_{i=1}^{K}\vpsi_i^{k\dagger}\left(\overline{\rho c_p}_k\left|W_i\right|\right)^{-1}\vpsi_i^l\\
+            &= \sum_{i\in\cF_k}\frac{\left|W_i\right|}{\left|\Omega_k^c\right|}\vpsi_i^{k\top}\left(\overline{\rho c_p}_k\left|W_i\right|\right)^{-1}\vpsi_i^k\\
+            &= \sum_{i\in\cF_k}\frac{1}{\left|\Omega_k^c\right|}\vpsi_i^{k\top}\left(\overline{\rho c_p}_k\right)^{-1}\vpsi_i^k\\
+            &= \sum_{i\in\cF_k}\left(\overline{\rho c_p}_k\left|\Omega_k^c\right|\right)^{-1}\\
+            &= \left|\cF_k\right|\left(\overline{\rho c_p}_k\left|\Omega_k^c\right|\right)^{-1}
+        \end{align}
+    \end{subequations}
+\end{tcolorbox}
+Therefore, by introducing the diagonal weight matrices $\vcW_V\in\mathbb{R}^{N_c\times N_c}$ and $\vcW_F\in\mathbb{R}^{2\NGamma\times2\NGamma}$ it follows that,
+\begin{equation}
+    \vPhi^{\dagger}\vA\left(\vPhi\bvu\right)^{-1}\vPhi\vcW_V^{-1} = \bvA\left(\bvu\right)^{-1},\quad \vPi^{\dagger}\vD\left(\vPi\bvw\right)^{-1}\vPi\vcW_F^{-1} = \bvD\left(\bvw\right)^{-1}
+\end{equation}
+Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfacing domains is reduced, it follows that $\bar{\vD}\left(\bvw\right)\approx\vzero$ as the zero-energy storage assumption for the interfacing domains, as stated in Eq. [X].
+
+\paragraph{Term \#2:} The thermal conductivity matrix $\vcB$ has a block structure that is divided into: $\vB\in\mathbb{R}^{B\times B}$ capturing bulk heat transfer, $\vC\in\mathbb{R}^{B\times K}$ and $\vE\in\mathbb{R}^{K\times B}$ capturing the heat transfer coupling between bulk and contact sub-domains, and $\vF\in\mathbb{R}^{K\times K}$ capturing the bulk heat transfer within the contact sub-domains. The $(k,l)$-th elements of the coarse-grained thermal conductivity matrices are computed next.
+\begin{tcolorbox}[enhanced,breakable,title=Coarse-Grained Thermal Conductivity Matrices]
+    First, the stiffness matrices for the bulk and contact sub-domains are coarse-grained. The coarse-graining proceeds as follows,
+    \begin{subequations}
+        \begin{align}
+            \left[\vPhi^{\dagger}\vB\left(\vPhi\bvu\right)\vPhi\right]_{kl]} &= \sum\\
+            &= \sum
+        \end{align}
+    \end{subequations}
+    Similarly, coarse-graining the stiffness matrix for bulk heat transfer $\vF\left(\vw\right)$ within the contact sub-domain proceeds by ,
+    \begin{subequations}
+        \begin{align}
+            \left[\vPi^{\dagger}\vF\left(\vPi\bvw\right)\vPi\right]_{kl} &= \sum_{i=1}^{K}\sum_{j=1}^{K}\vpsi_i^{k\dagger}\vF_{ij}\left(\vPi\bvw\right)\vpsi_j^l\\
+            &= \sum_{j\in\cF_k}\sum_{j\in\cF_l}\frac{\left|W_i\right|}{\left|\Omega_k^c\right|}\vpsi_i^{k\top}\vF_{ij}\left(\vPi\bvw\right)\vpsi_j^{l}\\
+            &= \frac{1}{\left|\cF_k\right|}\sum_{i\in\cF_k}\sum_{j\in\cF_l}\left[\vF_{ij}\right]_{11}
+        \end{align}
+    \end{subequations}
+    Using the definition from \cref{eqn_dgfem_matrix_elements} it follows that,
+    \begin{equation}
+        \left[\vF_{ij}\right]_{11} = \left\{\begin{matrix}
+            -\sum_{l\in\cN_i^b}\sigma_b\left(\bvw\right)\left|e_{ip}\right| - \sum_{p\in\cN_i^c}\sigma_c\left|\Gamma_{ip}\right|,& i=j\\
+            \sigma_b(\bvw)\left|e_{ij}\right|, & j\in\cN_i^w\\
+            \sigma_c\left|\Gamma_{ij}\right|, & j\in\cN_i^c\\
+            0, & \text{otherwise}
+        \end{matrix}\right.
+    \end{equation}
+    Define the following sets collecting the edges and indices for interfaces with perfect contacts,
+    \begin{subequations}
+        \begin{align}
+            \cE_{kl}^{w} &= \left\{\left(i,j\right)\:|\: j\in\cN_i^w,i\in\cF_k,j\in\cF_l\right\}\\
+            \bar{\cN}_k^w &= \left\{l\:|\: \cE_{kl}^{w}\neq\emptyset\right\}
+        \end{align}
+    \end{subequations}
+    and imperfect contacts,
+    \begin{subequations}
+        \begin{align}
+            \cE_{kl}^{c} &= \left\{\left(i,j\right)\:|\: j\in\cN_i^c,i\in\cF_k,j\in\cF_l\right\}\\
+            \bar{\cN}_k^{c} &= \left\{l\:|\: \cE_{kl}^{c}\neq\emptyset\right\}
+        \end{align}
+    \end{subequations}
+    so that the sum may be simplified as,
+    \begin{subequations}
+        \begin{align}
+            \sum_{i\in\cF_k}\sum_{j\in\cF_l}\left[\vF_{ij}\right]_{11} &= \left\{\begin{matrix}
+            -\sum_{p\in\bar{\cN}_k^w}\sum_{(i,j)\in\cE_{kp}^w}\sigma_b(\bvw)\left|e_{ij}\right| - \sum_{p\in\bar{\cN}_k^c}\sum_{(i,j)\in\cE_{kp}^{c}}\sigma_{c}\left|\Gamma_{ij}\right|, & k=l\\
+            \sum_{(i,j)\in\cE_{kl}^{w}}\sigma_b(\bvw)\left|e_{ij}\right|,&l\in\bar{\cN}_k^w\\
+            \sum_{(i,j)\in\cE_{kl}^{c}}\sigma_c\left|\Gamma_{ij}\right|,& l\in\bar{\cN}_k^c\\
+            0,& \text{otherwise}
+        \end{matrix}\right.\\
+        &= \left\{\begin{matrix}
+            -\sum_{p\in\bar{\cN}_k^w}\sigma_b\left(\bvw\right)\left|e_{kp}\right| - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|, & k=l\\
+            \sigma_b(\bvw)\left|e_{kl}\right|,& l\in\bar{\cN}_k^ w\\
+            \sigma_c\left|\Gamma_{kl}\right|,& l\in\bar{\cN}_k^c\\
+            0, & \text{otherwise}
+            \end{matrix}\right.
+        \end{align}
+    \end{subequations}
+    
+    
+    \begin{subequations}
+        \begin{align}
+            \left[\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\right]_{kl} &= \sum_{i=1}^{B}\sum_{j=1}^{K}\vvarphi_i^{k\dagger}\vC_{ij}\left(\vPhi\bvu\right)\vpsi_j^l\\
+            &= \sum_{i\in\cV_k}\sum_{j\in\cF_l}\vvarphi_i^{k\dagger}\vC_{ij}\left(\vPhi\bvu\right)\vpsi_j^l\\
+            &= \sum_{i\in\cV_k}\sum_{j\in\cF_l}\frac{\left|B_i\right|}{\left|\Omega_k^b\right|}\vvarphi_i^{k\top}\vC_{ij}\left(\vPhi\bvu\right)\vpsi_j^l\\
+            &= \sum_{i\in\cV_k}\sum_{j\in\cF_l}\frac{\left|B_i\right|}{\left|\Omega_k^b\right|}\left[\vC_{ij}\right]_{11}\\
+            &= \frac{1}{\left|\cV_k\right|}\sum_{i\in\cV_k}\sum_{j\in\cF_l}\left[\vB^j_{ij}\right]_{11}
+        \end{align}
+    \end{subequations}
+    Where it is assumed that all elements within a component have the same size, i.e., $\left|\Omega_k^b\right|=\left|B_i\right|\left|\cV_k\right|$, the collection of edges between bulk $\Omega_k^b$ and contact $\Omega_l^c$ domains is $\cE_{kl}^{w}=\left\{\left(i,j\right) | i\in\cV_k \text{ and } j\in\cF_l\right\}$ so that $\left|e_{kl}\right|=\sum_{(i,j)\in\cE_{kl}}\left|e_{ij}\right|$, and where the neighbors of component $k$ are $\overline{\cN}_k=\left\{l|\cE_{kl}^{w}\neq\emptyset\right\}$. By leveraging the definition in \cref{eqn_dgfem_matrix_elements}, the sum is simplified as,
+    \begin{equation}
+        \sum_{i\in\cV_k}\sum_{j\in\cF_l}\left[\vB_{ij}^{j}\right]_{11} = \left\{\begin{matrix}
+            \sum_{(i,j)\in\cE_{kl}}\sigma_b(\bvu)\left|e_{ij}\right| = \sigma_b(\bvu)\left|e_{kl}\right|, & l\in\bar{\cN}_k \\
+            \vzero, & \text{otherwise}
+        \end{matrix}\right.
+    \end{equation}
+    Collecting for $k=1,2,\dots,N_B$ and $l=1,2,\dots,N_C$ leads to,
+    \begin{equation}
+        \bvC\left(\bvu\right) = \vW_u\left(\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\right)\in\mathbb{R}^{N_B\times N_C}
+    \end{equation}
+    with $\vW_u$ as a diagonal weight matrix with $\left[\vW_u\right]_i = \left|\cV_k\right|$. Coarse-graining the $\vE\left(\vu\right)$ matrix follows a similar procedure, where now $\left|\Omega_k^c\right|=\left|\cF_k\right|\left|W_i\right|$, the neighbors of component $k$ are $\bar{\cN}_k=\left\{l | \cE_{kl}^{u}\right\}$ with $\cE_{kl}^{u}=\left\{(i,j)| i\in\cF_k \text{ and } j\in\cV_l\right\}$, and therefore,
+    \begin{subequations}
+        \begin{align}
+            \left[\vPi^{\dagger}\vE\left(\vPhi\bvu\right)\vPhi\right]_{kl} &= \sum_{i\in\cF_k}\sum_{j\in\cV_l}\frac{\left|W_i\right|}{\left|\Omega_k^c\right|}\vpsi_i^{k\top}\vE_{ij}\left(\vPhi\bvu\right)\varphi_j^l\\
+            &= \frac{1}{\left|\cF_k\right|}\sum_{i\in\cF_k}\sum_{j\in\cV_l}\left[\vB_{ij}^{j}\right]_{11}
+        \end{align}
+    \end{subequations}
+\end{tcolorbox}
 
 \paragraph*{Coarse-Graining Example} Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
 \begin{subequations}

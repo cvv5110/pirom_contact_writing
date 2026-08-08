@@ -1,78 +1,137 @@
 \section{Physics-Infused Reduced-Order Modeling}
 
-The formulation of PIROM for TPS starts by mathematically connecting the FOM, i.e., the DG-FEM, to the RPM, i.e., the LCM. This results presented in this section leverage the previous work in Ref. {X}, where a coarse-graining procedure is developed to systematically derive the LCM from the DG-FEM. Such coarse-graining procedure pinpoints the missing dynamics in the LCM when compared to DG-FEM, enabling the systematic design of a memory closure to account for residual dynamics associated with discarded spatial resolution. 
+The formulation of PIROM for TPS starts by mathematically connecting the FOM to the RPM. This connection is formally established through a coarse-graining procedure, which systematically reduces the spatial resolution of the DG-FEM to discover the lifted LCM model with contact temperature jump dynamics. Additionally, the coarse-graining procedure pinpoints residual terms in the RPM that facilitate the design of a data-driven memory closure to account for discarded spatial resolution.
 
 \subsection{Deriving the Reduced-Physics Model via Coarse-Graining}
 
-As demonstrated in previous work [VargasVenegas2026], the LCM can be viewed as a special case of the DG-FEM, where the mesh partition is extremely coarse, and the trail and test functions are piece-wise constants. In this setting, the LCM becomes a coarse zeroth-order DG-FEM with the inverse of thermal resistance chosen as the element-wise penalty factors. In this work, the presence of unknown TCRs motivates the design of a coarse-graining procedure that explicitly accounts for the presence of interfaces with unknown contact conductances, which are not captured by the LCM. 
+Following our previous work in Ref. [VargasVenegas2026], the LCM can be viewed as a zeroth-order (i.e., constant basis functions) DG-FEM with an extremely coarse mesh partition, and where the element-wise penalty factors become the conductance. In particular, the presence of imperfect interfaces in this work motivates modification of the coarse-graining procedure to explicitly account for TCR dynamics, which are not present in the standard LCM formulation. The following discussion presents the derivation of the lifted LCM dynamics via coarse-graining and the PIROM formulation to account for residual dynamics.
 
 \subsubsection{Coarse-Graining of States}
 
-Consider a DG-FEM as in Eq. [X] for $M$ elements, and a LCM as in Eq. [X] for $N$ components with $N_{\Gamma}$ imperfect interfaces; clearly, $M\gg N$. Define the sets of indices $\cV_j$, $\cF_i^-$, and $\cF_i^+$, corresponding to the elements contained in component $j$, and the elements adjacent to interface $i$ on the negative and positive sides, respectively. Formally, the sets are defined as,
+Consider a DG-FEM formulation as in \cref{eqn_dg_fem} with $M$ elements, $\NC$ components and $\NGamma$ interfaces; clearly, $M \gg \NC,\NGamma$. Let component $\Omega_i$ contain a share a boundary with the imperfect interface $\Gamma_r$, i.e., $\partial\Omega_i^c\cap\Gamma_r\neq\emptyset$ with $\Omega_i^c\subset\Omega_i$, and define the sets of indices $\cV_i$ and $\cF_i$ for the elements in the bulk $\Omega_i^b$ and contact $\Omega_i^c$ sub-domains, respectively; note that $\Gamma_r=\partial\Omega_i^c\cap\partial\Omega_j^c$ with $i\neq j$, $i,j=1,2,\dots,N$ and $r=1,2,\dots,N_{\Gamma}$. Formally, the sets are defined as,
 \begin{subequations}
     \begin{align}
-        \cV_j &= \{i: E_i\subset\Omega_j\}\\
-        \cF_i^- &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_i^{-}\}\\
-        \cF_i^+ &= \{j\in\{1,2,\dots,M\}\:|\: \Gamma_i\cap\partial E_j\neq\emptyset, E_j\subset\Omega_i^+\}
+        \cV_i &= \{j \:|\: E_j\subset\Omega_i^b\},\quad i=1,2,\dots,N_B\\
+        \cF_i &= \left\{j \:|\: \partial W_j\cap\Gamma_r\neq\emptyset,\: W_j\subset\Omega_i^c\right\},\quad i=1,2,\dots,N,\:r=1,2,\dots,N_C
     \end{align}
 \end{subequations}
-where $\Gamma_r=\partial\Omega_i^{-}\cap\partial\Omega_i^{+}$ is the imperfect interface between the minus $\Omega^{-}_i$ and plus $\Omega_i^{+}$ components. To aid in the subsequent derivations, introduce a new variable $\vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}$, where $\vw_i$ corresponds to the DG-FEM states of element $i$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$ correspond to the DG-FEM states of the elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Note that $K = K^- + K^+$, where $K^-$ and $K^+$ are the number of elements adjacent to the imperfect contact interfaces on the negative and positive sides, respectively. Clearly, $M>K$, since the total number of elements is much larger than the number of elements adjacent to the imperfect contact interfaces.
+Note that since an interface $\Gamma_r$ is composed of two contact sub-domains, and there are $N_C$ contact sub-domains, $N_C = 2 N_{\Gamma}$. Moreover, to aid in subsequent RPM derivations, introduce the states for interfacing DG-FEM elements as,
+\[
+    \vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}
+\]
+\noindent associated to the elements with neighboring imperfect interfaces on the negative and positive sides, respectively; these variables are coupled to the bulk element states $\vu\in\mathbb{R}^{BP}$ via the standard DG-FEM penalty terms, as shown in Appendix \hl{[X]}. Additionally, note that $M=B+K$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$, with $K=K^{-}+K^{+}$ and where $K^{-}$ and $K^{+}$ denote the total number of elements on the negative and positive sides of imperfect interfaces, respectively.
 
-
-Therefore, the volume and left-and-right interface averages for component $j$ and interface $r$ are given by,
+Under such variable construction, the average temperatures on some bulk component $\Omega_i^b$ and interface $\Gamma_r$ are given by,
 \begin{subequations}
     \begin{align}
-        \bar{u}_j &= \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\int_{E_i} \vphi^\top\vu_i d\Omega_i = \frac{1}{\left|\Omega_j\right|}\sum_{i\in\cV_j}\left|E_i\right|\vvarphi_i^{j\top}\vu_i, \: j=1,\ldots,N\\
-        \btheta_r^{-}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^-}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{-}}\alpha_{mr}^{-}\vmu_{mr}^{\top}\vw_{mr}^{-}, \: r=1,\ldots,N_{\Gamma}\\
-        \btheta_r^{+}(t) &= \frac{1}{\left|\Gamma_r\right|}\sum_{m\in\cF_r^+}\int_{\Gamma_{rm}} \vphi_m^\top\vw_m d\Gamma_r=\sum_{m\in\cF_r^{+}}\alpha_{mr}^{+}\vmu_{mr}^{\top}\vw_{mr}^{+}, \: r=1,\ldots,N_{\Gamma}
+        \bar{u}_i &= \frac{1}{\left|\Omega_i^{b}\right|}\sum_{m\in\cV_i}\int_{E_m} \vphi_m^\top\vu_m dE = \frac{1}{\left|\Omega_i^b\right|}\sum_{m\in\cV_i}\left|E_m\right|\vvarphi_m^{j\top}\vu_m, \quad i=1,\ldots,N_{C}\\
+        \bar{w}_r^{-}(t) &= \frac{1}{\left|\Omega_r^{c,-}\right|}\sum_{m\in\cF_r^-}\int_{E_m} \vphi_m^\top\vw^{-}_m dE = \frac{1}{\left|\Omega_r^{c,-}\right|}\sum_{m\in\cF_r^{-}}\left|E_m\right|\vpsi_m^{r-}\vw^{-}_m, \quad r=1,2,\dots,N_{\Gamma}\\
+        \bar{w}_r^{+}(t) &= \frac{1}{\left|\Omega_r^{c,+}\right|}\sum_{m\in\cF_r^+}\int_{E_m} \vphi_m^\top\vw^{+}_m dE = \frac{1}{\left|\Omega_r^{c,+}\right|}\sum_{m\in\cF_r^{+}}\left|E_m\right|\vpsi_m^{r+}\vw_m^{+},\quad r=1,2,\dots,\NGamma
     \end{align}
 \end{subequations}
-where the orthogonal basis functions are defined as $\vvarphi_i^j=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$. Moreover, $\alpha_{mr}^{-} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ and $\alpha_{mr}^{+} = \frac{\left|\Gamma_{mr}\right|}{\left|\Gamma_r\right|}$ correspond to the fractions of the interface segment $\Gamma_{mr}$ with respect to the total interface $\Gamma_r$, $\vw_{mr}^{-}$ and $\vw_{mr}^{+}$ correspond to the DG-FEM states of the element $E_m$, which is adjacent to the imperfect interface $\Gamma_{r}$ with $r=1,2,\dots,N_{\Gamma}$ on the negative and positive sides, respectively, and $\vmu_{mr} = \frac{1}{\left|\Gamma_{mr}\right|}\int_{\Gamma_{mr}} \vphi^{\top}_m d\Gamma_{mr}\in\mathbb{R}^{P}$. Moreover, the $\Gamma_{rm} = \Gamma_r\cap\partial E_m$, and $\left|\Gamma_{rm}\right|$ is the point $(d=2)$ or area $(d=3)$ of the interface segment $\Gamma_{rm}$.
+where the orthogonal basis functions $\vvarphi_i^j,\vpsi_m^{j\pm}=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$ if $i\in\cV_j$ and $m\in\cF_j^{\pm}$, respectively, and are zero otherwise.
 
-Conversely, given the average temperatures of the $N_C$ components, as well as the average minus-and-plus temperatures on the two sides of the $N_{\Gamma}$ different imperfect interfaces, the DG-FEM states may be written as,
+Given the average temperatures $\left\{\bar{u}_i\right\}_{i=1}^{N_C}$, $\left\{\bar{w}_i^{-}\right\}_{i=1}^{\NGamma}$, and $\left\{\bar{w}_i^{+}\right\}_{i=1}^{N_{\Gamma}}$, the DG-FEM states of elements on domains $\Omega_i^b$, $\Omega_r^{c,-}$, and $\Omega_r^{c,+}$ are written as,
 \begin{subequations}
     \begin{align}
-        \vu_i &= \sum_{k=1}^{N_C}\vvarphi_i^k\bar{u}_k + \delta\vu_i,\quad i=1,2,\dots,M\\
-        \vw_{ir}^{-} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r-}\btheta_k^{-} + \delta\vw_{ir}^{-},\quad i\in\cF_r^{-},r=1,2,\dots,N_{\Gamma}\\
-        \vw_{ir}^{+} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r+}\btheta_k^{+} + \delta\vw_{ir}^{+},\quad i\in\cF_r^{+},r=1,2,\dots,N_{\Gamma}
-    \end{align}\label{eqn_element_states}
-\end{subequations}
-where $\vpsi_k^{r\pm}=\vzero\in\mathbb{R}^{P}$ if $k\neq r$, so that the average minus-and-plus temperatures on the two sides of the imperfect contact interface $\Gamma_r$ only contribute to the states of the elements adjacent to such interface, and $\delta\vu_i$, $\delta\vw_{ir}^{-}$, and $\delta\vw_{ir}^{+}$ correspond to the residuals between the DG-FEM states and the reconstructed states from the average temperatures.
-
-Collectively, Eq.\cref{eqn_element_states} can be written in matrix form as,
-\begin{subequations}
-    \begin{align}
-        \vu &= \vPhi\bar{\vu} + \delta\vu,\quad \bvu=\vPhi^{\dagger}\vu\\
-        \vw &= \vPi\bar{\vtheta} + \delta\vw,\quad \bvtheta=\vPi^{\dagger}\vw
+        \vu_i &= \sum_{k=1}^{N_C}\vvarphi_i^k\bar{u}_k + \delta\vu_i,\quad i\in\cV_j,\quad j=1,2,\dots,B\label{eqn_bulk_element_states}\\
+        \vw_{ir}^{-} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r-}\bar{w}_k^{-} + \delta\vw_{ir}^{-},\quad i\in\cF_r^{-},\quad r=1,2,\dots,N_{\Gamma}\label{eqn_negative_element_states}\\
+        \vw_{ir}^{+} &= \sum_{k=1}^{N_{\Gamma}}\vpsi_k^{r+}\bar{w}_k^{+} + \delta\vw_{ir}^{+},\quad i\in\cF_r^{+},\quad r=1,2,\dots,N_{\Gamma}\label{eqn_positive_element_states}
     \end{align}
 \end{subequations}
-where $\vPhi\in\mathbb{R}^{MP\times N_C}$ is a matrix of $M\times N_{C}$ blocks, with the $(i,j)$-th block as $\vvarphi_i^j$, $\vPhi^{\dagger}\in\mathbb{R}^{N_{C}\times MP}$ is the left inverse of $\vPhi$, with the $(i,j)$-th block as $\vvarphi_i^{j\dagger}=\frac{|E_i|}{|\Omega_j|}\vvarphi_i^{jT}$ and $\delta\vu$ is the collection of deviations from the average temperature. Moreover,
+\noindent where $\vvarphi_i^{k},\vpsi_i^{k\pm} = [1,0,\dots,0]^\top\in\mathbb{R}^{P}$ if $i\in\cV_k$ and $\cF_r^{\pm}$, respectively.
+
+The \crefrange{eqn_bulk_element_states}{eqn_positive_element_states} are collected in matrix form,
+\begin{subequations}
+    \begin{align}
+        \vu &= \vPhi\bvu + \delta\vu,\quad \bvu=\vPhi^{\dagger}\vu\\
+        \vw &= \vPi\bar{\vw} + \delta\vw,\quad \bar{\vw}=\vPi^{\dagger}\vw
+    \end{align}\label{eqn_state_factorization}
+\end{subequations}
+where $\vPhi\in\mathbb{R}^{BP\times N_B}$ is a matrix of $B\times N_{B}$ blocks, with the $(i,j)$-th block as $\vvarphi_i^j$, $\vPhi^{\dagger}\in\mathbb{R}^{N_{C}\times BP}$ is the left inverse of $\vPhi$, with the $(i,j)$-th block as $\vvarphi_i^{j\dagger}=\frac{|E_i|}{|\Omega_j|}\vvarphi_i^{jT}$ and $\delta\vu$ is the collection of deviations from the average temperature. Moreover,
 \begin{equation}
     \vPi = \begin{bmatrix}
         \vM & \vzero\\
         \vzero & \vN
-    \end{bmatrix},\quad \vPi^{\dagger} = \begin{bmatrix}
+    \end{bmatrix}\in\mathbb{R}^{KP\times N_C},\quad \vPi^{\dagger} = \begin{bmatrix}
         \vM^{\dagger} & \vzero\\
         \vzero & \vN^{\dagger}
-    \end{bmatrix}
+    \end{bmatrix}\in\mathbb{R}^{2\NGamma\times KP}
 \end{equation}
-where $\vM\in\mathbb{R}^{K^{-}P\times\NGamma}$, $\vN\in\mathbb{R}^{K^{+}P\times\NGamma}$ correspond to the lifting matrices from the minus-and-plus interface average temperatures $\bvtheta^{-},\bvtheta^{+}\in\mathbb{R}^{\NGamma}$. By their definitions, the projection matrices satisfy,
+where $\vM\in\mathbb{R}^{K^{-}P\times\NGamma}$ and $\vN\in\mathbb{R}^{K^{+}P\times\NGamma}$ correspond to matrices that project the average interface temperatures $\bvw=\left[\bvw^{-},\bvw^{+}\right]\in\mathbb{R}^{2\NGamma}$ to the full-order interface DG-FEM state. Therefore, $\vPi\in\mathbb{R}^{KP\times 2\NGamma}$ is a matrix of $K\times 2\NGamma$ blocks with the $(i,j)$-th block as $\vpsi_i^j$, $\vPi^{\dagger}\in\mathbb{R}^{2\NGamma\times KP}$ is the left inverse of $\vPi$ with the $(i,j)$-th block as $\vpsi_i^{j\dagger} = \frac{\left|E_i\right|}{\left|\Omega_j^c\right|}\vpsi_i^{j\top}$ and $\delta\vw$ is the collection of deviations from the interfacial average temperatures. By definition, the matrices defined above satisfy,
 \begin{subequations}
     \begin{align*}
-        \vPhi^{+}\vPhi &= \vI, & \vPhi^{+}\delta\vu  &= \vzero\\
-        \vM^{+}\vM     &= \vI, & \vM^{+}\delta\vw^{-} &= \vzero\\
-        \vN^{+}\vN     &= \vI, & \vN^{+}\delta\vw^{+} &= \vzero
+        \vPhi^{\dagger}\vPhi &= \vI, & \vPhi^{\dagger}\delta\vu  &= \vzero\\
+        \vPi^{\dagger}\vPi &= \vI, & \vPi^{\dagger}\delta\vw &= \vzero
     \end{align*}
 \end{subequations}
-
+For brevity, the states in \cref{eqn_state_factorization} are collectively written as,
+\begin{equation}
+    \vx = \vX\bvx + \delta\vx,\quad \bvx = \vX^{\dagger}\vx
+\end{equation}
+where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$, $\vX\in\mathbb{R}^{MP\times (N_B+N_C)}$, and $\vX^{\dagger}\in\mathbb{R}^{(N_B+N_C)\times MP}$.
 
 \subsubsection{Coarse-Graining of Dynamics}
 
-Next, the coarse-graining operator for the LCM dynamics is selected as in previous work [VargasVenegas2026], which consists of a Galerkin projection of the DG-FEM dynamics onto the subspace spanned by the coarse-grained states described by the average temperatures. The critical result of the coarse-graining procedure is that the LCM dynamics can be written in the following form,
+Next, the coarse-graining procedure follows our previous work in Ref. [VargasVenegas2026], where the higher-order temperature modes are neglected in the DG-FEM dynamics, leading to a spatially averaged transient modeling of the TPS temperature dynamics. The presence of imperfect thermal contacts introduces additional modeling considerations to account for temperature discontinuities across TPS layers. The following discussion summarizes the critical results from coarse-graining, while detailed derivations are provided in Appendix [X].
+
+Consider a function of the states in the form $\vM\left(\vx\right)\vg(\vx)$ with $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ and $M=B+K$, where $\vg(\vx):\mathbb{R}^{MP}\rightarrow\mathbb{R}^{MP}$ is a vector-valued function, and $\vM(\vx):\mathbb{R}^{MP}\rightarrow\mathbb{R}^{p\times MP}$ is a matrix-valued function with an arbitrary dimension $p$. Define the projection matrices $\vP = \vX\vX^{\dagger}$ where,
+\begin{subequations}
+    \begin{align}
+        \vX &= \text{diag}\left(\vPhi,\vPi\right)\in\mathbb{R}^{MP\times (N_{B} + N_C)}\\
+        \vX^{\dagger} &= \text{diag}\left(\vPhi^{\dagger},\vPi^{\dagger}\right) \in\mathbb{R}^{(N_B + N_C)\times MP}
+    \end{align}
+\end{subequations}
+and the projection operator,
+\begin{subequations}
+    \begin{align}
+        \cP\left[\vM(\vx)\vg(\vx)\right] &= \vM(\vP\vx)\vP\vg(\vP\vx)\\
+        &= \vM\left(\vX\vX^{\dagger}\vx\right)\vX\vX^{\dagger}\vg\left(\vX\vX^{\dagger}\right)\\
+        &= \vM\left(\vX\bvx\right)\vX\vX^{\dagger}\vg\left(\vX\bvx\right)
+    \end{align}
+\end{subequations}
+so that the resulting function depends only on the resolved variables $\bvx=\left[\bar{\vu},\bvw^{-},\bvw^{+}\right]^{N_{B}+N_C}$; note that an averaged temperature difference $\Delta\bvw = \bvw^- - \bvw^+$ may be computed between two contact sub-domains conforming an imperfect interface, which becomes useful for subsequent TCR identifications. Correspondingly, the residual operator is $\cQ = \cI - \cP$ so that $\cQ\left[\vM(\vx)\vg(\vx)\right] = \vM(\vx)\vg(\vx) - \cP\left[\vM(\vx)\vg(\vx)\right]$. When the function is not separable, the projection operator is simply given by $\cP\left[\vg(\vx)\right]=\vg\left(\vX\bvx\right)$.
+
+Subsequently, the operators defined above are applied to coarse-grain the dynamics. First, the DG-FEM model in \cref{eqn_dg_fem} is written as,
+\begin{equation}
+    \dot{\vx} = \vcA^{-1}\left[\vcB(\vx)\vx + \vcF(t)\right] = \vr(\vx,t)
+\end{equation}
+Multiplying both sides by $\vX^{\dagger}$ produces,
+\begin{equation}
+    \vX^{\dagger}\dot{\vx} = \vX^{\dagger}\left(\vX\dot{\bvx} + \delta\dot{\vx}\right) = \dot{\bvx} = \vX^{\dagger}\vr(\vx,t)
+\end{equation}
+and applying the projection and residual operator yields,
+\begin{subequations}
+    \begin{align}
+        \dot{\bvx} &= \cP\left[\vX^{\dagger}\vr(\vx,t)\right] + \cQ\left[\vX^{\dagger}\vr(\vx,t)\right]\\
+        &= \vr^{(1)}(\bvx,t) + \vr^{(2)}(\vx,t)
+    \end{align}
+\end{subequations}
+where $\vr^{(1)}(\bvx,t)$ is the resolved dynamics, which depends only on $\bvx$, and $\vr^{(2)}(\vx,t)$ is the residual dynamics, which depends on the full-order state $\vx$. Detailed derivations of the resolved $\vr^{(1)}$ and residual $\vr^{(2)}$ dynamics are provided in Appendix \hl{[X]}, and the key results are stated below.
+
+First, the resolved dynamics becomes exactly the LCM, with the temperature jump dynamics formulated as a \emph{zero-energy storage} assumption on the contact sub-domain component of the DG-FEM dynamics. Specifically, the coarse-grained mass matrices are given by,
+\begin{subequations}
+    \begin{align}
+        \bvA &= \vW_u\left(\vPhi^{\dagger}\vA\left(\vPhi\bvu\right)^{-1}\vPhi\right)^{-1}\\
+        \bvD &= \vW_w\left(\vPi^{\dagger}\vD\left(\vPi\bvw\right)^{-1}\vPi\right)^{-1}
+    \end{align}
+\end{subequations}
+where $\vW_u\in\mathbb{R}^{N_B\times N_B}$ and $\vW_w\in\mathbb{R}^{N_C\times N_C}$ are diagonal weight matrices such that $\left[\vW_u\right]_{i} = \left|\cV_k\right|$ if $i\in\cV_k$, and $\left[\vW_c\right]_i=\left|\cF_k\right|$ if $i\in\cF_k$. Similarly, the coarse-grained stiffness matrices are,
+\begin{subequations}
+    \begin{align}
+        \bvB &= \vW_u\vPhi^{\dagger}\vB\left(\vPhi\bvu\right)\vPhi\\
+        \bvC &= \vW_u\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\\
+        \bvE &= \vW_w\vPi^{\dagger}\vE\left(\vPhi\bvu\right)\vPhi\\
+        \bvF &= \vW_w\vPi^{\dagger}\vF\left(\vPhi\bvu\right)\vPi
+    \end{align}
+\end{subequations}
+where
 
 \subsection{Formulation of Reduced-Order Model}
 
-The Mori-Zwanzig (MZ) formalism is an operator-projection technique use to derive ROMs for high-dimensional dynamical systems, especially in statistical mechanics and fluid dynamics [Parish2017,Stinis2017,Parish2025]. It provides an exact reformulation of the full-order dynamics in terms of a subset of resolved states. The proposed PIROM is subsequently developed based on such reformulation.
+The Mori-Zwanzig (MZ) formalism is an operator-projection technique used to derive ROMs from high-dimensional dynamical systems, especially in statistical mechanics and fluid dynamics [Parish2017,Stinis2017,Parish2025]. The MZ formalism enables an exact reformulation of the FOM in terms of a subset of resoled states, with unresolved dynamical terms appearing as residual 
+
+The proposed PIROM is subsequently developed based on such reformulation.
 
 
 
@@ -135,11 +194,16 @@ and in state-space form, the hidden dynamics are,
 The full lifted and closed system is given by,
 \begin{subequations}
     \begin{align}
-        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i \vu + \vL_i\Deltavtheta + \vP_i\vbeta\right) + \vf(t)\\
+        A(\vu)\dot{\vu} &= \sum_{i=1}^{N-1}\frac{1}{S_i(\vu)}\left(\vK_i \vu + \vL_i\Deltavtheta\right) + \vf(t)\\
         M(\vu;R_x)\dot{\Deltavtheta} &= \vD\dot{\vu} - G_x\bigl(\Deltavtheta\odot \dot S(\vu)\bigr)\\
-        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)
+        \dot{\vbeta} &= -\Lambda\vbeta + Q^\top\phi(\vu) + R^\top \psi(\vf)\\
+        \vz &= \vH_{u}\vu + \vH_{\theta}\Delta\vtheta + \vH_{\vbeta}\vbeta
     \end{align}
 \end{subequations}
+
+\begin{equation}
+    \cJ = \alpha_1\cJ_{\text{TCR}} + \alpha_2\cJ_{\beta}
+\end{equation}
 
 \begin{figure}
     \centering

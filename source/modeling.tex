@@ -149,11 +149,11 @@ Now, define the left $R_r^{-} = \frac{l_r^{-}}{k_r^{-}A}$, right $R_r^{+} = \fra
 
 Next, two approaches are introduced to formulate the temperature jump dynamics: (i) coarse-graining the DG-FEM model as shown in [APPENDIX], or (ii) leveraging energy conservation at the interface level, with a \emph{zero-energy storage} assumption the contact subdomains. For brevity, the second approach is adopted here, which states \emph{that the total bulk and contact heat fluxes across an imperfect interface must be equal}, yielding the following algebraic constraints,
 \begin{equation}
-    q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)} = g_{r}\Delta\bw_r = q^{c}_r(t)\label{eqn_interface_heat_flux_closure}
+    q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)} = g_{r}\Delta\bw_r = q^{c}_r(t)\label{eqn_interface_heat_flux_conservation}
 \end{equation}
 The contact temperature jumps $\Delta\bw_r$ for $r=1,2,\dots,N_{\Gamma}$ are introduced as additional state variables, governed by the heat flux continuity algebraic constraints from \cref{eqn_interface_heat_flux_closure}. These algebraic constraints are differentiated with respect to time, such that for each interface,
 \begin{equation}
-    \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\bw}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}
+    \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\bw}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}\label{eqn_temperature_jump_dynamics_r}
 \end{equation}
 Collecting equations from all imperfect interfaces, the following system of ODEs governs the average contact temperature jump,
 \begin{equation}
@@ -168,7 +168,7 @@ where the state $\Delta\bar{\vw}\in\mathbb{R}^{N_{\Gamma}}$, conductance $\vG\in
 \end{subequations}
 while $\vD\in\mathbb{R}^{N_{\Gamma}\times N_C}$ is the difference matrix that computes the lumped temperature differences across the interfaces, and $\odot$ denotes the Hadamard product. 
 
-\paragraph*{Lumped Lumped Capacitance Model Formulation} At component $i$, the following assumptions are employed: (i) the bulk $\bu_i$ and contact $\bw^{\pm}_i$ average temperatures are uniform and equal to the spatial average over the their respective $\Omega_i^b$ and $\Omega_i^c$ sub-domains of component $\Omega_i$, (ii) for neighboring components $i$ and $j$ under perfect contact, the bulk heat flux is defined as $q_{ij}^{b} = g_{ij}\left(\bvu\right)\left(\bu_i - \bu_j\right)$. The term $g_{ij}(\bvu) = 1 / R_{ij}(\bvu)$ is the effective conductance, with $R_{ij} = R_{i} + R_{j}$ and $R_{ij}(\bvu) = \ell/k(\bvu)A$, where $\ell$ is the distance between lumped masses, $k(\bvu)$ is the temperature-dependent thermal conductivity, and $A$ is the cross-sectional area of the interface. Similarly, the heat flux due to the Dirichlet boundary condition is given by $q_{iT} = g_{iT}\left(\bu_i - \bu_T\right)$. For component $i$ and noting that $\cN_i^b = \cN_i^u\cup\cN_i^w$, \cref{eqn_general_lcm} may be written as,
+\paragraph*{Modified Formulation of the Lumped Capacitance Model} At component $i$, the following assumptions are employed: (i) the bulk $\bu_i$ and contact $\bw^{\pm}_i$ average temperatures are uniform and equal to the spatial average over the their respective $\Omega_i^b$ and $\Omega_i^c$ sub-domains of component $\Omega_i$, (ii) for neighboring components $i$ and $j$ under perfect contact, the bulk heat flux is defined as $q_{ij}^{b} = g_{ij}\left(\bvu\right)\left(\bu_i - \bu_j\right)$. The term $g_{ij}(\bvu) = 1 / R_{ij}(\bvu)$ is the effective conductance, with $R_{ij} = R_{i} + R_{j}$ and $R_{ij}(\bvu) = \ell/k(\bvu)A$, where $\ell$ is the distance between lumped masses, $k(\bvu)$ is the temperature-dependent thermal conductivity, and $A$ is the cross-sectional area of the interface. Similarly, the heat flux due to the Dirichlet boundary condition is given by $q_{iT} = g_{iT}\left(\bu_i - \bu_T\right)$. For component $i$ and noting that $\cN_i^b = \cN_i^u\cup\cN_i^w$, \cref{eqn_general_lcm} may be written as,
 \begin{subequations}
     \begin{align}
         \bar{A}_i(\bu_i)\dot{\bu}_i &=\sum_{j\in\cN^u_i}\int_{e_{ij}}g_{ij}(\bvu)\left(\bu_i - \bu_j\right)de + \sum_{j\in\cN_i^w}\int_{e_{ij}}g_{ij}(\bvu)\left(\bu_i - \bw_j\right)de + \int_{e_{iq}}q_b de + \int_{e_{iT}}q_{T}de\\
@@ -184,7 +184,7 @@ or,
 
 Collecting $N_B$ bulk and $N_{\Gamma}$ interface terms, the system of equations governing the coarse-grained temperature dynamics of the TPS with imperfect thermal contacts is written as the following coupled system of ODEs,
 \begin{equation}
-    \bvcA\left(\vs\right)\dot{\vs} = \bvcB\left(\vs\right) + \bvcF(t)
+    \bvcA\left(\vs\right)\dot{\vs} = \bvcB\left(\vs\right) + \bvcF(t)\label{eqn_modified_lcm}
 \end{equation}
 where,
 \begin{equation}

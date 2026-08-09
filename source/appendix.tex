@@ -76,7 +76,8 @@ where $M=K+B$. For $k,l=1,\dots,P$, the matrix elements are given by,
             &\int_{\Gamma_{ir}}\left\{\vk\nabla\phi_k^i\cdot\vn\right\}\phi_l^j + \sigma_c\left[\phi_k^i\right]\phi_l^jd\Gamma, & j\in\cN_{i}^{c}\\
             &0, & \text{otherwise}
         \end{matrix}\right.\\
-        \left[\vf_i^{(b,c)}\right]_{k} &= \int_{e_{iq}}\phi_k^iq_b de_{iq} 
+        \left[\vf_i^{(b)}\right]_{k} &= \int_{e_{iq}}\phi_k^iq_b de + \sigma\int_{e_{iT}}\phi_k^iT_b de\\
+        \left[\vf_i^{(c)}\right]_{k} &= \int_{\Gamma_{ir}}\phi_k^iq_c de + \sigma\int_{\Gamma_{iT}}\phi_k^iT_c de
     \end{align}\label{eqn_dgfem_matrix_elements}
 \end{subequations}
 where the matrices $\vA_i$, $\vB_i$, $\vB_{ij}^i$, and $\vB_{ij}^j$ depend on $\rho$, $c_p$, and $\vk$, respectively, which are non-linear functions of temperature and thus become the main source of non-linearities in the problem. The TCRs are assumed constant in this work, and thus the stiffness matrices due to imperfect contacts $\vK_{ij}^{i}$ and $\vK_{ij}^{j}$ are temperature-independent. Moreover, since the basis functions are orthogonal $\rho c_p$ is constant within an element, and $\vA_i$ becomes a diagonal matrix; otherwise, $\vA_i$ is symmetric and positive definite, as $\rho c_p > 0$.
@@ -189,22 +190,22 @@ where the terms \#1, \#2, and \#3 are the coarse-grained representation of the i
         \end{align}
     \end{subequations}
 \end{tcolorbox}
-Therefore, by introducing the diagonal weight matrices $\vcW_V\in\mathbb{R}^{N_c\times N_c}$ and $\vcW_F\in\mathbb{R}^{2\NGamma\times2\NGamma}$ it follows that,
+Therefore, by introducing the diagonal weight matrices $\vcW_V\in\mathbb{R}^{N_B\times N_B}$ and $\vcW_F\in\mathbb{R}^{N_C\times N_C}$ it follows that,
 \begin{equation}
     \vPhi^{\dagger}\vA\left(\vPhi\bvu\right)^{-1}\vPhi\vcW_V^{-1} = \bvA\left(\bvu\right)^{-1},\quad \vPi^{\dagger}\vD\left(\vPi\bvw\right)^{-1}\vPi\vcW_F^{-1} = \bvD\left(\bvw\right)^{-1}
 \end{equation}
-Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfacing domains is reduced, it follows that $\bar{\vD}\left(\bvw\right)\approx\vzero$ as the zero-energy storage assumption for the interfacing domains, as stated in Eq. [X].
+Note that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfacing domains is reduced, and thus $\bar{\vD}\left(\bvw\right)\approx\vzero$ under a \emph{zero-energy storage assumption for the interacing domain}; such assumption is leveraged in subsequent derivations to demonstrate the equivalence between the coarse-grained DG-FEM model and \cref{eqn_modified_lcm}.
 
 \paragraph{Term \#2:} The thermal conductivity matrix $\vcB$ has a block structure that is divided into: $\vB\in\mathbb{R}^{B\times B}$ capturing bulk heat transfer, $\vC\in\mathbb{R}^{B\times K}$ and $\vE\in\mathbb{R}^{K\times B}$ capturing the heat transfer coupling between bulk and contact sub-domains, and $\vF\in\mathbb{R}^{K\times K}$ capturing the bulk heat transfer within the contact sub-domains. The $(k,l)$-th elements of the coarse-grained thermal conductivity matrices are computed next.
 \begin{tcolorbox}[enhanced,breakable,title=Coarse-Grained Thermal Conductivity Matrices]
-    First, the stiffness matrices for the bulk and contact sub-domains are coarse-grained. The coarse-graining proceeds as follows,
+    First, the stiffness matrices for the \emph{bulk} and \emph{contact} sub-domains are coarse-grained. The coarse-graining proceeds as follows,
     \begin{subequations}
         \begin{align}
             \left[\vPhi^{\dagger}\vB\left(\vPhi\bvu\right)\vPhi\right]_{kl]} &= \sum\\
             &= \sum
         \end{align}
     \end{subequations}
-    Similarly, coarse-graining the stiffness matrix for bulk heat transfer $\vF\left(\vw\right)$ within the contact sub-domain proceeds by ,
+    Similarly, coarse-graining the stiffness matrix for bulk heat transfer $\vF\left(\vw\right)$ within the contact sub-domain proceeds as,
     \begin{subequations}
         \begin{align}
             \left[\vPi^{\dagger}\vF\left(\vPi\bvw\right)\vPi\right]_{kl} &= \sum_{i=1}^{K}\sum_{j=1}^{K}\vpsi_i^{k\dagger}\vF_{ij}\left(\vPi\bvw\right)\vpsi_j^l\\
@@ -215,8 +216,8 @@ Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfac
     Using the definition from \cref{eqn_dgfem_matrix_elements} it follows that,
     \begin{equation}
         \left[\vF_{ij}\right]_{11} = \left\{\begin{matrix}
-            -\sum_{l\in\cN_i^b}\sigma_b\left(\bvw\right)\left|e_{ip}\right| - \sum_{p\in\cN_i^c}\sigma_c\left|\Gamma_{ip}\right|,& i=j\\
-            \sigma_b(\bvw)\left|e_{ij}\right|, & j\in\cN_i^w\\
+            -\sum_{p\in\cN_i^b}\sigma_b\left(\bvu\right)\left|e_{ip}\right| - \sum_{p\in\cN_i^c}\sigma_c\left|\Gamma_{ip}\right|,& i=j\\
+            \sigma_b(\bvu)\left|e_{ij}\right|, & j\in\cN_i^w\\
             \sigma_c\left|\Gamma_{ij}\right|, & j\in\cN_i^c\\
             0, & \text{otherwise}
         \end{matrix}\right.
@@ -224,8 +225,8 @@ Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfac
     Define the following sets collecting the edges and indices for interfaces with perfect contacts,
     \begin{subequations}
         \begin{align}
-            \cE_{kl}^{w} &= \left\{\left(i,j\right)\:|\: j\in\cN_i^w,i\in\cF_k,j\in\cF_l\right\}\\
-            \bar{\cN}_k^w &= \left\{l\:|\: \cE_{kl}^{w}\neq\emptyset\right\}
+            \cE_{kl}^{b} &= \left\{\left(i,j\right)\:|\: j\in\cN_i^b,i\in\cF_k\right\}\\
+            \bar{\cN}_k^{b} &= \left\{l\:|\: \cE_{kl}^{b}\neq\emptyset\right\}
         \end{align}
     \end{subequations}
     and imperfect contacts,
@@ -235,25 +236,28 @@ Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfac
             \bar{\cN}_k^{c} &= \left\{l\:|\: \cE_{kl}^{c}\neq\emptyset\right\}
         \end{align}
     \end{subequations}
-    so that the sum may be simplified as,
+    so that for $k,l=1,2,\dots,N_c$ the sum may be simplified as,
     \begin{subequations}
         \begin{align}
             \sum_{i\in\cF_k}\sum_{j\in\cF_l}\left[\vF_{ij}\right]_{11} &= \left\{\begin{matrix}
-            -\sum_{p\in\bar{\cN}_k^w}\sum_{(i,j)\in\cE_{kp}^w}\sigma_b(\bvw)\left|e_{ij}\right| - \sum_{p\in\bar{\cN}_k^c}\sum_{(i,j)\in\cE_{kp}^{c}}\sigma_{c}\left|\Gamma_{ij}\right|, & k=l\\
-            \sum_{(i,j)\in\cE_{kl}^{w}}\sigma_b(\bvw)\left|e_{ij}\right|,&l\in\bar{\cN}_k^w\\
+            -\sum_{p\in\bar{\cN}_k^b}\sum_{(i,j)\in\cE_{kp}^b}\sigma_b(\bvu)\left|e_{ij}\right| - \sum_{p\in\bar{\cN}_k^c}\sum_{(i,j)\in\cE_{kp}^{c}}\sigma_{c}\left|\Gamma_{ij}\right|, & k=l\\
+            \sum_{(i,j)\in\cE_{kl}^{w}}\sigma_b(\bvu)\left|e_{ij}\right|,&l\in\bar{\cN}_k^w\\
             \sum_{(i,j)\in\cE_{kl}^{c}}\sigma_c\left|\Gamma_{ij}\right|,& l\in\bar{\cN}_k^c\\
             0,& \text{otherwise}
         \end{matrix}\right.\\
         &= \left\{\begin{matrix}
-            -\sum_{p\in\bar{\cN}_k^w}\sigma_b\left(\bvw\right)\left|e_{kp}\right| - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|, & k=l\\
-            \sigma_b(\bvw)\left|e_{kl}\right|,& l\in\bar{\cN}_k^ w\\
+            -\sum_{p\in\bar{\cN}_k^b}\sigma_b\left(\bvu\right)\left|e_{kp}\right| - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|, & k=l\\
+            \sigma_b(\bvu)\left|e_{kl}\right|,& l\in\bar{\cN}_k^ w\\
             \sigma_c\left|\Gamma_{kl}\right|,& l\in\bar{\cN}_k^c\\
             0, & \text{otherwise}
             \end{matrix}\right.
         \end{align}
     \end{subequations}
-    
-    
+    Therefore, by introducing the diagonal weight matrix $\vcW_V\in\mathbb{R}^{N_c\times N_c}$, the coarse-grained stiffness matrix for the contact sub-domains is written as,
+    \begin{equation}
+        \bvF\left(\bvw\right) = \vcW_F\vPi^{\dagger}\vF\left(\vPi\bvw\right)\vPi
+    \end{equation} 
+    The cross-coupling stifness matrices $\vC\in\mathbb{R}^{B\times K}$ and $\vE\in\mathbb{R}^{K\times B}$ are coarse-grained next. The $(k,l)$-th element of the coarse-grained $\vC$ matrix is computed as,
     \begin{subequations}
         \begin{align}
             \left[\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\right]_{kl} &= \sum_{i=1}^{B}\sum_{j=1}^{K}\vvarphi_i^{k\dagger}\vC_{ij}\left(\vPhi\bvu\right)\vpsi_j^l\\
@@ -263,25 +267,72 @@ Leveraging that $\left|\Omega_k^c\right|\approx 0$ as the volume of the interfac
             &= \frac{1}{\left|\cV_k\right|}\sum_{i\in\cV_k}\sum_{j\in\cF_l}\left[\vB^j_{ij}\right]_{11}
         \end{align}
     \end{subequations}
-    Where it is assumed that all elements within a component have the same size, i.e., $\left|\Omega_k^b\right|=\left|B_i\right|\left|\cV_k\right|$, the collection of edges between bulk $\Omega_k^b$ and contact $\Omega_l^c$ domains is $\cE_{kl}^{w}=\left\{\left(i,j\right) | i\in\cV_k \text{ and } j\in\cF_l\right\}$ so that $\left|e_{kl}\right|=\sum_{(i,j)\in\cE_{kl}}\left|e_{ij}\right|$, and where the neighbors of component $k$ are $\overline{\cN}_k=\left\{l|\cE_{kl}^{w}\neq\emptyset\right\}$. By leveraging the definition in \cref{eqn_dgfem_matrix_elements}, the sum is simplified as,
+    Where it is assumed that all elements within a component have the same size, i.e., $\left|\Omega_k^b\right|=\left|B_i\right|\left|\cV_k\right|$, the collection of edges between bulk $\Omega_k^b$ and contact $\Omega_l^c$ domains is $\cE_{kl}^{w}=\left\{\left(i,j\right) | i\in\cV_k, j\in\cN_i^w,j\in\cF_l\right\}$ so that $\left|e_{kl}\right|=\sum_{(i,j)\in\cE^{w}_{kl}}\left|e_{ij}\right|$, and where the neighbors of component $k$ are $\bar{\cN}^{w}_k=\left\{l|\cE_{kl}^{w}\neq\emptyset\right\}$. By leveraging the definition in \cref{eqn_dgfem_matrix_elements}, the sum is simplified as,
     \begin{equation}
         \sum_{i\in\cV_k}\sum_{j\in\cF_l}\left[\vB_{ij}^{j}\right]_{11} = \left\{\begin{matrix}
-            \sum_{(i,j)\in\cE_{kl}}\sigma_b(\bvu)\left|e_{ij}\right| = \sigma_b(\bvu)\left|e_{kl}\right|, & l\in\bar{\cN}_k \\
+            \sum_{(i,j)\in\cE^{w}_{kl}}\sigma_b(\bvu)\left|e_{ij}\right| = \sigma_b(\bvu)\left|e_{kl}\right|, & l\in\bar{\cN}^{w}_k \\
             \vzero, & \text{otherwise}
-        \end{matrix}\right.
+        \end{matrix}\right.\label{eqn_neighboring_w}
     \end{equation}
     Collecting for $k=1,2,\dots,N_B$ and $l=1,2,\dots,N_C$ leads to,
     \begin{equation}
         \bvC\left(\bvu\right) = \vW_u\left(\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\right)\in\mathbb{R}^{N_B\times N_C}
     \end{equation}
-    with $\vW_u$ as a diagonal weight matrix with $\left[\vW_u\right]_i = \left|\cV_k\right|$. Coarse-graining the $\vE\left(\vu\right)$ matrix follows a similar procedure, where now $\left|\Omega_k^c\right|=\left|\cF_k\right|\left|W_i\right|$, the neighbors of component $k$ are $\bar{\cN}_k=\left\{l | \cE_{kl}^{u}\right\}$ with $\cE_{kl}^{u}=\left\{(i,j)| i\in\cF_k \text{ and } j\in\cV_l\right\}$, and therefore,
+    with $\vW_u$ as a diagonal weight matrix with $\left[\vW_u\right]_i = \left|\cV_k\right|$. Coarse-graining the $\vE\left(\vu\right)$ matrix follows a similar procedure, where now $\left|\Omega_k^c\right|=\left|\cF_k\right|\left|W_i\right|$, the neighbors on $\Omega_l^b$ of component $k$ are $\bar{\cN}_k^u=\left\{l | \cE_{kl}^{u}\neq\emptyset\right\}$ with $\cE_{kl}^{u}=\left\{(i,j)| i\in\cF_k, j\in\cN_i^u, j\in\cV_l\right\}$, and therefore,
     \begin{subequations}
         \begin{align}
             \left[\vPi^{\dagger}\vE\left(\vPhi\bvu\right)\vPhi\right]_{kl} &= \sum_{i\in\cF_k}\sum_{j\in\cV_l}\frac{\left|W_i\right|}{\left|\Omega_k^c\right|}\vpsi_i^{k\top}\vE_{ij}\left(\vPhi\bvu\right)\varphi_j^l\\
+            &= \sum_{i\in\cF_k}\sum_{j\in\cV_l}\frac{\left|W_i\right|}{\left|\Omega_k^c\right|}\left[\vE_{ij}(\vPhi\bvu)\right]_{11}\\
             &= \frac{1}{\left|\cF_k\right|}\sum_{i\in\cF_k}\sum_{j\in\cV_l}\left[\vB_{ij}^{j}\right]_{11}
         \end{align}
     \end{subequations}
+    From \cref{eqn_neighboring_w} it follows that,
+    \begin{equation}
+        \sum_{i\in\cF_k}\sum_{j\in\cV_l}\left[\vB_{ij}^{j}\right]_{11} = \left\{\begin{matrix}
+            \sum_{p\in\bar{\cN}_k^u}\sum_{(i,j)\in\cE^{u}_{kp}}\sigma_b(\bvu)\left|e_{ij}\right| = \sigma_b(\bvu)\left|e_{kl}\right|, & l\in\bar{\cN}^{u}_k \\
+            \vzero, & \text{otherwise}
+        \end{matrix}\right.
+    \end{equation}
+    Collecting for $k=1,2,\dots,N_C$ and $l=1,2,\dots,N_B$ leads to the following set of coarse-grained stiffness matrices,
+    \begin{subequations}
+        \begin{align}
+            \bvB &= \vW_u\left(\vPhi^{\dagger}\vB\left(\vPhi\bvu\right)\vPhi\right)\in\mathbb{R}^{N_B\times N_B}\\
+            \bvC &= \vW_u\left(\vPhi^{\dagger}\vC\left(\vPhi\bvu\right)\vPi\right)\in\mathbb{R}^{N_B\times N_C}\\
+            \bvE &= \vW_w\left(\vPi^{\dagger}\vE\left(\vPhi\bvu\right)\vPhi\right)\in\mathbb{R}^{N_C\times N_B}\\
+            \bvF &= \vW_w\left(\vPi^{\dagger}\vF\left(\vPi\bvw\right)\vPi\right)\in\mathbb{R}^{N_C\times N_C}
+        \end{align}
+    \end{subequations}
 \end{tcolorbox}
+
+\paragraph{Term \#3:} The heat-load vector $\vcF(t)$ is coarse-grained next. To simplify the derivation, it is assumed that the heat load is applied only to the bulk sub-domains, i.e., $\vcF(t) = \left[\vf^{(b)}(t),\vzero\right]^\top$, given that the contact sub-domains are assumed to be thin and have negligible energy storage in subsequent developments. Therefore, the $k$-th element of the coarse-grained heat-load vector is computed as,
+\begin{tcolorbox}[enhanced,breakable,title=Coarse-Grained Heat-Load Vector]
+    \begin{subequations}
+        \begin{align}
+            \left[\vPhi^{\dagger}\vcF(t)\right]_k &= \sum_{i=1}^{B}\vvarphi_i^{k\dagger}\vf_i^{(b)}(t)\\
+            &= \sum_{i\in\cV_k}\frac{\left|B_i\right|}{\left|\Omega_k^b\right|}\vvarphi_i^{k\top}\vf_i^{(b)}\\
+            &= \frac{1}{\left|\cV_k\right|}\sum_{i\in\cV_k}\left[\vf_i^{(b)}\right]_1\\
+            &= \frac{1}{\left|\cV_k\right|}\sum_{i\in\cV_k}\left|e_{iq}\right| \bar{q}_{i,b}(t)\\
+            &= \frac{1}{\left|\cV_k\right|}\left|e_{kq}\right|\bar{q}_{k,b}(t)
+        \end{align}
+    \end{subequations}
+    Collecting for $k=1,2,\dots,N_B$ leads to the following coarse-grained heat-load vector,
+    \begin{equation}
+        \bvF(t) = \vW_u\left(\vPhi^{\dagger}\vcF(t)\right)\in\mathbb{R}^{N_B}
+    \end{equation}
+\end{tcolorbox}
+
+By collecting the coarse-grained capacitance and stiffness matrices, and applying the zero-energy storage assumption, the following DAE system is obtained,
+\begin{subequations}
+    \begin{align}
+        \bvA\left(\bvu\right)\dot{\bvu} &= \bvB\bvu + \bvC\bvw + \bar{\vF}(t)\label{eqn_bulk_coarse_grained}\\
+        \vzero &= \bvE\left(\bvu\right)\bvu + \bvF\bvw\label{eqn_contact_coarse_grained}
+    \end{align}
+\end{subequations}
+where \cref{eqn_contact_coarse_grained} may be re-arranged to match precisely the energy conservation from \cref{eqn_interface_heat_flux_conservation}. Specifically, the $k$-th equation of \cref{eqn_contact_coarse_grained} states that,
+\begin{equation}
+    0 = \sum_{p\in\bar{\cN}_k^u}\sigma_b(\bvu)\left|e_{kp}\right|\left(\bu_p-\bw_k\right) - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|\left(\bw_k-\bw_p\right)
+\end{equation}
+which is equivalent to the energy conservation across the contact interface $\Gamma_k$ in \cref{eqn_interface_heat_flux_conservation}, from which \cref{eqn_temperature_jump_dynamics_r} is derived. The derivation of \cref{eqn_modified_lcm} from the coarse-grained DG-FEM model is demonstrated next in the following example.
 
 \paragraph*{Coarse-Graining Example} Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
 \begin{subequations}

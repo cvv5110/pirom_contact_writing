@@ -46,6 +46,7 @@ Using standard variational procedures, e.g., [Pernet2018], as detailed in Append
 where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes the states for $B$ bulk and $K$ contact elements, i.e., $\vcA\in\mathbb{R}^{MP\times MP}$ and $\vcB\in\mathbb{R}^{MP\times MP}$ are the temperature-dependent mass and stiffness matrices, and $\vcF(t)$ corresponds to the contributions from the boundary conditions, respectively.
 
 \subsection{One-Dimensional Finite-Element Model}
+\label{sec:1dfem}
 
 Next, a \emph{one-dimensional} FEM (1D-FEM) ROM for the TPS is presented. This model assumes heat transfer is \emph{one dimensional} alon the TPS thickness, where the space-time varyin temperature inside each layer is describd using linear basis functions over a single finite element. Such 1D-FEM reduced-order modeling approach is commonly adopted in the literature due to the development of large temperature gradients along the thickness direction of the TPS, relative to in-plane temperature gradients [Gao2026, X]. Figure~\ref{fig:gen_1D} depicts an example where $N_C=3$ components are connected in series with $N_\Gamma2=$ imperfect contacts.
 
@@ -116,6 +117,7 @@ Expanding Eq.~\eqref{eq:full_mat_form} to now encompass all aspects of the dista
 where $\boldsymbol{B}^c$ is not a function of average temperature or time, as conductance of an imperfect contact is assumed non-zero and constant. 
 
 \subsection{Lumped Capacitance Model with Interface Temperature Dynamics}
+\label{sec:lcm}
 
 Next, the \emph{lumped capacitance model} (LCM) is presented as the RPM for the TPS, where each layer is modeled as a lumped mass with time-varying average temperatures [Incropera2011,TPS2026]. However, the presence of TCRs at imperfect layer interfaces introduces additional modeling considerations, since the temperature drop includes, in addition to the bulk temperature drop, contributions from the TCRs as temperature discontinuities between layers. The following discussion describes the separation of LCM dynamics into \emph{bulk} and \emph{contact} contributions, which becomes critical for the subsequent coarse-graining formulations, TCR identifiability, and PIROM formulations.
 

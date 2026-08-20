@@ -18,26 +18,30 @@ where $\cN_i^{b}=\cN_i^u\cup\cN_i^w$ includes the indices of neighboring element
         \cN_{i}^{c} &= \left\{j\in\{1,\ldots,M\} \:|\: \partial E_i\cap \partial E_j \cap\Gamma_r \neq \emptyset\right\},\quad r=1,2,\dots,N_{\Gamma}
     \end{align}
 \end{subequations}
-where $\left\{\Gamma_r\right\}_{r=1}^{N_\Gamma}$ correspond to the collection of imperfect interfaces. Under this separation, the Interior Penalty Galerkin (IPG) scheme yields the following bi-linear form for the variational formulation of the governing equations [Cohen2018],
-\begin{equation}
-    \sum_{i=1}^{M}\left[a_{1,i}(v,w) + a_{2,i}(v,w) + a_{3,i}(v,w)\right] = \sum_{i=1}^{M}L_i(v)
-\end{equation}
-where $\epsilon$ is a user-specified parameter, and,
-\begin{subequations}
-    \begin{align}
-        a_{1,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i\\
-        a_{2,i}(v,w) &= -\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij} + \epsilon \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij}\notag\\ 
-        &+ \sigma_b\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
-        a_{3,i}(v,w) &= -\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]d\Gamma + \epsilon \sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]d\Gamma\notag\\ 
-        &+ \sigma_c\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left[v\right]\left[w\right]d\Gamma\\
-        L_i(v) &= \epsilon\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
-    \end{align}
-\end{subequations}
-where $a_{1,i}$, $a_{2,i}$, $a_{3,i}$, and $L_i(v)$ amount to heat conduction due to bulk energy transfer, between-element perfect interfaces $e_{ij}$, between-element imperfect interfaces $\Gamma_{ij}$, and boundary conditions, respectively. In the bi-linear forms, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at an interface $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
-\begin{equation}
-    \left[u\right] = u\Big|_{E_i} - u\Big|_{E_j},\quad \left\{u\right\} = \frac{1}{2}\left(u\Big|_{E_i} + u\Big|_{E_j}\right),\quad x\in e_{ij}=\partial E_i\cap\partial E_j
-\end{equation}
-where the same holds for an imperfect interface $\Gamma_{ij}$, and where $\sigma_b,\sigma_c$ are known user-specified bulk and interface penalty terms whose value depends on the element size. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have a similar convergence rate with respect to mesh size.
+where $\left\{\Gamma_r\right\}_{r=1}^{N_\Gamma}$ correspond to the collection of imperfect interfaces. Next, the variational formulation of the governing equations is presented next.
+
+\begin{tcolorbox}[enhanced, breakable, title=Variational Formulation of the Governing Equations]
+    The Interior Penalty Galerkin (IPG) scheme [Cohen2018] yields the following bi-linear form,
+    \begin{equation}
+        \sum_{i=1}^{M}\left[a_{1,i}(v,w) + a_{2,i}(v,w) + a_{3,i}(v,w)\right] = \sum_{i=1}^{M}L_i(v)
+    \end{equation}
+    where $\epsilon$ is a user-specified parameter, and,
+    \begin{subequations}
+        \begin{align}
+            a_{1,i}(v,w) &= \int_{E_i}\left(\rho_i c_{p,i} v\frac{\partial w}{\partial t} + \vk_i\nabla v\cdot\nabla w\right)dE_i\\
+            a_{2,i}(v,w) &= -\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]de_{ij} + \epsilon \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]de_{ij}\notag\\ 
+            &+ \sigma_b\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}}\left[v\right]\left[w\right]de_{ij}\\
+            a_{3,i}(v,w) &= -\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla v\cdot \vn_i\right\}\left[w\right]d\Gamma + \epsilon \sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left\{\vk_i\nabla w\cdot \vn_i\right\}\left[v\right]d\Gamma\notag\\ 
+            &+ \sigma_c\sum_{j\in\cN_{i}^{c}}\int_{\Gamma_{ij}}\left[v\right]\left[w\right]d\Gamma\\
+            L_i(v) &= \epsilon\sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\int_{e_{ij}} \left(\vk_i\nabla w\cdot \vn_i\right) T_b de_{ij} + \int_{e_{iq}} v q_b de_{iq} + \sigma\int_{e_{iT}} v T_b de_{iT}
+        \end{align}
+    \end{subequations}
+    where $a_{1,i}$, $a_{2,i}$, $a_{3,i}$, and $L_i(v)$ amount to heat conduction due to bulk energy transfer, between-element perfect interfaces $e_{ij}$, between-element imperfect interfaces $\Gamma_{ij}$, and boundary conditions, respectively. In the bi-linear forms, the notations of $\left[\right]$ and $\left\{\right\}$ are respectively the jumps and averages at an interface $e_{ij}$ shared by two neighboring elements $E_i$ and $E_j$, defined as,
+    \begin{equation}
+        \left[u\right] = u\Big|_{E_i} - u\Big|_{E_j},\quad \left\{u\right\} = \frac{1}{2}\left(u\Big|_{E_i} + u\Big|_{E_j}\right),\quad x\in e_{ij}=\partial E_i\cap\partial E_j
+    \end{equation}
+    where the same holds for an imperfect interface $\Gamma_{ij}$, and where $\sigma_b,\sigma_c$ are known user-specified bulk and interface penalty terms whose value depends on the element size. Depending on the choice of $\epsilon$, the bi-linear form may correspond to symmetric IPG ($\epsilon=-1$), non-symmetric IPG ($\epsilon=1$), or incomplete IPG ($\epsilon=0$) schemes. All these schemes are consistent with the original PDE and have a similar convergence rate with respect to mesh size.
+\end{tcolorbox}
 
 \paragraph*{Galerkin Projections} Next, the DG-FEM is written in an element-wise form. For the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as in~\cref{eqn_temperature_approximation}. Using the same test functions as trial functions, the DG-FEM dynamics for the $i$-th element is obtained by evaluating the element-wise bi-linear forms,
 \begin{equation}
@@ -328,11 +332,14 @@ By collecting the coarse-grained capacitance and stiffness matrices, and applyin
         \vzero &= \bvE\left(\bvu\right)\bvu + \bvF\bvw\label{eqn_contact_coarse_grained}
     \end{align}
 \end{subequations}
+the coarse-grained matrices $\bvB$, $\bvC$, 
+
+
 where \cref{eqn_contact_coarse_grained} may be re-arranged to match precisely the energy conservation from \cref{eqn_interface_heat_flux_conservation}. Specifically, the $k$-th equation of \cref{eqn_contact_coarse_grained} states that,
 \begin{equation}
     0 = \sum_{p\in\bar{\cN}_k^u}\sigma_b(\bvu)\left|e_{kp}\right|\left(\bu_p-\bw_k\right) - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|\left(\bw_k-\bw_p\right)
 \end{equation}
-which is equivalent to the energy conservation across the contact interface $\Gamma_k$ in \cref{eqn_interface_heat_flux_conservation}, from which \cref{eqn_temperature_jump_dynamics_r} is derived. The derivation of \cref{eqn_modified_lcm} from the coarse-grained DG-FEM model is demonstrated next in the following example.
+which is equivalent to the energy conservation across the contact interface $\Gamma_k$ in \cref{eqn_interface_heat_flux_conservation}, from which \cref{eqn_temperature_jump_dynamics_r} is derived. Next, the derivation of \cref{eqn_modified_lcm} from the coarse-grained DG-FEM model is demonstrated next in the following example.
 
 \paragraph*{Coarse-Graining Example} Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
 \begin{subequations}

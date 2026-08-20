@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1786317557.72054 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1786317558.68639 0
+["pdflatex"] 1786985613.53849 "/Users/andres/pirom_contact_writing/main.tex" "main.pdf" "main" 1786985614.48028 0
   "/Users/andres/pirom_contact_writing/main.tex" 1786221315.62798 5002 4909fb59ee2debfc90f735e19d9354f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -54,7 +54,6 @@
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1248133631 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1248133631 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb" 1248133631 35479 892d27442ef9ef29ce1ee57aa0e8a665 ""
-  "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1248133631 31764 459c573c03a4949a528c2cc7f557e217 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb" 1215737283 145929 f25e56369a345c4ff583b067cd87ce8e ""
   "/usr/local/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
@@ -198,12 +197,12 @@
   "figs/modeling/1D_FEM_General.png" 1786203268.32263 54616 b8614b6ff7df0ae1dfcf0b3ef0e59945 ""
   "figs/modeling/domain.png" 1781374796 336302 6392fc3bbbcf518df22cdc14d02bb980 ""
   "figs/results/cond_mean.png" 1786203268.33484 114696 2376d60cde88d25e973d71c521978665 ""
-  "main.aux" 1786317558.63895 8823 3e4add9252b79c9504f2884c81dd5bca "pdflatex"
+  "main.aux" 1786985614.43357 8794 972c240d13bc1d6b3f274917bd61b840 "pdflatex"
   "main.tex" 1786221315.62798 5002 4909fb59ee2debfc90f735e19d9354f4 ""
-  "source/appendix.tex" 1786317556.60773 30955 b03f560de654291415bafa0c03459b4b ""
+  "source/appendix.tex" 1786978610.62749 31396 8052425f6d4c243ba438b1e2246b5494 ""
   "source/conclusions.tex" 1779816627.23863 1459 5bfb20e7372563b7674e8f1e9c1c5b6b ""
   "source/introduction.tex" 1786203268.33626 6271 446449e17d15e76a3d2851ddda64857c ""
-  "source/modeling.tex" 1786317540.42354 21937 478d29aba45e42540c51c9990f8a27e2 ""
+  "source/modeling.tex" 1786985612.44064 21221 2d17061d7a4312f8ac0a0d9b2e8ed13e ""
   "source/pirom.tex" 1786203268.3369 15631 b23c92a637ae0e903a0d8c0350465042 ""
   "source/results.tex" 1786203268.33712 2297 b918f8cd9cd94bc73db0eb14729275f6 ""
   (generated)

@@ -330,9 +330,13 @@ By collecting the coarse-grained capacitance and stiffness matrices, and applyin
 \end{subequations}
 where \cref{eqn_contact_coarse_grained} may be re-arranged to match precisely the energy conservation from \cref{eqn_interface_heat_flux_conservation}. Specifically, the $k$-th equation of \cref{eqn_contact_coarse_grained} states that,
 \begin{equation}
-    0 = \sum_{p\in\bar{\cN}_k^u}\sigma_b(\bvu)\left|e_{kp}\right|\left(\bu_p-\bw_k\right) - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|\left(\bw_k-\bw_p\right)
+    0 = \sum_{p\in\bar{\cN}_k^u}\sigma_b(\bvu)\left|e_{kp}\right|\left(\bu_p-\bw_k\right) - \sum_{p\in\bar{\cN}_k^c}\sigma_c\left|\Gamma_{kp}\right|\left(\bw_k-\bw_p\right)\label{eqn_kth_heatflux_constraint}
 \end{equation}
-which is equivalent to the energy conservation across the contact interface $\Gamma_k$ in \cref{eqn_interface_heat_flux_conservation}, from which \cref{eqn_temperature_jump_dynamics_r} is derived. The derivation of \cref{eqn_modified_lcm} from the coarse-grained DG-FEM model is demonstrated next in the following example.
+Now, note that each domain is decomposed as $\Omega_k=\Omega_k^b\cup\Omega_k^c$, and that $\Gamma_r$ for $r=1,2,\dots,N_{\Gamma}$ is composed of two unique interface domains $\Omega_r^{c,-}\cup\Omega_r^{c,+}$. Therefore, \cref{eqn_kth_heatflux_constraint} simplifies to,
+\begin{equation}
+    0 = \sigma_b(\bvu)\left|e_{kk}\right|\left(\bu_k - \bw_k\right) - \sigma_{c,r}\left|\Gamma_r\right|\Delta\bw_r
+\end{equation}
+which corresponds precisely to the heat flux continuity constraint in \cref{eqn_interface_heat_flux_conservation}, from which \cref{eqn_temperature_jump_dynamics_r} is derived. The derivation of \cref{eqn_modified_lcm} from the coarse-grained DG-FEM model is further demonstrated next in the following example.
 
 \paragraph*{Coarse-Graining Example} Consider the three-layered TPS shown in Fig. [X] with three components $\left\{\Omega_j\right\}_{j=1}^3$ and three contact interfaces $\left\{\Gamma_k\right\}_{k=1}^3$. The set of elements for each component, and on the minus and plus sides of each interface are defined as,
 \begin{subequations}

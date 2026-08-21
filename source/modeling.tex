@@ -49,77 +49,25 @@ Next, a \emph{one-dimensional} FEM (1D-FEM) is introduced as a low-order represe
 
 Consider a TPS composed of $N$ non-overlapping layers $\left\{\Omega_i\right\}_{i=1}^{N}$, where within each layer, the temperature distribution is approximated as in \cref{eqn_temperature_approximation} with $P=2$. Specifically, $\boldsymbol{\phi}_i(r) = \left[\phi_{i,1}(r),\phi_{i,2}(r)\right]^\top$ contains linear basis functions, and $\boldsymbol{u}_i(t) = \left[u_{i}^{-}(t),u_{i}^{+}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
 
-Using the standard Galerkin procedure, the temperature dynamics for the $i$-th element of length $L_i$ are written as,
+Using the standard Galerkin procedure, the governing equations are written in matrix form as,
 \begin{equation}
-    \boldsymbol{A}_i(\bar{u}_i)\dot{\boldsymbol{u}}_i = \boldsymbol{B}_i^b(\bar{u}_i)\boldsymbol{u}_i + \boldsymbol{F}_i\label{eqn_ith_1dfem}
+    \boldsymbol{A}\left(\overline{\boldsymbol{u}}\right)\dot{\boldsymbol{u}} = \left[\boldsymbol{B}^{b}\left(\overline{\boldsymbol{u}}\right) + \boldsymbol{B}^{c}\left(\overline{\boldsymbol{u}}\right)\right]\boldsymbol{u} + \boldsymbol{f}(t)
 \end{equation}
-where, for linear basis functions and unit cross-sectional area,
+where $\overline{\boldsymbol{u}}=[\bar{u}_1,\ldots,\bar{u}_N]^{\top}$ contains the layer-average temperatures, $\boldsymbol{A}\in\mathbb{R}^{2N\times2N}$ is the heat-capacity matrix, $\boldsymbol{B}^{b}\in\mathbb{R}^{2N\times2N}$ is the bulk-conduction matrix, $\boldsymbol{B}^{c}\in\mathbb{R}^{2N\times2N}$  accounts for imperfect thermal contacts, and $\boldsymbol{f}\in\mathbb{R}^{2N}$ contains the contributions from the prescribed boundary conditions. For linear basis functions and unit cross-sectional area, the matrices are defined as,
 \begin{equation}
-    \boldsymbol{A}_i(\vu) = \rho c_p(\vu)\frac L6 \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ \end{bmatrix},\quad \boldsymbol{B}_i(\bvu) = \frac{\text{k}(\bar{u})}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix},\quad \boldsymbol{F} = \int_{\partial\Omega} \boldsymbol{\phi} q_b \, d\Gamma
+    \boldsymbol{A}_i(\vu) = \rho c_p(\bvu)\frac L6 \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ \end{bmatrix},\quad \boldsymbol{B}_i(\bvu) = \frac{\text{k}(\bvu)}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix},\quad \boldsymbol{F} = \int_{\partial\Omega} \boldsymbol{\phi}_i(r) q_b \, d\Gamma
 \end{equation}
-where $\boldsymbol{A}_i\in\mathbb{R}^{2\times 2}$ is the heat-capacitance matrix and $\boldsymbol{B}_i\in\mathbb{R}^{2\times 2}$ represents heat conduction through the bulk material. The dependency of these operators on $\vu$ is explicitly noted as the principal non-linearities in the problem.
 
-where \(\overline{\boldsymbol{u}}=[\bar{u}_1,\ldots,\bar{u}_N]^{\top}\) contains the layer-average temperatures, \(\boldsymbol{A}\in\mathbb{R}^{2N\times2N}\) is the heat-capacity matrix, \(\boldsymbol{B}^{b}\in\mathbb{R}^{2N\times2N}\) is the bulk-conduction matrix, \(\boldsymbol{B}^{c}\in\mathbb{R}^{2N\times2N}\)  accounts for imperfect thermal contacts, and \(\boldsymbol{f}\in\mathbb{R}^{2N}\) contains the contributions from the prescribed boundary conditions.
-
---------------
-
+For a TPS with perfect thermal contacts, the temperatures on the two sides of every interface are constrained to be equal, and $\boldsymbol{B}^{(c)}$ is omitted. For an imperfect interface $r$ between layers $i$ and $j$, the interfacial heat flux is modeled as $q^{(c)}_{r} = g_r\left(T_r^{-} - T_r^{+}\right)$, where $g_r$ is the thermal conductance of the interface, and $T_r^{-}$ and $T_r^{+}$ are the temperatures immediately to the left and right of the interface, respectively. The associated contact contribution is,
 \begin{equation}
-    \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{F}(t)
-    \label{eq:full_mat_form}
+    \boldsymbol{B}^{c}_j = -C_j
+    \begin{bmatrix}
+        1 & -1\\
+        -1 & 1
+    \end{bmatrix},\quad j=1,\ldots,N-1\label{eqn_contact_stiffness_matrix}
 \end{equation}
-where $\boldsymbol{A}, \boldsymbol{B} \in \mathbb{R}^{2N\times 2N}$ are block diagonals containing the mass and stiffness matrices for each element, and $\boldsymbol{F}$
-is the forcing vector upholding the boundary condition at each edge. In a TPS system with perfect contacts, these components are solely products of the choice in basis function; for LBFs, they are defined as
-\begin{subequations}
-\label{eq:perf_cont}
-    \begin{align}
-        \boldsymbol{A}_i(\bar{u}) &= \rho c_p(\bar{u})\frac L6 \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ \end{bmatrix} 
-        \\
-        \boldsymbol{B}_i(\bar{u}) &= \frac{\text{k}(\bar{u})}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix} \\
-        \boldsymbol{F} &= \int_{\partial\Omega} \boldsymbol{\phi} q_b \, d\Gamma
-    \end{align}
-\end{subequations}
-where $\boldsymbol{A}_i, \boldsymbol{B}_i$ are the $i$-th blocks of $\boldsymbol{A}, \boldsymbol{B}$ respectively, and $\boldsymbol{F}$ is defined for the entire domain via its vector of LBFs, $\boldsymbol{\phi}$. 
-
-For a TPS with imperfect contacts, the bulk stiffness matrix in \cref{eqn:perf_cont} no longer captures the total governing conductance of the TPS system, and thus must also account for the thermal resistances introduced by the imperfect contacts through the following heat interface heat flux condition,
-\begin{equation}
-\boldsymbol{B}= \underbrace{\boldsymbol{B}^b}_{\text{Satisfied}} + \underbrace{\boldsymbol{B}^c}_{\text{Missing}}
-\end{equation}
-where the superscripts $b$ and $c$ differentiate the stiffness matrices that capture the \emph{bulk} and \emph{contact} heat fluxes, respectively. The choice in modeling the contact stiffness arises from the heat flux law 
-\begin{equation}
-\label{eq:heat_flux_law}
-    q = \frac{T_l - T_r}{R_{x}}
-\end{equation}
-where the flux across a given element is defined by the change in temperature between the left and right sides over its thermal resistance. Leveraging the relationship of conductance and resistance, or 
-\begin{equation}
-    C = \frac{1}{R_x}
-\end{equation}
-Eq.~\eqref{eq:heat_flux_law} can be rewritten as
-\begin{equation}
-        q = C\left({T^- - T^+}\right)
-\end{equation}
-where $T^-$ and $T^+$ represent the left and right sides of a given material block, respectively. 
-Finally, generalizing for the full set of interactions between two locations on either side of a contact, the contact stiffness becomes
-\begin{equation}
-    \boldsymbol{B}^c_j = C_{j}\begin{bmatrix}
-        1 & -1 \\ -1 & 1
-    \end{bmatrix}
-\end{equation}
-for the $j$-th contact, where $j = i-1$ due to the linearity in alignment of the elements (due to the one-dimensional assumption). The contact matrix can also be organized into a block diagonal matrix of shape $\boldsymbol{B}^c \in \mathbb{R}^{2M\times2M}$, whose general structure is
-\begin{equation}
-    \boldsymbol{B}^c = \begin{bmatrix}
-        0 & 0 & \cdots & 0 & 0 \\
-        0 & \boldsymbol{B}_1^c & \cdots & 0 & 0 \\
-        \vdots & \vdots & \ddots & \vdots & \vdots \\
-        0 & 0& \cdots &\boldsymbol{B}^c_j&0\\0&0&\cdots&0&0
-    \end{bmatrix}
-\end{equation}
-as there is no contact interface on the edges of the TPS. 
-
-Expanding Eq.~\eqref{eq:full_mat_form} to now encompass all aspects of the distant contact problem yields
-\begin{equation}
-    \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}^b(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{B}^c{\boldsymbol{u}} + \boldsymbol{F}(t)
-\end{equation}
-where $\boldsymbol{B}^c$ is not a function of average temperature or time, as conductance of an imperfect contact is assumed non-zero and constant. 
+Each \(2\times2\) block in \eqref{eqn_contact_stiffness_matrix} acts on the interfacial state pair
+\([u_{j,2},u_{j+1,1}]^{\top}\). Accordingly, the global contact matrix may be expressed as $\vB^c = \sum_{j=1}^{N-1} \vS_j^\top \vB^c_j \vS_j$, where \(\boldsymbol{S}_j\in\mathbb{R}^{2\times2N}\) is a boolean selection matrix that extracts the two degrees of freedom adjacent to interface \(j\). This construction introduces no contact contribution at the exterior boundaries of the TPS.
 
 \subsection{Reduced-Physics Model}
 

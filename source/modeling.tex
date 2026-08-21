@@ -45,14 +45,33 @@ where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes th
 
 \subsection{One-Dimensional Finite-Element Model}
 
-Next, a \emph{one-dimensioanl} FEM (1D-FEM) is presented as a ROM for the TPS. A coarse mesh is leveraged where each TPS layer includes only one finite element with linear basis functions to capture temperature varitions within the element. Such 1D-FEM ROM is commonly adopted in the literature due to the development of large temperature gradients along the thickness direction of the TPS, relative to in-plane temperature gradients [Gao2026, X].
+A \emph{one-dimensional} FEM model is introduced as a reduced-order representation of the through-thickness thermal response of the TPS. The model employs a coarse mesh in which each material layer is represented by a single finite element with linear trial functions. This approximation is motivated by the predominantly through-thickness heat transfer and the comparatively small in-plane temperature gradients commonly encountered in layered TPS configurations [Gao2026, X].
 
-Generalizing for a TPS containing $N$ non-overlapping elements yields,
+Consider a TPS composed of $N$ non-overlapping elements. The temperature within the $i$-th element is approximated as in \cref{eqn_temperature_approximation} with $P=2$. For instance, in the $i$-th element, $\boldsymbol{\phi}_i(x) = \left[\phi_{i,1}(x),\phi_{i,2}(x)\right]^\top$ contains linear trial functions, and $\boldsymbol{u}_i(t) = \left[u_{i,1}(t),u_{i,2}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
+
+Using the standard Galerkin procedure, the governing equations are written in matrix form as,
+\begin{equation}
+    \boldsymbol{A}(\overline{\boldsymbol{u}})
+    \dot{\boldsymbol{u}}
+    =
+    \left[
+        \boldsymbol{B}^{b}(\overline{\boldsymbol{u}})
+        +
+        \boldsymbol{B}^{c}
+    \right]\boldsymbol{u}
+    +
+    \boldsymbol{f}(t),
+    \label{eq:1d_fem}
+\end{equation}
+where \(\overline{\boldsymbol{u}}=[\bar{u}_1,\ldots,\bar{u}_N]^{\top}\) contains the layer-average temperatures, \(\boldsymbol{A}\in\mathbb{R}^{2N\times2N}\) is the heat-capacity matrix, \(\boldsymbol{B}^{b}\in\mathbb{R}^{2N\times2N}\) is the bulk-conduction matrix, \(\boldsymbol{B}^{c}\in\mathbb{R}^{2N\times2N}\)  accounts for imperfect thermal contacts, and \(\boldsymbol{f}\in\mathbb{R}^{2N}\) contains the contributions from the prescribed boundary conditions.
+
+--------------
+
 \begin{equation}
     \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{F}(t)
     \label{eq:full_mat_form}
 \end{equation}
-where $\boldsymbol{A}, \boldsymbol{B} \in \mathbb{R}^{2M\times 2M}$ are block diagonals containing the mass and stiffness matrices for each element, and $\boldsymbol{F}$
+where $\boldsymbol{A}, \boldsymbol{B} \in \mathbb{R}^{2N\times 2N}$ are block diagonals containing the mass and stiffness matrices for each element, and $\boldsymbol{F}$
 is the forcing vector upholding the boundary condition at each edge. In a TPS system with perfect contacts, these components are solely products of the choice in basis function; for LBFs, they are defined as
 \begin{subequations}
 \label{eq:perf_cont}

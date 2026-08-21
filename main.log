@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  17 AUG 2026 12:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  21 AUG 2026 11:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -604,40 +604,72 @@ File: ./figs/modeling/domain.png Graphic file (type png)
 <use ./figs/modeling/domain.png>
 Package pdftex.def Info: ./figs/modeling/domain.png  used on input line 23.
 (pdftex.def)             Requested size: 465.06004pt x 322.35777pt.
- [3]
-Overfull \hbox (1.95828pt too wide) in paragraph at lines 32--33
-[]\OT1/cmr/m/n/10.95 Consider a DG-FEM dis-cretiza-tion where the en-tire do-main $
-$ is par-ti-tioned into non-overlapping
- []
+ [3] [4 <./figs/modeling/domain.png>] [5]
 
-[4 <./figs/modeling/domain.png>]
-<./figs/modeling/1D_FEM_General.png, id=68, 516.12825pt x 269.20575pt>
-File: ./figs/modeling/1D_FEM_General.png Graphic file (type png)
-<use ./figs/modeling/1D_FEM_General.png>
-Package pdftex.def Info: ./figs/modeling/1D_FEM_General.png  used on input line 54.
-(pdftex.def)             Requested size: 234.8775pt x 122.50934pt.
- [5 <./figs/modeling/1D_FEM_General.png>]
-
-LaTeX Warning: Reference `eqn:perf_cont' on page 1 undefined on input line 77.
+LaTeX Warning: Reference `eqn:perf_cont' on page 1 undefined on input line 87.
 
 [6] [7]
-Overfull \hbox (9.14017pt too wide) detected at line 179
+Overfull \hbox (9.14017pt too wide) detected at line 188
 []
  []
 
 ) (./source/pirom.tex [8] [9] [10] [11] [12]
-<./experiment.png, id=101, 1138.2525pt x 569.12625pt>
+<./experiment.png, id=99, 1138.2525pt x 569.12625pt>
 File: ./experiment.png Graphic file (type png)
 <use ./experiment.png>
-Package pdftex.def Info: ./experiment.png  used on input line 210.
+Package pdftex.def Info: ./experiment.png  used on input line 199.
 (pdftex.def)             Requested size: 422.77664pt x 211.38972pt.
-) (./source/results.tex [13]
-<./figs/results/cond_mean.png, id=107, 2818.53pt x 1300.86pt>
+) (./source/results.tex [13 <./experiment.png>]
+
+LaTeX Warning: Reference `sec:1dfem' on page 14 undefined on input line 14.
+
+
+LaTeX Warning: Citation `kreider2026' on page 14 undefined on input line 22.
+
+[14]
+<figs/modeling/1D_FEM_Offset.png, id=109, 311.36325pt x 70.46326pt>
+File: figs/modeling/1D_FEM_Offset.png Graphic file (type png)
+<use figs/modeling/1D_FEM_Offset.png>
+Package pdftex.def Info: figs/modeling/1D_FEM_Offset.png  used on input line 35.
+(pdftex.def)             Requested size: 375.80544pt x 85.05112pt.
+
+
+LaTeX Warning: Reference `sec:lcm' on page 15 undefined on input line 56.
+
+[15 <./figs/modeling/1D_FEM_Offset.png>] [16]
+<figs/modeling/LCM_Demo.png, id=117, 227.04825pt x 145.7445pt>
+File: figs/modeling/LCM_Demo.png Graphic file (type png)
+<use figs/modeling/LCM_Demo.png>
+Package pdftex.def Info: figs/modeling/LCM_Demo.png  used on input line 82.
+(pdftex.def)             Requested size: 187.89914pt x 120.6143pt.
+<./figs/results/cond_mean.png, id=118, 2818.53pt x 1300.86pt>
 File: ./figs/results/cond_mean.png Graphic file (type png)
 <use ./figs/results/cond_mean.png>
-Package pdftex.def Info: ./figs/results/cond_mean.png  used on input line 40.
+Package pdftex.def Info: ./figs/results/cond_mean.png  used on input line 103.
 (pdftex.def)             Requested size: 465.06004pt x 214.63264pt.
- [14 <./experiment.png>]) (./source/conclusions.tex [15 <./figs/results/cond_mean.png>]) (./source/appendix.tex [16] [17{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [18] [19] [20] [21] [22] [23] [24]) [25] (./main.aux)
+<./figs/results/cond_sd.png, id=119, 2818.53pt x 1300.86pt>
+File: ./figs/results/cond_sd.png Graphic file (type png)
+<use ./figs/results/cond_sd.png>
+Package pdftex.def Info: ./figs/results/cond_sd.png  used on input line 110.
+(pdftex.def)             Requested size: 465.06004pt x 214.63264pt.
+ [17 <./figs/modeling/LCM_Demo.png>] [18 <./figs/results/cond_mean.png> <./figs/results/cond_sd.png>]
+<./figs/results/char_time.png, id=129, 1309.17105pt x 405.79605pt>
+File: ./figs/results/char_time.png Graphic file (type png)
+<use ./figs/results/char_time.png>
+Package pdftex.def Info: ./figs/results/char_time.png  used on input line 129.
+(pdftex.def)             Requested size: 465.06004pt x 144.14838pt.
+ [19 <./figs/results/char_time.png>]
+<./figs/modeling/pert_mats.png, id=135, 1011.78pt x 505.89pt>
+File: ./figs/modeling/pert_mats.png Graphic file (type png)
+<use ./figs/modeling/pert_mats.png>
+Package pdftex.def Info: ./figs/modeling/pert_mats.png  used on input line 171.
+(pdftex.def)             Requested size: 422.77664pt x 211.39165pt.
+<./figs/results/tracking_error.png, id=136, 722.7pt x 433.62pt>
+File: ./figs/results/tracking_error.png Graphic file (type png)
+<use ./figs/results/tracking_error.png>
+Package pdftex.def Info: ./figs/results/tracking_error.png  used on input line 183.
+(pdftex.def)             Requested size: 422.77664pt x 253.66338pt.
+) (./source/conclusions.tex [20] [21 <./figs/modeling/pert_mats.png> <./figs/results/tracking_error.png>]) (./source/appendix.tex [22] [23] [24{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [25] [26] [27] [28] [29] [30]) [31] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -648,18 +680,18 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 23908 strings out of 467525
- 514886 string characters out of 5418982
- 964755 words of memory out of 5000000
- 52421 multiletter control sequences out of 15000+600000
+ 23952 strings out of 467525
+ 516167 string characters out of 5418982
+ 972400 words of memory out of 5000000
+ 52465 multiletter control sequences out of 15000+600000
  639844 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 116i,19n,121p,1486b,1048s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 116i,19n,121p,1486b,1062s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on main.pdf (25 pages, 980786 bytes).
+Output written on main.pdf (31 pages, 2582341 bytes).
 PDF statistics:
- 230 PDF objects out of 1000 (max. 8388607)
- 131 compressed objects within 2 object streams
+ 259 PDF objects out of 1000 (max. 8388607)
+ 144 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 177 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 202 words of extra memory for PDF output out of 10000 (max. 10000000)
 

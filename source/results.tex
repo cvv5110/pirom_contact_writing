@@ -67,6 +67,7 @@ where the flux is given by the temperature jump across a gap with effective resi
 \end{equation}
 which yields the corrected temperature jump as
 \begin{equation}
+\label{eq:eff_res}
     \Delta z = \Delta \theta \left[1+\frac{R_1^- + R_1^+}{R_{x_i}}\right]
 \end{equation}
 This framework shows how finite-volume methodology can be leveraged to compute the temperatures at the new sensor locations. As an added sanity check, if the sensor placement is perfect, $R_i^-=R_i^+=0$, which would yield $\Delta z = \Delta \theta$.
@@ -138,10 +139,11 @@ For the remainder of the study, the timescale will remain adequately large to en
     \item TCR
     \item Training costs
     \item Generalization (DONE BELOW)
-    \item HS Graph??
-\end{enumerate}
+ej\end{enumerate}
 
+In order to better analyze PIROM's ability to operate in real world scenarios, its generalizability is tested with several key perturbed properties: boundary conditions, material properties, gap TCRs, and material block thicknesses. By training PIROM on a nominal case and testing its sensor tracking accuracy in cases where the conditions are perturbed slightly, the model's capability to maintain accuracy in highly uncertain environments is tested. Furthermore, a compounded case will be tested, where all four of the above properties are perturbed at once. This is meant to be a worst-case-scenario, where the tested model is quite significantly different from the nominal trajectory on which the PIROM was trained on. Ideally, the hidden states that PIROM learned on the nominal model should extend to the perturbation cases, improving error over the baseline LCMs or FEMs.
 
+It is important to note that each perturbation case will test several trials, showing the average performance of the models when perturbed by some random amount. This neglects the performance of one singular case and focuses on the overall perturbation capabilities of the learned hidden states, which should show how PIROM excels over the LCM and FEM cases which do not use these hidden states. 
 
 \subsubsection{BC Generalization}
 
@@ -173,10 +175,36 @@ Such a model succeeds in keeping material properties true at low temperatures, b
 \end{figure}
 
 \subsubsection{TCR Generalization}
+
+In the modeled TPS system, the conductances of the gaps are unknown; the framework established previously is designed to infer these properties using the sensors positioned on either side of each sensor. However, the conductance that is inferred during training may not remain throughout the use of the TPS. Consider, for instance, a situation in which a sealer is poured between the contacts, or a conductive plate is inserted between two blocks; in these cases, inferred conductance is still technically correct, but now an additional source of conductance (which would in theory be known beforehand) is placed in the gap as well. Thus, the inferred conductance is slightly perturbed from its trained case, and the PIROM must continue to execute with high accuracy. 
+
+Such an event can be modeled by
+\begin{equation}
+    C^{(p)} = \eta \cdot C^{(n)}
+\end{equation}
+where the perturbed conductance is equal to the nominal conductance varied by some known factor $\eta$. An important note is the perturbation is multiplicative, and not some additive perturbation to the nominal conductance. This is imperative as the the coarse models perturb their inferred conductances slightly to get better tracking error; causing increased relative error in conductance, but significantly decreasing NRMSE through the sensor trajectories. However, the amount at what the model must perturb the conductances is not the same for all conductance values, so simply reusing some set offset will lead to higher tracking error than what is true. However, with the multiplicative scaler, $\eta$, the offset can be scaled with the problem which keeps the bias true to decrease tracking error. 
+
+In Fig.~\ref{fig:track_err}, the PIROM shows enhanced NRMSE compared to the LCM and FEM models. This means that the hidden states learned by PIROM can continue to provide improvement even if the inferred hidden states are perturbed slightly, which is non-trivial. Recall that conductance, in itself, is a tunable parameter, so the ability of the hidden states to continue to correct the trajectories when one of its tunable parameters is directly perturbed is quite impressive. 
+
 \subsubsection{Thickness Generalization}
+
+Within the previous cases, the size of the experiment has been constant; that is, the cross sectional area and depth of the blocks have remained the same. However, perturbing the physical size of the blocks --- particularly their thickness --- is an especially interesting experiment. Consider these material blocks on a real TPS system, where several key factors can shift their thickness. For instance, the blocks can be slightly out of the specifications or can marginally expand and contract with the flight conditions, which could fundamentally change how heat propagates through the system. Specifically, thinner blocks have less area, meaning heat propagates through them more quickly with faster temperature escalation. Contrarily, a thicker block has more volume, meaning slower heat propagation and overall lower temperatures.
+
+Note that when the thickness of the block is expanded or contracted, the mesh used to model the block does the same. Therefore, the distance at which the sensor is perturbed from the interface varies slightly too. Consider the case where the block thickness is increased, so the mesh stretches slightly to accommodate. As a result, the sensor position on a given node is now located slightly further than it would have been for the nominal case. Such a consideration is crucial for the results, as the effective resistance across the gap (shown in Eq.~\eqref{eq:eff_res}) must be corrected. 
+
+The results are shown in Fig.~\ref{fig:track_err}, where NRMSE is slightly higher than that of the other perturbation cases. This is because the error increases gradually as the length of the block increases or decreases, so the further the thickness is perturbed, the higher the NRMSE is. Therefore, the edge cases, or the cases where the length is perturbed by about $\pm 20\%$, have larger errors that dominate the mean. However, note that the errors of the PIROM are still less than those of the FEM and LCM, indicating better performance because of the previously inferred hidden states. 
+
 \subsubsection{Compounded Generalization}
 
+Finally, the case in which the previous four properties are all perturbed at once is illustrated in Fig.~\ref{fig:track_err}. As expected, the errors are higher for this case than any of the other single perturbations; since the perturbed cases here are quite a bit different from the nominal cases, the hidden states should demonstrate generally higher errors. Also, since the compounded case considers the perturbed lengths (whose errors are sometimes dominated by edge cases of large length perturbation), the errors are particularly high and reflect a small increase similar to the one seen in the thickness generalization case. 
+
+Importantly, the PIROM outperforms the LCM and FEM by a significant margin. This still shows improvement as the hidden states bring down the error a considerable amount from its baseline LCM, and both outperform the basic, coarse FEM. Such results indicate the hidden states are still applicable for quite significant perturbations, decreasing tracking NRMSE from the LCM for all cases tested. 
+
 \subsubsection{Extreme Thickness Generalization}
+
+As previously mentioned, perturbing the thicknesses of the blocks contributes quite significantly to NRMSE; the hidden states appear to be more closely related to block thickness, meaning that as the thicknesses are perturbed from their nominal case, the error rises quicker than for the other properties. Therefore, an extreme case is tested where the length is perturbed to up to $\pm 50\%$, which is a quite extreme deviation from the nominal. 
+
+The results for such a case are shown in Fig.~\ref{fig:track_err}, demonstrating the clear limitations of the model. By expanding or contracting the blocks by $30\%$ more, the error rises to above that of the compound case; this shows a clear error mode, as the PIROM can only extend its hidden states so far without them losing significant meaning. Note that in these cases PIROM still performs better than the LCM and FEM, but is still much larger than any of the other perturbation cases. Therefore, the amount at which the thickness is perturbed must be monitored with caution, as PIROM still must perturb from its nominal and cannot go too far without repercussions. 
 
 \begin{figure}[htbp]
     \centering

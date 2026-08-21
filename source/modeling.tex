@@ -47,25 +47,18 @@ where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes th
 
 Next, a \emph{one-dimensional} FEM (1D-FEM) is introduced as a low-order representation of the transient thermal dynamics of the TPS. The model employs a coarse spatial discretization in the through-thickness direction, where each TPS layer is represented using a single first-order element. Such one-dimensional approximations are commonly adopted for TPS analysis because the dominant temperature gradients generally develop along the thickness direction, while the in-plane gradients are comparatively small [Gao2026]. 
 
-Consider a TPS composed of $N$ non-overlapping layers $\left\{\Omega_i\right\}_{i=1}^{N}$, where within each layer, the temperature distribution is approximated as in \cref{eqn_temperature_approximation} with $P=2$. For instance, in the $i$-th element, $\boldsymbol{\phi}_i(x) = \left[\phi_{i,1}(x),\phi_{i,2}(x)\right]^\top$ contains linear trial functions, and $\boldsymbol{u}_i(t) = \left[u_{i}^{-}(t),u_{i}^{+}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
+Consider a TPS composed of $N$ non-overlapping layers $\left\{\Omega_i\right\}_{i=1}^{N}$, where within each layer, the temperature distribution is approximated as in \cref{eqn_temperature_approximation} with $P=2$. Specifically, $\boldsymbol{\phi}_i(r) = \left[\phi_{i,1}(r),\phi_{i,2}(r)\right]^\top$ contains linear basis functions, and $\boldsymbol{u}_i(t) = \left[u_{i}^{-}(t),u_{i}^{+}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
 
-Using the standard Galerkin procedure, 
-
-
-
+Using the standard Galerkin procedure, the temperature dynamics for the $i$-th element of length $L_i$ are written as,
 \begin{equation}
-    \boldsymbol{A}(\overline{\boldsymbol{u}})
-    \dot{\boldsymbol{u}}
-    =
-    \left[
-        \boldsymbol{B}^{b}(\overline{\boldsymbol{u}})
-        +
-        \boldsymbol{B}^{c}
-    \right]\boldsymbol{u}
-    +
-    \boldsymbol{f}(t),
-    \label{eq:1d_fem}
+    \boldsymbol{A}_i(\bar{u}_i)\dot{\boldsymbol{u}}_i = \boldsymbol{B}_i^b(\bar{u}_i)\boldsymbol{u}_i + \boldsymbol{F}_i\label{eqn_ith_1dfem}
 \end{equation}
+where, for linear basis functions and unit cross-sectional area,
+\begin{equation}
+    \boldsymbol{A}_i(\vu) = \rho c_p(\vu)\frac L6 \begin{bmatrix} 2 & 1 \\ 1 & 2 \\ \end{bmatrix},\quad \boldsymbol{B}_i(\bvu) = \frac{\text{k}(\bar{u})}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix},\quad \boldsymbol{F} = \int_{\partial\Omega} \boldsymbol{\phi} q_b \, d\Gamma
+\end{equation}
+where $\boldsymbol{A}_i\in\mathbb{R}^{2\times 2}$ is the heat-capacitance matrix and $\boldsymbol{B}_i\in\mathbb{R}^{2\times 2}$ represents heat conduction through the bulk material. The dependency of these operators on $\vu$ is explicitly noted as the principal non-linearities in the problem.
+
 where \(\overline{\boldsymbol{u}}=[\bar{u}_1,\ldots,\bar{u}_N]^{\top}\) contains the layer-average temperatures, \(\boldsymbol{A}\in\mathbb{R}^{2N\times2N}\) is the heat-capacity matrix, \(\boldsymbol{B}^{b}\in\mathbb{R}^{2N\times2N}\) is the bulk-conduction matrix, \(\boldsymbol{B}^{c}\in\mathbb{R}^{2N\times2N}\)  accounts for imperfect thermal contacts, and \(\boldsymbol{f}\in\mathbb{R}^{2N}\) contains the contributions from the prescribed boundary conditions.
 
 --------------

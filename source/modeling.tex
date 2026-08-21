@@ -45,11 +45,14 @@ where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes th
 
 \subsection{One-Dimensional Finite-Element Model}
 
-A \emph{one-dimensional} FEM model is introduced as a reduced-order representation of the through-thickness thermal response of the TPS. The model employs a coarse mesh in which each material layer is represented by a single finite element with linear trial functions. This approximation is motivated by the predominantly through-thickness heat transfer and the comparatively small in-plane temperature gradients commonly encountered in layered TPS configurations [Gao2026, X].
+Next, a \emph{one-dimensional} FEM (1D-FEM) is introduced as a low-order representation of the transient thermal dynamics of the TPS. The model employs a coarse spatial discretization in the through-thickness direction, where each TPS layer is represented using a single first-order element. Such one-dimensional approximations are commonly adopted for TPS analysis because the dominant temperature gradients generally develop along the thickness direction, while the in-plane gradients are comparatively small [Gao2026]. 
 
-Consider a TPS composed of $N$ non-overlapping elements. The temperature within the $i$-th element is approximated as in \cref{eqn_temperature_approximation} with $P=2$. For instance, in the $i$-th element, $\boldsymbol{\phi}_i(x) = \left[\phi_{i,1}(x),\phi_{i,2}(x)\right]^\top$ contains linear trial functions, and $\boldsymbol{u}_i(t) = \left[u_{i,1}(t),u_{i,2}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
+Consider a TPS composed of $N$ non-overlapping layers $\left\{\Omega_i\right\}_{i=1}^{N}$, where within each layer, the temperature distribution is approximated as in \cref{eqn_temperature_approximation} with $P=2$. For instance, in the $i$-th element, $\boldsymbol{\phi}_i(x) = \left[\phi_{i,1}(x),\phi_{i,2}(x)\right]^\top$ contains linear trial functions, and $\boldsymbol{u}_i(t) = \left[u_{i}^{-}(t),u_{i}^{+}(t)\right]^\top$ contains the corresponding left and right nodal temperature states. Collecting the states for all layers into a single vector yields $\boldsymbol{u} = \left[\boldsymbol{u}_1^\top,\boldsymbol{u}_2^\top,\dots,\boldsymbol{u}_N^\top\right]^\top\in\mathbb{R}^{2N}$. The layer-wise degrees of freedom are retained independently so that temperature discontinuities may be captured at imperfect contacts.
 
-Using the standard Galerkin procedure, the governing equations are written in matrix form as,
+Using the standard Galerkin procedure, 
+
+
+
 \begin{equation}
     \boldsymbol{A}(\overline{\boldsymbol{u}})
     \dot{\boldsymbol{u}}

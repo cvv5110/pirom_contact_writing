@@ -1,6 +1,6 @@
 \section{Modeling of Hypersonic Thermal Protection Systems}
 
-The following discussion presents the modeling of the transient heat conduction problem in multi-layered hypersonic thermal protection systems (TPS) with imperfect interfaces applications. Specifically, three different approaches of decreasing fidelity are presented for solving the governing equations: (i) a high-resolution three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a one-dimensional through-thickness FEM with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a lumped capacitance model (LCM) representation of the TPS with interfacial temperature jump dynamics termed the \emph{reduced-physics model} (RPM). The three solution strategies are described in detail next.
+The following discussion presents the modeling of the transient heat conduction problem in multi-layered hypersonic thermal protection systems (TPS) with imperfect interfaces applications. Specifically, three different approaches of decreasing fidelity are presented for solving the governing equations: (i) a high-resolution three-dimensional FEM termed the \emph{full-order model} (FOM), (ii) a coarse one-dimensional FEM model with linear elements termed the \emph{one-dimensional FEM} (1D-FEM), and (iii) a finite-volume-based lumped capacitance model (LCM) with interfacial temperature jump dynamics termed the \emph{reduced-physics model} (RPM). The three solution strategies are described in detail next.
 
 \subsection{Governing Equations}
 
@@ -29,17 +29,15 @@ For example, Fig.~\ref{fig_general_domain} contains $N_C=3$ components and $N_{\
 
 The FOM is obtained by spatially discretizing the governing PDE using a Discontinuous Galerkin (DG) FEM, to result in a high-dimensional system of ODEs that model the transient temperature dynamics of the TPS. The DG-FEM formulation is leveraged for discretization as it: (i) provides a systematic framework for modeling multi-layered TPS with complex geometries, varying material properties, and interfacial TCRs, and (ii) is amenable to systematic model-order reduction via coarse-graining. Note that the high-fidelity numerical simulations in Sec. \hl{[X]} are performed using standard FEM instead, and the equivalence between DG and standard FEM is noted upon their convergence.
 
-Consider a DG-FEM discretization where the entire domain $\Omega$ is partitioned into non-overlapping bulk $\left\{B_i\right\}_{i=1}^{B}$ and interfacial $\left\{W_i\right\}_{i=1}^{K}$ elements, so that $\left\{E_i\right\}_{i=1}^{M}$ with $M=K+B$ corresponds to the complete collection of elements, and each element belongs to one and only one component in the TPS partition. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, for an element $E_i$, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. Now, for the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
-3\begin{equation}
+Consider a conforming mesh partition of the TPS domain $\Omega$, were each element belongs to one and only one of the components $\left\{\Omega_i\right\}_{i=1}^{N}$, and where each domain $\Omega_i$ is further divided into \emph{bulk} and \emph{contact} sub-domains, i.e., $\Omega_i=\Omega_i^b\cup\Omega_i^c$. Denote the collection of elements on the bulk sub-domains as $\left\{B_i\right\}_{i=1}^{B}$, and on the contact sub-domains as $\left\{W_i\right\}_{i=1}^{K}$, so that $\left\{E_i\right\}_{i=1}^{M}$ with $M=K+B$ corresponds to the complete collection of elements over the entire TPS. Moreover, the perfect, imperfect, Neumann, and Dirichlet boundary interfaces are denoted as $e_{ij}$, $\Gamma_{ij}$, $e_{iq}$, and $e_{iT}$, respectively. Lastly, for an element $E_i$, $\left|\partial E_i\right|$ denotes the length $(d=2)$ or area $(d=3)$ of a boundary $\partial E_i$. 
+
+On the $i$-th element, use a set of $P$ basis functions, such as polynomials, to represent the temperature field as,
+\begin{equation}
     T_i(r,t) = \sum_{p=1}^P \vphi_p(r) x_{i,p}(t),\qquad r\in E_i\label{eqn_temperature_approximation}
 \end{equation}
-where $\left\{x_{i,p}\right\}_{p=1}^{P}$ corresponds to the states of the $i$-th element. Without loss of generality, let the basis functions on element $E_i$ satisfy the following orthogonality condition,
-\begin{equation}
-    \int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\quad p\neq q\label{eqn_basis_functions_condition}
-\end{equation}
-where $\delta_{pq}$ is the Kronecker delta. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially varying temperature distributions within the element.
+where $\left\{x_{i,p}\right\}_{p=1}^{P}$ corresponds to the states of element $E_i$. Without loss of generality, let the basis functions on element $E_i$ satisfy the orthogonality condition $\int_{E_i}\phi_p^i\phi_q^i d\Omega = \left|E_i\right|\delta_{pq},\: p\neq q$, where $\delta_{pq}$ is the Kronecker delta. Furthermore, to aid in subsequent model-order reduction derivations, choose $\phi_1^i=1$; therefore, by orthogonality, $\int_{E_i}\phi_p^i d\Omega = 0$ for $p>1$. The first basis function therefore captures the volume-averaged temperature of the element, while the remaining basis functions capture the spatially varying temperature distributions within the element.
 
-Using standard variational procedures, e.g., [Pernet2018], as detailed in Appendix [X], the full governing equation is denoted as,
+Using standard variational procedures, e.g., [Pernet2018] as detailed in Appendix [X], the full governing equation is denoted as,
 \begin{equation}
     \vcA(\vx)\dot{\vx} = \vcB\left(\vx\right)\vx + \vcF(t)\label{eqn_dg_fem}
 \end{equation}
@@ -47,16 +45,9 @@ where $\vx=\left[\vu,\vw\right]^\top\in\mathbb{R}^{MP}$ with $M=B+K$ includes th
 
 \subsection{One-Dimensional Finite-Element Model}
 
-Next, a \emph{one-dimensional} FEM (1D-FEM) ROM for the TPS is presented. This model assumes heat transfer is \emph{one dimensional} alon the TPS thickness, where the space-time varyin temperature inside each layer is describd using linear basis functions over a single finite element. Such 1D-FEM reduced-order modeling approach is commonly adopted in the literature due to the development of large temperature gradients along the thickness direction of the TPS, relative to in-plane temperature gradients [Gao2026, X]. Figure~\ref{fig:gen_1D} depicts an example where $N_C=3$ components are connected in series with $N_\Gamma2=$ imperfect contacts.
+Next, a \emph{one-dimensioanl} FEM (1D-FEM) is presented as a ROM for the TPS. A coarse mesh is leveraged where each TPS layer includes only one finite element with linear basis functions to capture temperature varitions within the element. Such 1D-FEM ROM is commonly adopted in the literature due to the development of large temperature gradients along the thickness direction of the TPS, relative to in-plane temperature gradients [Gao2026, X].
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{./figs/modeling/1D_FEM_General.png}
-    \caption{Schematic of a one-dimensional TPS domain $\Omega$ consisting of $N_C=3$ components linearly discretized with only $N_\Gamma=2$ imperfect interfaces.\hl{check comment}}
-    \label{fig:gen_1D}
-\end{figure}
-
-Generalizing for a TPS containing $M$ non-overlapping elements --- still expressed with a coarse one-dimensional assumption --- then yeilds
+Generalizing for a TPS containing $N$ non-overlapping elements yields,
 \begin{equation}
     \boldsymbol{A}(\overline{\boldsymbol{u}})\dot{\boldsymbol{u}} = \boldsymbol{B}(\overline{\boldsymbol{u}}){\boldsymbol{u}} + \boldsymbol{F}(t)
     \label{eq:full_mat_form}
@@ -117,7 +108,7 @@ where $\boldsymbol{B}^c$ is not a function of average temperature or time, as co
 
 \subsection{Reduced-Physics Model}
 
-Next, the \emph{lumped capacitance model} (LCM) under imperfect TPS layer contacts is presented as the RPM for the TPS. In this formulation, each layer is modeled as a lumped mass with a time-varying average temperature, where TCRs introduce additional physics such as intra-layer temperature discontinuities. To handle both bulk and contact heat transfer, the following formulation introduces the decomposition of the TPS layers into \emph{bulk} and \emph{contact} sub-domains, serving as the basis for subsequent coarse-graining derivations, TCR identifiability, and PIROM formulations.
+Next, the \emph{lumped capacitance model} (LCM) under imperfect TPS layer contacts is presented as the RPM for the TPS. In this formulation, each layer is modeled as a lumped mass with a time-varying average temperature, where TCRs introduce additional physics such as intra-layer temperature discontinuities that must be modeled. To handle both bulk and contact heat transfer, the following formulation introduces the decomposition of the TPS layers into \emph{bulk} and \emph{contact} sub-domains, serving as the basis for subsequent coarse-graining derivations, TCR identifiability, and PIROM formulations.
 
 \paragraph*{Bulk Temperature Dynamics} Leveraging our previous work in Ref. [VargasVenegas2026], the \emph{bulk} temperature dynamics of the LCM is derived at the component level from a point of view of energy balance,
 \begin{subequations}
@@ -126,7 +117,6 @@ Next, the \emph{lumped capacitance model} (LCM) under imperfect TPS layer contac
         \bar{A}_i\dot{\bar{u}}_i &= \sum_{j\in\cN^b_i}\int_{e_{ij}}q^{b}_{ij}d\Gamma + \int_{e_{iq}}q_{b}d\Gamma + \int_{e_{iT}}q_{T}d\Gamma,\: i=1,2,\dots,N_B\label{eqn_general_lcm}
     \end{align}
 \end{subequations}
-
 where $\bar{A}_i(\bu_i) = \int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u})d\Omega$, and $q^{b}_{ij}$, $q^{c}_{ij}$, $q_{ib}$, and $q_{iT}$ correspond to the heat flux contributions due to neighboring elements with perfect ($e_{ij}$) contact, imperfect ($\Gamma_{ij}$) contact, Neumann boundary conditions ($e_{iq}$), and Dirichlet boundary conditions ($e_{iT}$), respectively. Moreover, $\cN_i^b$ and $\cN_i^c$ are the sets of neighboring elements across perfect and imperfect interfaces, respectively.
 
 \paragraph*{Interface Temperature Dynmaics}
@@ -149,11 +139,11 @@ where $\bar{A}_i(\bu_i) = \int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u})d\Omega$, and 
 %     \end{align}
 % \end{subequations}
 % Now, define the left $R_r^{-} = \frac{l_r^{-}}{k_r^{-}A}$, right $R_r^{+} = \frac{l_r^{+}}{k_r^{+}(\bu^{+})A}$, and imperfect contact $R_r = 1/g_r$ thermal resistances, with $S_r(\bvu) = R_r^{-} + R_r^{+}$ as the effective bulk resistance across an imperfect interface $\Gamma_r$.
-Two equivalent approaches are presented in this work to formulate the temperature jump dynamics: (i) coarse-graining the DG-FEM model and applying a \emph{zero-energy storage assumption} for the contact sub-domains as shown in [APPENDIX], and (ii) leveraging energy conservation at the interface level. For brevity, the second approach is adopted here, whereas the first approach is demonstrated in the [APPENDIX]. By energy conservation, \emph{the bulk and contact heat fluxes are equal} at the imperfect interfaces,
+Two equivalent approaches are presented in this work to formulate the temperature jump dynamics: (i) coarse-graining the DG-FEM model and applying a \emph{zero-energy storage assumption} for the contact sub-domains as shown in [APPENDIX], and (ii) leveraging energy conservation at the interface level. For brevity, the second approach is adopted here, while the first approach is demonstrated in the [APPENDIX]. By energy conservation, \emph{the bulk and contact heat fluxes are equal} at the imperfect interfaces, leading to the following algebraic constraint,
 \begin{equation}
     q^{b}_r(t) = \frac{\bu^{-}-\bu^{+}}{S_r(\bvu) + R_{r}} = \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)} = g_{r}\Delta\bw_r = q^{c}_r(t)\label{eqn_interface_heat_flux_conservation}
 \end{equation}
-where the contact temperature jumps $\Delta\bw_r$ for $r=1,2,\dots,N_{\Gamma}$ depend on the TCR values. The heat flux continuity algebraic constraints in \cref{eqn_interface_heat_flux_conservation} are differentiated with respect to time, i.e., DAE index reduction, such that for each interface,
+where $\Delta\bw_r$ for $r=1,2,\dots,N_{\Gamma}$ are contact temperature jumps, and depend on the TCR values. The heat flux continuity algebraic constraints in \cref{eqn_interface_heat_flux_conservation} are differentiated with respect to time, i.e., DAE index reduction, such that for each interface,
 \begin{equation}
     \left(1 + g_r S_r(\bvu)\right)\Delta\dot{\bw}_r = \bigl(\dot{\bu}^{-} - \dot{\bu}^{+}\bigr) - \frac{\left(\bu^{-} - \bu^{+}\right) - \Delta\bw_r}{S_r(\bvu)}\dot{S}_r(\bvu),\quad r=1,2,\dots,N_{\Gamma}\label{eqn_temperature_jump_dynamics_r}
 \end{equation}
@@ -178,7 +168,7 @@ while $\vD\in\mathbb{R}^{N_{\Gamma}\times N_C}$ is the difference matrix that co
         &= \sum_{j\in\cN_i^{b}\cup\left\{T\right\}}\bar{B}_{ij}^{i}\bu_i + \sum_{j\in\cN_i^u}\bar{B}_{ij}^{j}\bu_j + \sum_{j\in\cN_i^w}\bar{B}_{ij}^{j}\bw_j + \bar{f}_i^{(b)}(t)
     \end{align}
 \end{subequations}
-or,
+or, by leveraging heat flux continuity from \cref{eqn_interface_heat_flux_conservation},
 \begin{align}
      \left(\int_{\Omega^{b}_i}\rho c_{p,i}(\bar{u}) d\Omega\right)\dot{\bu}_i &= \left(\sum_{j\in\cN^b_i}\int_{e_{ij}}g_{ij}\left(\bu_i - \bu_j\right)d\Gamma\right)\\
     &+ \sum_{j\in\cN_i^{c}}\left(\int_{\Gamma_{ij}}g_{x,ij}\Delta\bw_j d\Gamma\right) + \int_{e_{iq}}q_b d\Gamma + \int_{e_{iT}}q_{T}d\Gamma

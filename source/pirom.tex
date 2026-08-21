@@ -1,25 +1,16 @@
 \section{Physics-Infused Reduced-Order Modeling}
 
+Following our previous work in Ref.[VargasVenegas2026], the PIROM formulation starts by mathematically connecting the FOM to the RPM. 
+
 The formulation of PIROM for TPS starts by mathematically connecting the FOM to the RPM. This connection is formally established through a coarse-graining procedure, which systematically reduces the spatial resolution of the DG-FEM to discover the lifted LCM model with contact temperature jump dynamics. Additionally, the coarse-graining procedure pinpoints residual terms in the RPM that facilitate the design of a data-driven memory closure to account for discarded spatial resolution.
 
 \subsection{Deriving the Reduced-Physics Model via Coarse-Graining}
 
-Following our previous work in Ref. [VargasVenegas2026], the LCM can be viewed as a zeroth-order (i.e., constant basis functions) DG-FEM with an extremely coarse mesh partition, and where the element-wise penalty factors become the conductance. In particular, the presence of imperfect interfaces in this work motivates modification of the coarse-graining procedure to explicitly account for TCR dynamics, which are not present in the standard LCM formulation. The following discussion presents the derivation of the lifted LCM dynamics via coarse-graining and the PIROM formulation to account for residual dynamics.
+Following our previous work in Ref. [VargasVenegas2026], the LCM can be viewed as a zeroth-order (i.e., constant basis functions) DG-FEM with an extremely coarse mesh partition, and where the element-wise penalty factors become the conductance. The presence of imperfect interfaces motivates the modification of the coarse-graining procedure to explicitly introduce an additional dynamical system that is parametrized by TCRs, which is not present in the standard LCM formulation. The following discussion presents the derivation of the modified LCM dynamics via coarse-graining, and the PIROM formulation for residual dynamics.
 
 \subsubsection{Coarse-Graining of States}
 
-Consider a DG-FEM formulation as in \cref{eqn_dg_fem} with $M$ elements, $\NC$ components and $\NGamma$ interfaces; clearly, $M \gg \NC,\NGamma$. Let component $\Omega_i$ contain a share a boundary with the imperfect interface $\Gamma_r$, i.e., $\partial\Omega_i^c\cap\Gamma_r\neq\emptyset$ with $\Omega_i^c\subset\Omega_i$, and define the sets of indices $\cV_i$ and $\cF_i$ for the elements in the bulk $\Omega_i^b$ and contact $\Omega_i^c$ sub-domains, respectively; note that $\Gamma_r=\partial\Omega_i^c\cap\partial\Omega_j^c$ with $i\neq j$, $i,j=1,2,\dots,N$ and $r=1,2,\dots,N_{\Gamma}$. Formally, the sets are defined as,
-\begin{subequations}
-    \begin{align}
-        \cV_i &= \{j \:|\: E_j\subset\Omega_i^b\},\quad i=1,2,\dots,N_B\\
-        \cF_i &= \left\{j \:|\: \partial W_j\cap\Gamma_r\neq\emptyset,\: W_j\subset\Omega_i^c\right\},\quad i=1,2,\dots,N,\:r=1,2,\dots,N_C
-    \end{align}
-\end{subequations}
-Note that since an interface $\Gamma_r$ is composed of two contact sub-domains, and there are $N_C$ contact sub-domains, $N_C = 2 N_{\Gamma}$. Moreover, to aid in subsequent RPM derivations, introduce the states for interfacing DG-FEM elements as,
-\[
-    \vw=\left[\vw_1^\top,\vw_2^\top,\dots,\vw_K^\top\right]=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{R}^{KP}
-\]
-\noindent associated to the elements with neighboring imperfect interfaces on the negative and positive sides, respectively; these variables are coupled to the bulk element states $\vu\in\mathbb{R}^{BP}$ via the standard DG-FEM penalty terms, as shown in Appendix \hl{[X]}. Additionally, note that $M=B+K$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$, with $K=K^{-}+K^{+}$ and where $K^{-}$ and $K^{+}$ denote the total number of elements on the negative and positive sides of imperfect interfaces, respectively.
+Consider a DG-FEM formulation as in \cref{eqn_dg_fem} with $M$ elements, $\NC$ components and $\NGamma$ interfaces; clearly, $M \gg \NC,\NGamma$. Let component $\Omega_i=\Omega_i^b\cup\Omega_i^c$ share a boundary with the imperfect interface $\Gamma_r$, i.e., $\partial\Omega_i^c\cap\Gamma_r\neq\emptyset$ with $\Omega_i^c\subset\Omega_i$, and define the sets of indices $\cV_i=\{j \:|\: E_j\subset\Omega_i^b\},\quad i=1,2,\dots,N_B$ and $\cF_i=\left\{j \:|\: \partial W_j\cap\Gamma_r\neq\emptyset,\: W_j\subset\Omega_i^c\right\},\quad i=1,2,\dots,N,\:r=1,2,\dots,N_C$ for elements in the bulk $\Omega_i^b$ and contact $\Omega_i^c$ sub-domains, respectively. Introduce the following states $\vw=\left[\vw^{-},\vw^{+}\right]^\top\in\mathbb{KP}$, where $\vw^{-}$ and $\vw^{+}$ are the states of elements on the negative and positive sub-domains conforming and interface, respectively. Note that $M=B+K$, and $\vw^{-}\in\mathbb{R}^{K^{-}P}$ and $\vw^{+}\in\mathbb{R}^{K^{+}P}$, with $Ks=K^{-}+K^{+}$ and where $K^{-}$ and $K^{+}$ denote the total number of elements on the negative and positive sides of imperfect interfaces, respectively.
 
 Under such variable construction, the average temperatures on some bulk component $\Omega_i^b$ and interface $\Gamma_r$ are given by,
 \begin{subequations}
@@ -29,9 +20,7 @@ Under such variable construction, the average temperatures on some bulk componen
         \bar{w}_r^{+}(t) &= \frac{1}{\left|\Omega_r^{c,+}\right|}\sum_{m\in\cF_r^+}\int_{E_m} \vphi_m^\top\vw^{+}_m dE = \frac{1}{\left|\Omega_r^{c,+}\right|}\sum_{m\in\cF_r^{+}}\left|E_m\right|\vpsi_m^{r+}\vw_m^{+},\quad r=1,2,\dots,\NGamma
     \end{align}
 \end{subequations}
-where the orthogonal basis functions $\vvarphi_i^j,\vpsi_m^{j\pm}=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$ if $i\in\cV_j$ and $m\in\cF_j^{\pm}$, respectively, and are zero otherwise.
-
-Given the average temperatures $\left\{\bar{u}_i\right\}_{i=1}^{N_C}$, $\left\{\bar{w}_i^{-}\right\}_{i=1}^{\NGamma}$, and $\left\{\bar{w}_i^{+}\right\}_{i=1}^{N_{\Gamma}}$, the DG-FEM states of elements on domains $\Omega_i^b$, $\Omega_r^{c,-}$, and $\Omega_r^{c,+}$ are written as,
+where the orthogonal basis functions $\vvarphi_i^j,\vpsi_m^{j\pm}=\left[1,0,\dots,0\right]\in\mathbb{R}^{P}$ if $i\in\cV_j$ and $m\in\cF_j^{\pm}$, respectively, and are zero otherwise. With the average temperatures $\left\{\bar{u}_i\right\}_{i=1}^{N_C}$, $\left\{\bar{w}_i^{-}\right\}_{i=1}^{\NGamma}$, and $\left\{\bar{w}_i^{+}\right\}_{i=1}^{N_{\Gamma}}$, the DG-FEM states of elements on domains $\Omega_i^b$, $\Omega_r^{c,-}$, and $\Omega_r^{c,+}$ are written as,
 \begin{subequations}
     \begin{align}
         \vu_i &= \sum_{k=1}^{N_C}\vvarphi_i^k\bar{u}_k + \delta\vu_i,\quad i\in\cV_j,\quad j=1,2,\dots,B\label{eqn_bulk_element_states}\\
